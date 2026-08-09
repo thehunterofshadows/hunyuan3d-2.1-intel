@@ -19,10 +19,23 @@ import sys
 from pathlib import Path
 
 import numpy as np
-import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+# `backend` first, and before torch: it is what puts PYTORCH_ENABLE_MPS_FALLBACK
+# into the environment, and torch only reads that while it initialises.
+import backend as backend_mod  # noqa: E402
+import torch  # noqa: E402
 import torch_rasterizer as tr  # noqa: E402
+
+
+def preview_device() -> torch.device:
+    """The device this port would actually compute on.
+
+    Not `cuda if available else cpu`: that spelling demotes every Mac to the CPU,
+    since MPS is neither. Going through `backend.detect()` also makes HY3D_BACKEND
+    work here, which is how the rasterizer gets bisected against a suspect GPU.
+    """
+    return torch.device(backend_mod.detect().device)
 
 
 def load_mesh(path: str):
@@ -176,7 +189,7 @@ def main() -> int:
 
     from PIL import Image
 
-    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    device = preview_device()
     verts, faces, uv, albedo = load_mesh(args.mesh)
     normals = vertex_normals(verts, faces)
     print(

@@ -34,6 +34,20 @@ from typing import Optional
 os.environ.setdefault("PYTORCH_ENABLE_MPS_FALLBACK", "1")
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 
+# MPS: lift the soft allocation cap. PyTorch aborts an allocation once the
+# process passes `recommended_max_memory()` (about 75 % of unified memory),
+# even though macOS would happily page the rest — and the paint pipeline's
+# multiview attention crosses that line on any Mac under ~32 GB. The failure is
+# an exception mid-bake, minutes in, not a graceful degradation, so the cap buys
+# nothing here.
+#
+# This lives next to the ROCm allocator settings for the same reason they do:
+# launch.sh sets it, but tests, `scripts/doctor.py` and anything importing this
+# module directly bypass the launcher and would otherwise run under a different
+# memory policy than the app.
+if sys.platform == "darwin":
+    os.environ.setdefault("PYTORCH_MPS_HIGH_WATERMARK_RATIO", "0.0")
+
 # Allocator and kernel-cache settings for ROCm. These live here, not only in the
 # launchers, because anything that imports this module — the app, the tests, the
 # doctor — needs them. Test runs that bypassed launch.ps1 were missing
@@ -164,11 +178,18 @@ def _default_raster(kind: str) -> str:
     Anything else falls back to the pure-PyTorch rasterizer, which always works
     — notably on Windows, where the ROCm torch wheel cannot link any C++
     extension at all, so neither native mode is reachable.
+
+    MPS deliberately prefers `torch` even when the native CPU path did build.
+    The native path is a *CPU* path, so using it on a GPU backend means copying
+    positions down and the index map back on every view. Measured on an M4 Pro
+    with 79k triangles at 2048x2048: native CPU 165 ms, torch on MPS 152 ms —
+    the same work without leaving the device. `HY3D_RASTER=cpu` still selects it,
+    which is what makes it useful as a clean-room comparison.
     """
     built = _extension_raster_capability()
     if built == "gpu" and kind in ("rocm", "cuda"):
         return "gpu"
-    if built == "cpu":
+    if built == "cpu" and kind != "mps":
         return "cpu"
     return "torch"
 
@@ -319,6 +340,11 @@ def suggest_paint_preset(b: Backend) -> str:
     views x tokens — so a machine with 100 GiB of GPU-visible memory still cannot
     run the "normal" preset. Suggesting it there would be actively misleading.
     See `paint.attention_preflight`.
+
+    MPS is in the same position as ROCm and for the same reason. PyTorch's MPS
+    SDPA builds the score matrix through MPSGraph rather than a flash kernel, so
+    "low" already asks for a 67.5 GiB tensor on a machine whose largest possible
+    Metal buffer is a fraction of that. `safe` is the honest default.
     """
     if b.kind != "cuda":
         return "safe"

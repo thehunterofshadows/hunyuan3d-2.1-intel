@@ -219,7 +219,7 @@ I18N: dict[str, dict[str, str]] = {
             "diagnose, not for normal runs\n"
             "- For CAD use: start with «Medium» optimization, check preview, tighten if needed\n"
             "- Texturing needs much more memory than shape generation. Start with "
-            "the «Low» preset; raise it only if it fits\n"
+            "the «Safe» preset; raise it only if it fits\n"
             "- Output files are saved to `outputs/` next to this script\n"
         ),
         # ----- optimization level labels -----
@@ -269,9 +269,10 @@ I18N: dict[str, dict[str, str]] = {
         "tex_help": (
             "Generates albedo and metallic-roughness maps with the Hunyuan3D paint "
             "model, then bakes them into the mesh UVs.\n\n"
-            "- Needs the native extensions (`custom_rasterizer`, `mesh_inpaint_processor`) "
-            "and the `hunyuan3d-paintpbr-v2-1` weights.\n"
-            "- Far more memory-hungry than shape generation. «Low» is the safe start.\n"
+            "- Needs `mesh_inpaint_processor` built and the `hunyuan3d-paintpbr-v2-1` "
+            "weights. No compiler is needed for the rasterizer: `torch_rasterizer` "
+            "runs it on whatever device the tensors are on, including MPS.\n"
+            "- Far more memory-hungry than shape generation. «Safe» is the safe start.\n"
             "- The paint model re-meshes to ~40k triangles internally, so heavy "
             "decimation before texturing is wasted work.\n"
         ),
@@ -283,8 +284,9 @@ I18N: dict[str, dict[str, str]] = {
         "tex_preset_normal": "Normal (8 views, 768, texture 4096) — needs flash attention",
         "tex_raster":      "Rasterizer backend",
         "tex_raster_auto": "Auto (from the detected backend)",
-        "tex_raster_gpu":  "GPU (HIP/CUDA kernel)",
-        "tex_raster_cpu":  "CPU (portable; also the fallback for bad GPU output)",
+        "tex_raster_gpu":  "GPU (native HIP/CUDA kernel — AMD/NVIDIA only)",
+        "tex_raster_cpu":  "CPU (native C++ path; also the fallback for bad GPU output)",
+        "tex_raster_torch": "Torch (pure PyTorch, no compiler — runs on MPS/GPU)",
         "tex_btn":         "🎨 Generate texture",
         "tex_log":         "Texturing log",
         "tex_preview":     "Textured result",
@@ -301,7 +303,7 @@ I18N: dict[str, dict[str, str]] = {
         "log_tex_input":     "Input mesh: {faces} faces, saved to {path}",
         "log_tex_running":   "Running multiview diffusion, super-resolution and baking. This is the slow part.",
         "log_tex_done":      "✅ Texture ready in {elapsed:.1f} s: {path}",
-        "log_tex_err_oom":   "❌ Out of memory while texturing: {msg}\n\nHint: switch to the «Low» preset, lower the view count, or set the rasterizer to CPU.\n\nTraceback:\n{tb}",
+        "log_tex_err_oom":   "❌ Out of memory while texturing: {msg}\n\nHint: switch to the «Safe» preset, lower the view count or the multiview resolution, or close other apps.\n\nTraceback:\n{tb}",
         "log_tex_err":       "❌ Texturing error: {name}: {e}\n\nTraceback:\n{tb}",
     },
     "zh": {
@@ -347,7 +349,7 @@ I18N: dict[str, dict[str, str]] = {
             "- 「统计 GPU 与 CPU 操作占比」会让每个算子都经过 Python，"
             "生成速度大约慢一个数量级。仅用于诊断，日常生成请关闭\n"
             "- CAD 用途：从「中度」优化开始，查看预览后再决定是否加强\n"
-            "- 纹理生成比形状生成消耗更多内存。请先使用「低」预设\n"
+            "- 纹理生成比形状生成消耗更多内存。请先使用「安全」预设\n"
             "- 输出文件保存在脚本旁的 `outputs/` 目录\n"
         ),
         "opt_none":   "不优化",
@@ -402,9 +404,10 @@ I18N: dict[str, dict[str, str]] = {
         "tex_help": (
             "使用 Hunyuan3D paint 模型生成 albedo 与 metallic-roughness 贴图，"
             "然后烘焙到网格 UV 上。\n\n"
-            "- 需要本地扩展（`custom_rasterizer`、`mesh_inpaint_processor`）"
-            "以及 `hunyuan3d-paintpbr-v2-1` 权重。\n"
-            "- 比形状生成消耗更多内存。建议从「低」开始。\n"
+            "- 需要编译 `mesh_inpaint_processor` 以及 `hunyuan3d-paintpbr-v2-1` 权重。"
+            "光栅化器无需编译器：`torch_rasterizer` 会在张量所在的设备上运行，"
+            "包括 MPS。\n"
+            "- 比形状生成消耗更多内存。建议从「安全」开始。\n"
             "- paint 模型内部会重新网格化到约 4 万三角面，因此纹理化之前的"
             "强力简化是徒劳的。\n"
         ),
@@ -416,8 +419,9 @@ I18N: dict[str, dict[str, str]] = {
         "tex_preset_normal": "常规（8 视角，768，贴图 4096）— 需要 flash attention",
         "tex_raster":      "光栅化后端",
         "tex_raster_auto": "自动（依据检测到的后端）",
-        "tex_raster_gpu":  "GPU（HIP/CUDA 内核）",
-        "tex_raster_cpu":  "CPU（通用；GPU 输出异常时的回退方案）",
+        "tex_raster_gpu":  "GPU（原生 HIP/CUDA 内核 — 仅 AMD/NVIDIA）",
+        "tex_raster_cpu":  "CPU（原生 C++ 路径；GPU 输出异常时的回退方案）",
+        "tex_raster_torch": "Torch（纯 PyTorch，无需编译器 — 可在 MPS/GPU 上运行）",
         "tex_btn":         "🎨 生成纹理",
         "tex_log":         "纹理生成日志",
         "tex_preview":     "带纹理的结果",
@@ -433,7 +437,7 @@ I18N: dict[str, dict[str, str]] = {
         "log_tex_input":     "输入网格：{faces} 个面，已保存到 {path}",
         "log_tex_running":   "正在运行多视角扩散、超分辨率与烘焙。这是最慢的阶段。",
         "log_tex_done":      "✅ 纹理完成，用时 {elapsed:.1f} 秒：{path}",
-        "log_tex_err_oom":   "❌ 纹理生成时内存不足：{msg}\n\n提示：切换到「低」预设、减少视角数量，或将光栅化器设为 CPU。\n\nTraceback：\n{tb}",
+        "log_tex_err_oom":   "❌ 纹理生成时内存不足：{msg}\n\n提示：切换到「安全」预设、减少视角数量或多视角分辨率，或关闭其他应用。\n\nTraceback：\n{tb}",
         "log_tex_err":       "❌ 纹理生成错误：{name}: {e}\n\nTraceback：\n{tb}",
     },
     "ru": {
@@ -495,7 +499,7 @@ I18N: dict[str, dict[str, str]] = {
             "диагностики, а не для обычных прогонов\n"
             "- Для CAD: начни со «Средней» оптимизации, глянь превью, при необходимости усиль\n"
             "- Текстурирование требует существенно больше памяти, чем генерация формы. "
-            "Начинай с пресета «Низкий»\n"
+            "Начинай с пресета «Безопасный»\n"
             "- Выходные файлы сохраняются в `outputs/` рядом со скриптом\n"
         ),
         "opt_none":   "Без оптимизации",
@@ -541,10 +545,12 @@ I18N: dict[str, dict[str, str]] = {
         "tex_help": (
             "Генерирует карты albedo и metallic-roughness моделью Hunyuan3D paint, "
             "затем запекает их в UV меша.\n\n"
-            "- Нужны нативные расширения (`custom_rasterizer`, `mesh_inpaint_processor`) "
-            "и веса `hunyuan3d-paintpbr-v2-1`.\n"
+            "- Нужны собранный `mesh_inpaint_processor` и веса "
+            "`hunyuan3d-paintpbr-v2-1`. Для растеризатора компилятор не нужен: "
+            "`torch_rasterizer` работает на том устройстве, где лежат тензоры, "
+            "включая MPS.\n"
             "- Памяти требует значительно больше, чем генерация формы. Безопасный "
-            "старт — «Низкий».\n"
+            "старт — «Безопасный».\n"
             "- Paint-модель внутри сама ремешит до ~40k треугольников, поэтому "
             "сильная декимация перед текстурированием — потерянная работа.\n"
         ),
@@ -556,8 +562,9 @@ I18N: dict[str, dict[str, str]] = {
         "tex_preset_normal": "Обычный (8 ракурсов, 768, текстура 4096) — нужен flash attention",
         "tex_raster":      "Бэкенд растеризатора",
         "tex_raster_auto": "Авто (по обнаруженному бэкенду)",
-        "tex_raster_gpu":  "GPU (ядро HIP/CUDA)",
-        "tex_raster_cpu":  "CPU (переносимый; он же обходной путь при битом выводе GPU)",
+        "tex_raster_gpu":  "GPU (нативное ядро HIP/CUDA — только AMD/NVIDIA)",
+        "tex_raster_cpu":  "CPU (нативный C++-путь; он же обходной путь при битом выводе GPU)",
+        "tex_raster_torch": "Torch (чистый PyTorch, без компилятора — работает на MPS/GPU)",
         "tex_btn":         "🎨 Сгенерировать текстуру",
         "tex_log":         "Лог текстурирования",
         "tex_preview":     "Результат с текстурой",
@@ -573,7 +580,7 @@ I18N: dict[str, dict[str, str]] = {
         "log_tex_input":     "Входной меш: {faces} граней, сохранён в {path}",
         "log_tex_running":   "Запускаю multiview-диффузию, апскейл и запекание. Это самая долгая часть.",
         "log_tex_done":      "✅ Текстура готова за {elapsed:.1f} с: {path}",
-        "log_tex_err_oom":   "❌ Нехватка памяти при текстурировании: {msg}\n\nСовет: переключись на пресет «Низкий», уменьши число ракурсов или поставь растеризатор на CPU.\n\nTraceback:\n{tb}",
+        "log_tex_err_oom":   "❌ Нехватка памяти при текстурировании: {msg}\n\nСовет: переключись на пресет «Безопасный», уменьши число ракурсов или разрешение multiview, либо закрой другие приложения.\n\nTraceback:\n{tb}",
         "log_tex_err":       "❌ Ошибка текстурирования: {name}: {e}\n\nTraceback:\n{tb}",
     },
 }

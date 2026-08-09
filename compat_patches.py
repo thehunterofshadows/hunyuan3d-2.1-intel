@@ -66,8 +66,11 @@ def apply(b) -> bool:
     if b.kind != "cuda":
         if _patch_sdp_kernel():
             applied.append("torch.backends.cuda.sdp_kernel")
-        if _patch_sdpa_chunking():
+        if _patch_sdpa_chunking(sdpa_budget(b)):
             applied.append("F.scaled_dot_product_attention (chunked)")
+
+    if b.kind == "mps" and _patch_isin():
+        applied.append("torch.isin (sorted)")
 
     if applied:
         _APPLIED = True
@@ -209,6 +212,60 @@ def patch_scheduler_timestep_lookup() -> bool:
     return True
 
 
+def _patch_isin() -> bool:
+    """Give `torch.isin` a memory-safe implementation on MPS.
+
+    `MeshRender.back_project` (MeshRender.py:1275) ends its `back_sample` bake
+    with `torch.isin(valid_idx, inner_valid_idx)`. Both sides are index vectors
+    over the UV atlas, so at a 1024x1024 texture they are hundreds of thousands
+    of elements each. ATen picks between a broadcast comparison and a
+    sort-based algorithm; on MPS it takes the broadcast, which means an
+    `(len(elements), len(test_elements))` intermediate. Measured here: a request
+    for a single 111 GB buffer, and because it is Metal that refuses it the
+    process does not raise — it dies on
+    `failed assertion 'Failed to allocate private MTLBuffer'`, which no
+    try/except can catch.
+
+    Sorting `test_elements` once and binary-searching gives exactly the same
+    answer in O(n log n) with no large intermediate. It stays on the GPU, unlike
+    bouncing the call to CPU, and at 200k x 700k it costs ~90 ms.
+
+    Left alone on CUDA and ROCm: there ATen already chooses the sorting path for
+    inputs this size.
+    """
+    original = torch.isin
+    if getattr(original, "_hy3d_patched", False):
+        return True
+
+    def isin(elements, test_elements, *, assume_unique=False, invert=False):
+        e, t = elements, test_elements
+        # Only take over when both sides are real tensors of the same dtype on
+        # MPS and the broadcast would actually be large. Scalars, mixed dtypes
+        # and small calls keep upstream's exact semantics.
+        if (
+            isinstance(e, torch.Tensor) and isinstance(t, torch.Tensor)
+            and e.device.type == "mps" and t.device.type == "mps"
+            and e.dtype == t.dtype and e.numel() * t.numel() > (1 << 24)
+        ):
+            flat_e = e.reshape(-1).contiguous()
+            flat_t = torch.sort(t.reshape(-1))[0]
+            if flat_t.numel() == 0:
+                found = torch.zeros_like(flat_e, dtype=torch.bool)
+            else:
+                # searchsorted returns the insertion point; clamping it keeps the
+                # gather in range for elements past the largest test value, which
+                # then simply compare unequal.
+                idx = torch.searchsorted(flat_t, flat_e).clamp_(max=flat_t.numel() - 1)
+                found = flat_t[idx] == flat_e
+            found = found.view(e.shape)
+            return ~found if invert else found
+        return original(e, t, assume_unique=assume_unique, invert=invert)
+
+    isin._hy3d_patched = True
+    torch.isin = isin
+    return True
+
+
 def _patch_sdp_kernel() -> bool:
     """Neutralise `torch.backends.cuda.sdp_kernel(...)` so SDPA can pick freely.
 
@@ -241,26 +298,50 @@ def _patch_sdp_kernel() -> bool:
 # too large a budget reproduces the allocation failure it exists to avoid.
 # 4 GiB keeps the chunk count in single digits and still allocates reliably on an
 # APU carve-out. Override with HY3D_SDPA_BUDGET_GIB when tuning.
-def _sdpa_budget_default() -> int:
+# `sdpa_budget()` below scales this down on machines with a smaller pool.
+_SDPA_DEFAULT_BUDGET = 4 << 30
+
+
+def sdpa_budget(b=None) -> int:
+    """Chunk budget for `scaled_dot_product_attention`, in bytes.
+
+    4 GiB is the measured ROCm figure. It is clamped to a quarter of the
+    accelerator pool when that is smaller, because the budget is a *peak*: the
+    score matrix has to coexist with the UNet weights and the rest of the
+    activations. On a 128 GB APU the clamp never binds; on a 16 GB Mac it drops
+    the budget to ~3 GiB, which is the difference between chunking that helps and
+    chunking that just relocates the allocation failure.
+    """
     raw = os.environ.get("HY3D_SDPA_BUDGET_GIB")
     if raw:
         try:
             return max(1, int(float(raw) * (1 << 30)))
         except ValueError:
             print(f"[compat] ignoring invalid HY3D_SDPA_BUDGET_GIB={raw!r}", flush=True)
-    return 4 << 30
+
+    budget = _SDPA_DEFAULT_BUDGET
+    if b is not None:
+        try:
+            import backend as backend_mod
+
+            pool = backend_mod.gpu_memory_gb(b)
+        except Exception:
+            pool = None
+        if pool:
+            budget = min(budget, max(1 << 30, int(0.25 * pool * (1 << 30))))
+    return budget
 
 
-_SDPA_CHUNK_BUDGET = _sdpa_budget_default()
-
-
-def _patch_sdpa_chunking(budget: int = _SDPA_CHUNK_BUDGET) -> bool:
+def _patch_sdpa_chunking(budget: int = _SDPA_DEFAULT_BUDGET) -> bool:
     """Make `scaled_dot_product_attention` compute in query chunks when huge.
 
     Why this is necessary rather than a nicety: on consumer and APU AMD GPUs
     PyTorch disables the flash and mem-efficient SDPA backends ("still
     experimental"), so attention falls back to the math backend, which
-    materialises the full (B*H, Lq, Lk) score matrix. The paint pipeline's
+    materialises the full (B*H, Lq, Lk) score matrix. MPS has no flash kernel to
+    disable in the first place — its SDPA is an MPSGraph matmul + softmax — so it
+    is in the same position, with the extra constraint that Metal rejects a
+    single buffer past `maxBufferLength` outright. The paint pipeline's
     multiview reference attention concatenates all views into one sequence, so
     at 6 views and 512px that single tensor is ~67 GiB — it fails to allocate
     even with ~100 GiB free, because no allocator will hand out one block that

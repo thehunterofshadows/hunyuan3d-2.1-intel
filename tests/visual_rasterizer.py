@@ -21,11 +21,12 @@ import sys
 from pathlib import Path
 
 import numpy as np
-import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import backend as backend_mod  # noqa: E402  (before torch — sets the MPS fallback)
+import torch  # noqa: E402
 import torch_rasterizer as tr  # noqa: E402
 from test_torch_rasterizer import _make_scene, reference_rasterize  # noqa: E402
 
@@ -112,7 +113,7 @@ def main() -> int:
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    device = torch.device(backend_mod.detect().device)
     print(f"device: {device}")
 
     all_ok = True

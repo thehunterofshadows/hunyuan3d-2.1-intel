@@ -20,9 +20,13 @@ import sys
 from pathlib import Path
 
 import numpy as np
-import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+# `backend` before torch: it is what sets PYTORCH_ENABLE_MPS_FALLBACK, and torch
+# only reads that during initialisation. Without it an MPS run of this test can
+# fail on an op that the app itself would have run happily.
+import backend as backend_mod  # noqa: E402
+import torch  # noqa: E402
 import torch_rasterizer as tr  # noqa: E402
 
 MAXINT = 2147483647
@@ -192,11 +196,14 @@ def _compare(name, V, F, width, height, device, D=None, use_depth_prior=0):
 
 
 def main() -> int:
+    # CPU always, plus whatever accelerator this machine actually has. The CPU
+    # run is the one compared against the C++ oracle; the accelerator run is what
+    # catches device-specific arithmetic — the packed z-buffer token needs real
+    # int64, which is exactly the sort of thing a GPU backend gets wrong.
     devices = [torch.device("cpu")]
-    if torch.cuda.is_available():
-        devices.append(torch.device("cuda"))
-    elif getattr(torch.backends, "mps", None) is not None and torch.backends.mps.is_available():
-        devices.append(torch.device("mps"))
+    accel = torch.device(backend_mod.detect().device)
+    if accel.type != "cpu":
+        devices.append(accel)
 
     all_ok = True
     for device in devices:

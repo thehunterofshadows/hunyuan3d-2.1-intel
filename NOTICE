@@ -187,6 +187,17 @@ Applied at runtime (monkey patches, in compat_patches.py and paint.py):
   - Let an existing local weights directory satisfy
     huggingface_hub.snapshot_download instead of re-downloading.
   - Construct RealESRGAN with a device and precision suited to the backend.
+  - Pass the decimation target to trimesh's simplify_quadric_decimation by
+    keyword, since the meaning of its first positional parameter changed.
+  - On Apple MPS only: replace MeshRender's _convert_texture_format so the
+    texture is narrowed to float32 before being copied to the device, because
+    Metal has no float64. Same computation, different order; ROCm and CUDA keep
+    upstream's version.
+  - On Apple MPS only: replace torch.isin with a sort-and-binary-search
+    implementation. Upstream calls it in MeshRender.back_project with two large
+    index vectors, and the broadcast algorithm PyTorch selects on MPS asks Metal
+    for a buffer of their product. This is a substitute for a PyTorch operator,
+    not a change to Tencent code.
 
 Applied to a temporary copy of upstream sources at install time
 (scripts/build_extensions.py, only when a native rasterizer is being built):

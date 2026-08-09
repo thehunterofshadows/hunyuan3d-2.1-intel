@@ -118,17 +118,43 @@ _ATTN_BATCH_HEADS = 60
 # An APU shares its memory with the OS, so the failure mode above the limit is a
 # system reset rather than an exception. Hence a conservative default that admits
 # the configuration known to work, with an explicit env override for exploring.
-def _attn_limit_default() -> int:
+def _attn_limit_override() -> Optional[int]:
     raw = os.environ.get("HY3D_ATTN_LIMIT_GIB")
-    if raw:
+    if not raw:
+        return None
+    try:
+        return max(1, int(float(raw) * (1 << 30)))
+    except ValueError:
+        print(f"[paint] ignoring invalid HY3D_ATTN_LIMIT_GIB={raw!r}", flush=True)
+        return None
+
+
+_ATTN_SAFE_LIMIT = 5 << 30
+
+
+def attention_limit(b) -> int:
+    """Largest attention score matrix this backend may be asked for, in bytes.
+
+    ROCm and CPU keep the measured 5 GiB (see above). MPS gets its own number
+    because its constraint is different in kind: unified memory means the pool
+    is large, but a single Metal buffer cannot exceed the device's
+    `maxBufferLength`, and PyTorch's MPS SDPA materialises the score matrix as
+    one buffer. Scaling with the pool is therefore the right shape — 40 % of the
+    recommended working set leaves room for the UNet weights and activations
+    that have to coexist with it — with the ROCm figure as the floor so a small
+    Mac is never *stricter* than the configuration already proven to work.
+    """
+    override = _attn_limit_override()
+    if override is not None:
+        return override
+    if b is not None and getattr(b, "kind", None) == "mps":
         try:
-            return max(1, int(float(raw) * (1 << 30)))
-        except ValueError:
-            print(f"[paint] ignoring invalid HY3D_ATTN_LIMIT_GIB={raw!r}", flush=True)
-    return 5 << 30
-
-
-_ATTN_SAFE_LIMIT = _attn_limit_default()
+            pool = backend_mod.gpu_memory_gb(b)
+        except Exception:
+            pool = None
+        if pool:
+            return max(_ATTN_SAFE_LIMIT, int(0.40 * pool * (1 << 30)))
+    return _ATTN_SAFE_LIMIT
 
 
 def estimate_attention_bytes(views: int, resolution: int) -> int:
@@ -145,23 +171,54 @@ def estimate_attention_bytes(views: int, resolution: int) -> int:
 def attention_preflight(b, views: int, resolution: int) -> tuple[bool, str]:
     """Decide whether texturing may proceed on this backend at these settings.
 
-    Without flash or mem-efficient SDPA, PyTorch's math backend materialises the
-    full attention matrix. On a discrete NVIDIA card that is merely wasteful; on
-    an AMD APU, where GPU memory is system memory, pushing tens of GiB through it
-    crashed the display driver and rebooted the machine during testing. So this
-    refuses by default instead of trying and hoping.
+    Without flash or mem-efficient SDPA, PyTorch materialises the full attention
+    matrix. On a discrete NVIDIA card that is merely wasteful; on an AMD APU,
+    where GPU memory is system memory, pushing tens of GiB through it crashed the
+    display driver and rebooted the machine during testing. So this refuses by
+    default instead of trying and hoping.
 
-    Set HY3D_ALLOW_RISKY_TEXTURING=1 to override — knowing that the failure mode
-    is a machine reset, not an exception.
+    MPS lands between the two and gets its own message: Apple Silicon is also
+    unified memory, but an over-large tensor there raises
+    `RuntimeError: Invalid buffer size` — measured on an M4 Pro, where 12 GiB in
+    one buffer allocated and 24 GiB did not — so the cost of guessing wrong is an
+    exception and a very slow run, not a reboot. The limit still exists because
+    `compat_patches` has to slice the matrix into ever more chunks to stay under
+    it, and past a point that is hours of work rather than minutes.
+
+    Set HY3D_ALLOW_RISKY_TEXTURING=1 to override.
     """
     if b.kind == "cuda":
         return True, "flash attention available"
     if os.environ.get("HY3D_ALLOW_RISKY_TEXTURING") == "1":
         return True, "risky texturing explicitly allowed"
 
+    limit = attention_limit(b)
     need = estimate_attention_bytes(views, resolution)
-    if need <= _ATTN_SAFE_LIMIT:
-        return True, f"estimated attention matrix {need / (1 << 30):.1f} GiB — within limits"
+    if need <= limit:
+        return True, (
+            f"estimated attention matrix {need / (1 << 30):.1f} GiB "
+            f"(limit {limit / (1 << 30):.1f} GiB) — within limits"
+        )
+
+    if b.kind == "mps":
+        import compat_patches
+
+        chunks = max(1, -(-need // compat_patches.sdpa_budget(b)))
+        return False, (
+            f"texturing at {views} views / {resolution}px would need a single "
+            f"{need / (1 << 30):.1f} GiB attention matrix, against a limit of "
+            f"{limit / (1 << 30):.1f} GiB on this Mac.\n\n"
+            f"PyTorch's MPS backend has no flash attention: `scaled_dot_product_"
+            f"attention` builds the score matrix through MPSGraph, and Metal "
+            f"refuses a single buffer that large. The chunked SDPA path in "
+            f"`compat_patches` can still compute it exactly, but it would take "
+            f"about {chunks} sequential passes per attention call, which turns a "
+            f"few-minute bake into a very long one and pushes the machine into "
+            f"swap.\n\n"
+            f"Options: use the «Safe» preset (6 views / 256 px), which fits; or "
+            f"set HY3D_ALLOW_RISKY_TEXTURING=1 and accept the wait. Shape "
+            f"generation is unaffected."
+        )
 
     if os.environ.get("TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL") == "1":
         return False, (
@@ -214,6 +271,16 @@ def apply_patches(b) -> None:
 
     _ensure_paths()
 
+    # The torch-level patches are not optional for this pipeline, and asking
+    # every caller to remember them is how `scripts/doctor.py` and the tests
+    # ended up running the bake under a different torch than the app does. It is
+    # idempotent, so calling it again when gradio_app already did costs nothing.
+    # On MPS the `torch.isin` patch in particular is load-bearing: without it
+    # `MeshRender.back_project` kills the process outright.
+    import compat_patches
+
+    compat_patches.apply(b)
+
     # Order matters: the bpy stub has to exist before anything imports
     # mesh_utils, which MeshRender does at import time.
     mesh_io.install_bpy_stub()
@@ -224,6 +291,8 @@ def apply_patches(b) -> None:
     _patch_remesh()
     _patch_mesh_render(b)
     _patch_super_resolution(b)
+    if b.kind == "mps":
+        _patch_texture_conversion()
     if b.needs_device_patches:
         _patch_hardcoded_cuda(b)
 
@@ -451,6 +520,54 @@ def _patch_mesh_render(b) -> None:
 
         save_mesh._hy3d_patched = True
         MeshRender.save_mesh = save_mesh
+
+
+def _patch_texture_conversion() -> None:
+    """Stop `_convert_texture_format` from putting a float64 tensor on MPS.
+
+    `MeshRender._convert_texture_format` (MeshRender.py:277) ends its non-forced
+    branch with
+
+        tex = np.array(tex) / 255.0          # float64
+        return torch.from_numpy(tex).to(device).float()
+
+    — it moves to the device *first* and narrows afterwards. Metal has no
+    float64 at all, so on MPS that raises
+
+        TypeError: Cannot convert a MPS Tensor to float64 dtype
+
+    and it is not a corner case: the paint pipeline reaches it on every run
+    through `set_texture_mr(texture_mr)` (textureGenPipeline.py:184), right at
+    the end, after the whole bake has been paid for.
+
+    Narrowing before the transfer is the same computation in the other order,
+    so the result is identical on every backend; only MPS cares. ROCm and CUDA
+    keep upstream's version, per this port's rule of not patching what works.
+    """
+    import numpy as np
+    import torch
+    from PIL import Image
+    import DifferentiableRenderer.MeshRender as mr_mod
+
+    if getattr(mr_mod._convert_texture_format, "_hy3d_patched", False):
+        return
+
+    def _convert_texture_format(tex, texture_size, device, force_set: bool = False):
+        if not force_set:
+            if isinstance(tex, np.ndarray):
+                tex = Image.fromarray((tex * 255).astype(np.uint8))
+            elif isinstance(tex, torch.Tensor):
+                tex = Image.fromarray((tex.detach().cpu().numpy() * 255).astype(np.uint8))
+            tex = tex.resize(texture_size).convert("RGB")
+            return torch.from_numpy(np.array(tex, dtype=np.float32) / 255.0).to(device)
+        if isinstance(tex, np.ndarray):
+            tex = torch.from_numpy(tex)
+        return tex.float().to(device)
+
+    _convert_texture_format._hy3d_patched = True
+    mr_mod._convert_texture_format = _convert_texture_format
+    print("[paint] texture conversion narrows to fp32 before the device copy (MPS has no fp64)",
+          flush=True)
 
 
 def _patch_super_resolution(b) -> None:

@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import importlib
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -125,6 +126,24 @@ def check_repo(rep: Report) -> None:
     rep.add(OK if paint.is_file() else FAIL, "hy3dpaint sources", str(paint.relative_to(PROJECT_DIR)))
 
 
+def _hf_cache_dir(repo_folder: str) -> Path | None:
+    """Locate a repo in the Hugging Face cache, honouring the usual overrides."""
+    roots = []
+    for var in ("HF_HUB_CACHE", "HUGGINGFACE_HUB_CACHE"):
+        if os.environ.get(var):
+            roots.append(Path(os.environ[var]))
+    if os.environ.get("HF_HOME"):
+        roots.append(Path(os.environ["HF_HOME"]) / "hub")
+    roots.append(Path.home() / ".cache" / "huggingface" / "hub")
+    for root in roots:
+        candidate = root / repo_folder
+        # A directory alone is not enough: an interrupted download leaves the
+        # folder behind with only blobs/ half-written and no snapshot.
+        if (candidate / "snapshots").is_dir() and any((candidate / "snapshots").iterdir()):
+            return candidate
+    return None
+
+
 def check_weights(rep: Report) -> None:
     if not WEIGHTS_DIR.is_dir():
         rep.add(FAIL, "weights dir", f"missing: {WEIGHTS_DIR}")
@@ -153,6 +172,21 @@ def check_weights(rep: Report) -> None:
         rep.add(OK, "RealESRGAN weights", f"{esrgan.stat().st_size / 1024**2:.0f} MiB")
     else:
         rep.add(WARN, "RealESRGAN weights", "missing — texture super-resolution unavailable")
+
+    # DINOv2 conditions the paint UNet on the reference image and is pulled from
+    # the HF cache, not weights/. Worth reporting because upstream fetches it
+    # lazily: an uncached run stalls for ~4.5 GB in the middle of texturing,
+    # after the shape stage has already been paid for, and prints nothing while
+    # it does.
+    dino = _hf_cache_dir("models--facebook--dinov2-giant")
+    if dino is not None:
+        rep.add(OK, "dinov2-giant (HF cache)", str(dino))
+    else:
+        rep.add(
+            WARN,
+            "dinov2-giant (HF cache)",
+            "not cached — the first texturing run will pause to download ~4.5 GB",
+        )
 
 
 def check_gpu_sanity(rep: Report, b) -> None:

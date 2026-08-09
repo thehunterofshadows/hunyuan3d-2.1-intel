@@ -35,39 +35,15 @@ if [[ ! -f "${REPO_DIR}/hy3dshape/hy3dshape/pipelines.py" ]]; then
 fi
 ok "hy3dshape/hy3dshape/pipelines.py на месте"
 
-# ---- Устанавливаем Mac-совместимые repo-зависимости ------------------------
-info "Доустанавливаю недостающие зависимости из репозитория (Mac-подмножество)..."
-# Из Hunyuan3D-2.1/requirements.txt берём всё, ЗА ИСКЛЮЧЕНИЕМ:
-#   - cupy-cuda12x  (CUDA only)
-#   - deepspeed     (CUDA only)
-#   - bpy==4.0      (Blender, тяжело и не нужно для инференса)
-#   - basicsr==1.4.2 / realesrgan (ломаные на современных torchvision, нужны только для апскейлинга)
-#   - tb_nightly    (не критично)
-#   - жёстких пинов ставить не будем, чтобы не сломать уже установленный torch
-python -m pip install --upgrade \
-    "pymeshlab" \
-    "pygltflib" \
-    "xatlas" \
-    "omegaconf" \
-    "configargparse" \
-    "einops" \
-    "opencv-python" \
-    "imageio" \
-    "scikit-image" \
-    "trimesh" \
-    "open3d; platform_machine == 'arm64'" \
-    "pyyaml" \
-    "psutil" \
-    "torchmetrics" \
-    "timm" \
-    "torchdiffeq" \
-    "pythreejs" \
-    "pytorch-lightning" \
-    "safetensors" \
-    "accelerate" \
-    "tqdm" \
-    "rembg" \
-    "onnxruntime" \
+# ---- Доустанавливаем зависимости -------------------------------------------
+# Раньше здесь был свой список пакетов, собранный вручную. Он разошёлся с
+# requirements_mac.txt (не хватало realesrgan/basicsr и fast_simplification —
+# то есть ровно того, без чего текстурирование падает на середине), и в нём не
+# было верхних границ версий, которые как раз и удерживают
+# transformers<5 / huggingface_hub<1.0 / gradio<6 совместимыми друг с другом.
+# Один источник правды надёжнее.
+info "Доустанавливаю зависимости из requirements_mac.txt ..."
+python -m pip install -r "${PROJECT_DIR}/requirements_mac.txt" \
     || warn "Часть пакетов не установилась — смотри вывод выше"
 ok "Зависимости обновлены"
 
@@ -177,24 +153,35 @@ mkdir -p "$MODELS_DIR"
 info "Скачиваю shape-модель (DiT + VAE) ~15 GB из ${HF_MODEL_ID} ..."
 info "(Можно прервать и перезапустить — скачивание резюмируется)"
 
-"$HF_CMD" download "$HF_MODEL_ID" \
-    --local-dir "$MODELS_DIR" \
-    --include "hunyuan3d-dit-v2-1/*" \
-    --include "hunyuan3d-vae-v2-1/*" \
-    --include "README*" \
-    || { err "Скачивание не удалось. Если это 401/403 — нужна авторизация. Детали: $HF_CMD auth whoami"; exit 1; }
+# По одному вызову на шаблон: у части версий CLI второй и последующие --include
+# уходят в позиционные FILENAMES, и часть весов молча не скачивается.
+for PATTERN in "hunyuan3d-dit-v2-1/*" "hunyuan3d-vae-v2-1/*" "README*"; do
+    "$HF_CMD" download "$HF_MODEL_ID" \
+        --local-dir "$MODELS_DIR" \
+        --include "$PATTERN" \
+        || { err "Скачивание не удалось ($PATTERN). Если это 401/403 — нужна авторизация. Детали: $HF_CMD auth whoami"; exit 1; }
+done
 
 ok "Shape-модель скачана в $MODELS_DIR"
 
 # Paint-модель — опционально
 echo ""
-read -rp "Скачать paint-модель (+10 GB, на Mac почти бесполезна)? [y/N]: " ANSWER
+read -rp "Скачать paint-модель для текстурирования (+6.5 GB)? [y/N]: " ANSWER
 ANSWER_LC="$(echo "${ANSWER:-}" | tr '[:upper:]' '[:lower:]')"
 if [[ "$ANSWER_LC" == "y" || "$ANSWER_LC" == "yes" ]]; then
     "$HF_CMD" download "$HF_MODEL_ID" \
         --local-dir "$MODELS_DIR" \
         --include "hunyuan3d-paintpbr-v2-1/*" \
-        || warn "Paint-модель не скачалась (на Mac это не критично)"
+        || warn "Paint-модель не скачалась"
+
+    # Апскейлер к весам на HF не относится и живёт в релизе на GitHub.
+    CKPT_DIR="${REPO_DIR}/hy3dpaint/ckpt"
+    mkdir -p "$CKPT_DIR"
+    if [[ ! -f "${CKPT_DIR}/RealESRGAN_x4plus.pth" ]]; then
+        info "Скачиваю RealESRGAN_x4plus.pth (~64 MB)"
+        curl -fL "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth" \
+            -o "${CKPT_DIR}/RealESRGAN_x4plus.pth" || warn "RealESRGAN не скачался"
+    fi
 fi
 
 # ---- Проверка, что все нужные файлы есть ----------------------------------

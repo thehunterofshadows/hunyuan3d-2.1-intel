@@ -15,9 +15,10 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-import torch
-
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+import backend as backend_mod  # noqa: E402  (before torch — sets the MPS fallback)
+import torch  # noqa: E402
 
 import compat_patches  # noqa: E402
 
@@ -33,7 +34,7 @@ def main() -> int:
     chunked = F.scaled_dot_product_attention
     assert chunked is not reference, "patch did not take effect"
 
-    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    device = torch.device(backend_mod.detect().device)
     print(f"device: {device}")
 
     cases = [

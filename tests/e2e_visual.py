@@ -58,11 +58,10 @@ class Stage:
 
 def render_views(mesh_path: str, out_dir: Path, stem: str, views: int, resolution: int):
     """Turntable render via torch_rasterizer. Returns (sheet_path, per_view_paths)."""
-    import torch
     from PIL import Image
     import render_preview as rp
 
-    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    device = rp.preview_device()
     verts, faces, uv, albedo = rp.load_mesh(mesh_path)
     normals = rp.vertex_normals(verts, faces)
 

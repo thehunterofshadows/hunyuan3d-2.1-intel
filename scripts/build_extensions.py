@@ -199,6 +199,24 @@ def _patch_dispatch(text: str) -> str:
     return text
 
 
+def _patch_narrowing(text: str) -> str:
+    """Fix the one narrowing conversion clang rejects.
+
+        float vt[2] = {px + 0.5, py + 0.5};   // px, py are int
+
+    `int + 0.5` is a double, and narrowing a double to float inside a braced
+    initialiser is ill-formed since C++11. MSVC and GCC let it through with a
+    warning; clang makes it an error, so this single line is the reason the
+    "portable" sources do not actually build on macOS. `0.5f` keeps the
+    expression float throughout and changes no arithmetic — the value was always
+    going to be stored as float.
+    """
+    text, n = re.subn(r"\{px \+ 0\.5, py \+ 0\.5\}", "{px + 0.5f, py + 0.5f}", text)
+    if n:
+        log(f"patched rasterizer.cpp ({n} narrowing conversion — clang rejects it)")
+    return text
+
+
 def _stage_cpu_sources() -> Path:
     """Copy the portable rasterizer sources into .build/ and patch them.
 
@@ -225,7 +243,7 @@ def _stage_cpu_sources() -> Path:
         if name == "rasterizer.h":
             text = _patch_header(text)
         else:
-            text = _patch_dispatch(text)
+            text = _patch_narrowing(_patch_dispatch(text))
         (kernel_dir / name).write_text(text, encoding="utf-8")
 
     (stage / "setup.py").write_text(_CPU_SETUP_PY, encoding="utf-8")
@@ -241,8 +259,20 @@ _CPU_SETUP_PY = '''\
 to it unconditionally. `grid_neighbor.cpp` is excluded because the functions it
 defines are never called from Python and it does not link on Windows.
 """
+import sys
+
 from setuptools import setup, find_packages
-from torch.utils.cpp_extension import BuildExtension, CppExtension
+from torch.utils.cpp_extension import BuildExtension, CppExtension, library_paths
+
+# The extension links libc10/libtorch_cpu, but nothing records where they live:
+# on macOS the resulting .so carries `@rpath/libc10.dylib` with no matching
+# rpath, so it compiles, installs, and then fails at import with
+# "Library not loaded: @rpath/libc10.dylib". Baking torch's lib directory in as
+# an rpath is what makes the built module actually loadable. Windows resolves
+# DLLs by search path instead and has no -rpath.
+link_args = [] if sys.platform == "win32" else [
+    f"-Wl,-rpath,{p}" for p in library_paths()
+]
 
 setup(
     name="custom_rasterizer",
@@ -254,6 +284,7 @@ setup(
             "custom_rasterizer_kernel",
             ["kernel/rasterizer.cpp"],
             define_macros=[("CR_CPU_ONLY", "1")],
+            extra_link_args=link_args,
         )
     ],
     cmdclass={"build_ext": BuildExtension},
