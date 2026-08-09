@@ -6,8 +6,9 @@ Hunyuan3D 2.1 — web interface for Apple Silicon.
 Run:
     ./launch.sh   (or)   python gradio_app.py
 
-This UI wraps the Hunyuan3D 2.1 shape pipeline (DiT + VAE), tuned for MPS
-(Apple Silicon). Texturing (paint) on Mac is slow and disabled by default.
+This UI wraps the Hunyuan3D 2.1 shape pipeline (DiT + VAE) and the PBR paint
+pipeline, on whichever backend is available: ROCm (AMD), CUDA (NVIDIA), MPS
+(Apple Silicon) or CPU. See `backend.py` for the detection and policy rules.
 
 Console logs are always in English. UI is localised to English (default),
 Chinese and Russian via the language radio at the top of the page.
@@ -21,9 +22,12 @@ import time
 from pathlib import Path
 from typing import Optional
 
-# ==== Apple Silicon compatibility ===========================================
-os.environ.setdefault("PYTORCH_ENABLE_MPS_FALLBACK", "1")
-os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+# ==== Backend detection =====================================================
+# `backend` has to be imported before torch: it puts PYTORCH_ENABLE_MPS_FALLBACK
+# and TOKENIZERS_PARALLELISM into the environment, which only takes effect if
+# it happens before the torch extension module initialises.
+import backend as backend_mod  # noqa: E402
+import compat_patches  # noqa: E402
 
 import contextlib
 import traceback
@@ -37,62 +41,16 @@ from PIL import Image
 # live in a standalone module that can be used from the debug CLI too.
 import lowpoly  # noqa: E402
 
-# ---- Runtime patches: redirect CUDA-only calls to MPS/CPU ------------------
-# Hunyuan3D source hard-codes `device='cuda'` and `torch.autocast(device_type='cuda')`
-# which crashes with "Torch not compiled with CUDA enabled" on Apple Silicon.
-# We patch torch.autocast so `cuda` becomes no-op on CUDA-less systems.
-def _install_mps_patches() -> None:
-    if torch.cuda.is_available():
-        return  # real CUDA present — leave everything alone
+# One detection, one set of patches, for the whole process.
+# On ROCm/CUDA `compat_patches.apply` is a deliberate no-op — see its docstring.
+BACKEND = backend_mod.detect()
+compat_patches.apply(BACKEND)
+print(f"[init] {backend_mod.describe(BACKEND)}", flush=True)
 
-    # 1) torch.autocast(device_type="cuda", ...) → safe no-op context
-    _orig_autocast = torch.autocast
-
-    class _SafeAutocast:
-        def __init__(self, device_type, *args, **kwargs):
-            self.device_type = device_type
-            self.args = args
-            self.kwargs = kwargs
-            self._ctx = None
-
-        def __enter__(self):
-            if self.device_type == "cuda":
-                # MPS autocast is flaky; safest option is no-op.
-                self._ctx = contextlib.nullcontext()
-                return self._ctx.__enter__()
-            self._ctx = _orig_autocast(self.device_type, *self.args, **self.kwargs)
-            return self._ctx.__enter__()
-
-        def __exit__(self, exc_type, exc_val, exc_tb):
-            return self._ctx.__exit__(exc_type, exc_val, exc_tb)
-
-    torch.autocast = _SafeAutocast
-    if hasattr(torch, "amp"):
-        torch.amp.autocast = _SafeAutocast
-
-    # 2) torch.cuda.synchronize / Event / empty_cache — stubs
-    class _DummyEvent:
-        def __init__(self, *a, **k): pass
-        def record(self, *a, **k): pass
-        def elapsed_time(self, other): return 0.0
-        def synchronize(self): pass
-
-    if not hasattr(torch.cuda, "_patched"):
-        torch.cuda.synchronize = lambda *a, **k: None
-        torch.cuda.Event = _DummyEvent
-        torch.cuda.empty_cache = lambda: (
-            torch.mps.empty_cache() if torch.backends.mps.is_available() else None
-        )
-        torch.cuda._patched = True
-
-    print("[mps_patches] torch.autocast and torch.cuda.* redirected to MPS/no-op")
-
-_install_mps_patches()
-
-# ---- Device usage tracker (MPS vs CPU) ------------------------------------
+# ---- Device usage tracker (GPU vs CPU) ------------------------------------
 # Wraps torch operations through __torch_function__, counts which device
 # each resulting tensor ends up on. Answers the question "how much actually
-# ran on MPS vs how much fell back to CPU".
+# ran on the GPU vs how much fell back to CPU".
 try:
     from torch.overrides import TorchFunctionMode as _TFMode
     _HAS_TFMODE = True
@@ -132,13 +90,13 @@ if _HAS_TFMODE:
         def summary_text(self, lang: str = "en") -> str:
             total = sum(self.counts.values())
             if total == 0:
-                return t(lang, "mps_none")
-            lines = [t(lang, "mps_total", total=f"{total:,}".replace(",", " "))]
+                return t(lang, "stats_none")
+            lines = [t(lang, "stats_total", total=f"{total:,}".replace(",", " "))]
             for dev in sorted(self.counts, key=lambda d: -self.counts[d]):
                 cnt = self.counts[dev]
                 pct = 100.0 * cnt / total
                 lines.append(t(
-                    lang, "mps_device_line",
+                    lang, "stats_device_line",
                     dev=dev,
                     cnt=f"{cnt:,}".replace(",", " "),
                     pct=pct,
@@ -153,11 +111,11 @@ if _HAS_TFMODE:
             cpu_ops.sort(key=lambda x: -x[1])
             if cpu_ops:
                 lines.append("")
-                lines.append(t(lang, "mps_cpu_header"))
+                lines.append(t(lang, "stats_cpu_header"))
                 for op, cpu_cnt, total_op in cpu_ops[:10]:
                     pct_op = 100.0 * cpu_cnt / total_op if total_op else 0.0
                     lines.append(t(
-                        lang, "mps_cpu_line",
+                        lang, "stats_cpu_line",
                         op=op,
                         cnt=f"{cpu_cnt:,}".replace(",", " "),
                         pct=pct_op,
@@ -172,18 +130,13 @@ else:
         def __enter__(self): return self
         def __exit__(self, *a): pass
         def summary_text(self, lang: str = "en") -> str:
-            return t(lang, "mps_disabled")
+            return t(lang, "stats_disabled")
 
 # ---- Device selection ------------------------------------------------------
-def pick_device() -> str:
-    if torch.backends.mps.is_available():
-        return "mps"
-    if torch.cuda.is_available():
-        return "cuda"
-    return "cpu"
-
-DEVICE = pick_device()
-DTYPE = torch.float16 if DEVICE in ("mps", "cuda") else torch.float32
+# Kept as module-level names because the rest of this file (and the i18n
+# substitutions) read them directly. The single source of truth is BACKEND.
+DEVICE = BACKEND.device
+DTYPE = BACKEND.dtype
 
 PROJECT_DIR = Path(__file__).resolve().parent
 REPO_DIR    = PROJECT_DIR / "Hunyuan3D-2.1"
@@ -214,18 +167,20 @@ I18N: dict[str, dict[str, str]] = {
         # ----- static UI strings -----
         "lang_label": "Interface language",
         "description": (
-            "# Hunyuan3D 2.1 — local interface (Apple Silicon)\n\n"
+            "# Hunyuan3D 2.1 — local interface\n\n"
             "Generate a 3D mesh from a single image using Tencent Hunyuan3D 2.1.\n\n"
-            "**Device:** `{device}` • **dtype:** `{dtype}` • **Project:** `{project}`\n\n"
-            "> On Mac only shape generation works. Texturing needs CUDA and "
-            "is disabled by default. On an M4 Pro at octree=256 one mesh takes "
-            "roughly **10-20 minutes** — MPS is used, but some operations fall "
-            "back to CPU automatically (tick «Measure MPS vs CPU op share» to "
-            "see the exact breakdown)."
+            "**Backend:** `{backend}` • **GPU:** {gpu} • **dtype:** `{dtype}` • "
+            "**rasterizer:** `{raster}`\n\n"
+            "**Project:** `{project}`\n\n"
+            "> Shape generation runs on the GPU. Texturing (PBR) is available "
+            "below once the mesh is ready — it needs the native extensions to "
+            "be built and the paint weights downloaded. Some operations may "
+            "fall back to CPU automatically (tick «Measure GPU vs CPU op share» "
+            "to see the exact breakdown)."
         ),
         "input_image":    "Input image (object on a plain background)",
         "remove_bg":      "Automatically remove background (rembg)",
-        "track_mps":      "Measure MPS vs CPU op share",
+        "track_gpu":      "Measure GPU vs CPU op share",
         "gen_params":     "Generation parameters",
         "num_steps":      "Diffusion steps (more = higher quality, slower)",
         "guidance":       "Guidance scale (classifier strength)",
@@ -234,9 +189,9 @@ I18N: dict[str, dict[str, str]] = {
         "generate_btn":   "🚀 Generate 3D object",
         "log_label":      "Execution log",
         "preview_label":  "Result (preview)",
-        "mps_stats_initial": "_MPS tracker is off. Tick the checkbox on the left to measure the MPS vs CPU share._",
-        "mps_stats_header":  "### MPS vs CPU (operations during generation)\n",
-        "mps_stats_off_note": "_Tracking was requested but `torch.overrides.TorchFunctionMode` is unavailable in this PyTorch version._",
+        "gpu_stats_initial": "_Op tracker is off. Tick the checkbox on the left to measure the GPU vs CPU share._",
+        "gpu_stats_header":  "### GPU vs CPU (operations during generation)\n",
+        "gpu_stats_off_note": "_Tracking was requested but `torch.overrides.TorchFunctionMode` is unavailable in this PyTorch version._",
         "postproc_header":  "### Post-processing (mesh decimation)",
         "opt_level_label":  "Optimization level (always applied to the original mesh)",
         "opt_mode_label":   "Algorithm",
@@ -258,8 +213,13 @@ I18N: dict[str, dict[str, str]] = {
             "### Tips\n"
             "- Quick test: `octree=128`, `steps=30`\n"
             "- Maximum quality: `octree=320+`, `steps=80+` (slow!)\n"
-            "- If MPS runs out of memory — close other apps or reduce octree\n"
+            "- If the GPU runs out of memory — close other apps or reduce octree\n"
+            "- «Measure GPU vs CPU op share» routes every tensor op through Python, "
+            "which slows generation down by roughly an order of magnitude. Use it to "
+            "diagnose, not for normal runs\n"
             "- For CAD use: start with «Medium» optimization, check preview, tighten if needed\n"
+            "- Texturing needs much more memory than shape generation. Start with "
+            "the «Low» preset; raise it only if it fits\n"
             "- Output files are saved to `outputs/` next to this script\n"
         ),
         # ----- optimization level labels -----
@@ -279,14 +239,14 @@ I18N: dict[str, dict[str, str]] = {
         "log_after_size":      "Size after preprocessing: {size}",
         "log_loading_pipeline":"Loading pipeline (first run may take a few minutes)...",
         "log_pipeline_comps":  "Pipeline components:\n{diag}",
-        "log_generation":      "Mesh generation: steps={steps}, guidance={guidance}, octree={octree}, seed={seed}, track_mps={track_mps}",
+        "log_generation":      "Mesh generation: steps={steps}, guidance={guidance}, octree={octree}, seed={seed}, track_gpu={track_gpu}",
         "log_mesh_ready":      "Mesh ready: {verts} vertices, {faces} faces",
         "log_done":            "✅ Done in {elapsed:.1f} s",
         "log_preview_glb":     "Preview (GLB): {path}",
         "log_next_step":       "Pick a format on the right to download. Post-processing is also on the right.",
         "log_warn_no_image":   "⚠️ Please upload an input image",
         "log_err_model":       "❌ Model load error: {e}",
-        "log_err_oom":         "❌ Out of memory or MPS failure: {msg}\n\nHint: reduce octree_resolution to 128 or num_steps to 30.\n\nTraceback:\n{tb}",
+        "log_err_oom":         "❌ Out of memory or GPU failure: {msg}\n\nHint: reduce octree_resolution to 128 or num_steps to 30.\n\nTraceback:\n{tb}",
         "log_err_inference":   "❌ Inference error: {msg}\n\nTraceback:\n{tb}",
         "log_err_unknown":     "❌ Unknown error: {name}: {e}\n\nTraceback:\n{tb}",
         "log_no_mesh_yet":     "⚠️ Generate a mesh first, then optimize.",
@@ -297,28 +257,69 @@ I18N: dict[str, dict[str, str]] = {
         "log_auto_pick":       "Auto classifier: large-planar area = {ratio:.0f}% → chose «{chosen}».",
         "log_decimation_done": "✅ Done in {elapsed:.1f} s: {v0}→{v1} vertices, {f0}→{f1} faces (reduced by {pct:.1f}%)",
         "log_preview":         "Preview: {path}",
-        # ----- MPS stats block -----
-        "mps_total":       "**Total tensor operations:** {total}",
-        "mps_device_line": "- `{dev}`: {cnt} ({pct:.1f}%)",
-        "mps_cpu_header":  "**Top CPU operations** (these are what hurts performance):",
-        "mps_cpu_line":    "- `{op}`: {cnt} on CPU ({pct:.0f}% of this operation)",
-        "mps_none":        "MPS tracker recorded no operations (probably disabled).",
-        "mps_disabled":    "_torch.overrides.TorchFunctionMode is unavailable in this PyTorch version — tracker is off._",
+        # ----- op stats block -----
+        "stats_total":       "**Total tensor operations:** {total}",
+        "stats_device_line": "- `{dev}`: {cnt} ({pct:.1f}%)",
+        "stats_cpu_header":  "**Top CPU operations** (these are what hurts performance):",
+        "stats_cpu_line":    "- `{op}`: {cnt} on CPU ({pct:.0f}% of this operation)",
+        "stats_none":        "The op tracker recorded no operations (probably disabled).",
+        "stats_disabled":    "_torch.overrides.TorchFunctionMode is unavailable in this PyTorch version — tracker is off._",
+        # ----- texturing (PBR) -----
+        "tex_header":      "### Texturing (PBR)",
+        "tex_help": (
+            "Generates albedo and metallic-roughness maps with the Hunyuan3D paint "
+            "model, then bakes them into the mesh UVs.\n\n"
+            "- Needs the native extensions (`custom_rasterizer`, `mesh_inpaint_processor`) "
+            "and the `hunyuan3d-paintpbr-v2-1` weights.\n"
+            "- Far more memory-hungry than shape generation. «Low» is the safe start.\n"
+            "- The paint model re-meshes to ~40k triangles internally, so heavy "
+            "decimation before texturing is wasted work.\n"
+        ),
+        "tex_views":       "Views (more = better coverage, more memory)",
+        "tex_resolution":  "Multiview resolution",
+        "tex_preset":      "Memory preset",
+        "tex_preset_safe":   "Safe (6 views, 256, texture 2048) — fits without flash attention",
+        "tex_preset_low":    "Low (6 views, 512, texture 2048) — needs flash attention",
+        "tex_preset_normal": "Normal (8 views, 768, texture 4096) — needs flash attention",
+        "tex_raster":      "Rasterizer backend",
+        "tex_raster_auto": "Auto (from the detected backend)",
+        "tex_raster_gpu":  "GPU (HIP/CUDA kernel)",
+        "tex_raster_cpu":  "CPU (portable; also the fallback for bad GPU output)",
+        "tex_btn":         "🎨 Generate texture",
+        "tex_log":         "Texturing log",
+        "tex_preview":     "Textured result",
+        "tex_maps":        "PBR maps",
+        "tex_dl_btn":      "💾 Download textured model",
+        "tex_dl_file":     "Textured file",
+        "tex_use_remesh":  "Let the paint model re-mesh (recommended)",
+        # ----- texturing log messages -----
+        "log_tex_no_mesh":   "⚠️ Generate a mesh first, then texture it.",
+        "log_tex_disabled":  "Texturing is not available: {reason}",
+        "log_tex_start":     "Texturing: preset «{preset}», views={views}, resolution={resolution}, rasterizer={raster}",
+        "log_tex_unload":    "Freeing the shape pipeline before loading the paint model...",
+        "log_tex_loading":   "Loading the paint model (first run downloads several GB)...",
+        "log_tex_input":     "Input mesh: {faces} faces, saved to {path}",
+        "log_tex_running":   "Running multiview diffusion, super-resolution and baking. This is the slow part.",
+        "log_tex_done":      "✅ Texture ready in {elapsed:.1f} s: {path}",
+        "log_tex_err_oom":   "❌ Out of memory while texturing: {msg}\n\nHint: switch to the «Low» preset, lower the view count, or set the rasterizer to CPU.\n\nTraceback:\n{tb}",
+        "log_tex_err":       "❌ Texturing error: {name}: {e}\n\nTraceback:\n{tb}",
     },
     "zh": {
         "lang_label": "界面语言",
         "description": (
-            "# 混元3D 2.1 — 本地界面（Apple Silicon）\n\n"
+            "# 混元3D 2.1 — 本地界面\n\n"
             "使用腾讯 Hunyuan3D 2.1 从单张图像生成3D网格。\n\n"
-            "**设备：** `{device}` • **精度：** `{dtype}` • **项目：** `{project}`\n\n"
-            "> Mac 上仅支持形状生成。纹理生成需要 CUDA，默认禁用。"
-            "M4 Pro 在 octree=256 时每个网格约需 **10-20 分钟** — MPS 已启用，"
-            "但部分算子自动回退到 CPU（勾选「统计 MPS 与 CPU 操作占比」"
+            "**后端：** `{backend}` • **GPU：** {gpu} • **精度：** `{dtype}` • "
+            "**光栅化器：** `{raster}`\n\n"
+            "**项目：** `{project}`\n\n"
+            "> 形状生成在 GPU 上运行。网格生成后可在下方进行 PBR 纹理生成 — "
+            "需要先编译本地扩展并下载 paint 权重。"
+            "部分算子会自动回退到 CPU（勾选「统计 GPU 与 CPU 操作占比」"
             "可查看具体分布）。"
         ),
         "input_image":    "输入图像（物体置于纯色背景）",
         "remove_bg":      "自动移除背景（rembg）",
-        "track_mps":      "统计 MPS 与 CPU 操作占比",
+        "track_gpu":      "统计 GPU 与 CPU 操作占比",
         "gen_params":     "生成参数",
         "num_steps":      "扩散步数（越多质量越高，也越慢)",
         "guidance":       "引导强度（classifier-free guidance)",
@@ -327,9 +328,9 @@ I18N: dict[str, dict[str, str]] = {
         "generate_btn":   "🚀 生成 3D 对象",
         "log_label":      "运行日志",
         "preview_label":  "结果（预览）",
-        "mps_stats_initial": "_MPS 跟踪已关闭。勾选左侧的复选框以测量 MPS 与 CPU 占比。_",
-        "mps_stats_header":  "### MPS 与 CPU（生成期间的算子）\n",
-        "mps_stats_off_note": "_已请求跟踪，但当前 PyTorch 版本不支持 `torch.overrides.TorchFunctionMode`。_",
+        "gpu_stats_initial": "_算子跟踪已关闭。勾选左侧的复选框以测量 GPU 与 CPU 占比。_",
+        "gpu_stats_header":  "### GPU 与 CPU（生成期间的算子）\n",
+        "gpu_stats_off_note": "_已请求跟踪，但当前 PyTorch 版本不支持 `torch.overrides.TorchFunctionMode`。_",
         "postproc_header":  "### 后处理（网格简化）",
         "opt_level_label":  "优化级别（始终基于原始网格应用）",
         "opt_btn":          "🛠️ 应用优化",
@@ -342,8 +343,11 @@ I18N: dict[str, dict[str, str]] = {
             "### 提示\n"
             "- 快速测试：`octree=128`，`steps=30`\n"
             "- 最高质量：`octree=320+`，`steps=80+`（较慢！）\n"
-            "- 如果 MPS 内存不足 — 关闭其他应用或降低 octree\n"
+            "- 如果 GPU 内存不足 — 关闭其他应用或降低 octree\n"
+            "- 「统计 GPU 与 CPU 操作占比」会让每个算子都经过 Python，"
+            "生成速度大约慢一个数量级。仅用于诊断，日常生成请关闭\n"
             "- CAD 用途：从「中度」优化开始，查看预览后再决定是否加强\n"
+            "- 纹理生成比形状生成消耗更多内存。请先使用「低」预设\n"
             "- 输出文件保存在脚本旁的 `outputs/` 目录\n"
         ),
         "opt_none":   "不优化",
@@ -369,14 +373,14 @@ I18N: dict[str, dict[str, str]] = {
         "log_after_size":      "预处理后尺寸：{size}",
         "log_loading_pipeline":"加载流水线（首次运行可能需要几分钟）……",
         "log_pipeline_comps":  "流水线组件：\n{diag}",
-        "log_generation":      "网格生成：steps={steps}，guidance={guidance}，octree={octree}，seed={seed}，track_mps={track_mps}",
+        "log_generation":      "网格生成：steps={steps}，guidance={guidance}，octree={octree}，seed={seed}，track_gpu={track_gpu}",
         "log_mesh_ready":      "网格已生成：{verts} 个顶点，{faces} 个面",
         "log_done":            "✅ 完成，用时 {elapsed:.1f} 秒",
         "log_preview_glb":     "预览（GLB）：{path}",
         "log_next_step":       "在右侧选择格式下载。后处理也在右侧。",
         "log_warn_no_image":   "⚠️ 请先上传输入图像",
         "log_err_model":       "❌ 模型加载错误：{e}",
-        "log_err_oom":         "❌ 内存不足或 MPS 失败：{msg}\n\n提示：将 octree_resolution 降至 128 或 num_steps 降至 30。\n\nTraceback：\n{tb}",
+        "log_err_oom":         "❌ 内存不足或 GPU 失败：{msg}\n\n提示：将 octree_resolution 降至 128 或 num_steps 降至 30。\n\nTraceback：\n{tb}",
         "log_err_inference":   "❌ 推理错误：{msg}\n\nTraceback：\n{tb}",
         "log_err_unknown":     "❌ 未知错误：{name}: {e}\n\nTraceback：\n{tb}",
         "log_no_mesh_yet":     "⚠️ 请先生成网格，然后再优化。",
@@ -387,29 +391,68 @@ I18N: dict[str, dict[str, str]] = {
         "log_auto_pick":       "Auto 分类器：大平面面积占比 {ratio:.0f}% → 选择「{chosen}」。",
         "log_decimation_done": "✅ 完成，用时 {elapsed:.1f} 秒：{v0}→{v1} 顶点，{f0}→{f1} 面（减少 {pct:.1f}%)",
         "log_preview":         "预览：{path}",
-        "mps_total":       "**张量操作总数：** {total}",
-        "mps_device_line": "- `{dev}`: {cnt} ({pct:.1f}%)",
-        "mps_cpu_header":  "**CPU 算子 Top 列表**（正是它们拖慢速度）：",
-        "mps_cpu_line":    "- `{op}`: {cnt} 次在 CPU 上执行（占该算子的 {pct:.0f}%)",
-        "mps_none":        "MPS 跟踪器未记录任何操作（可能已禁用）。",
-        "mps_disabled":    "_当前 PyTorch 版本不支持 torch.overrides.TorchFunctionMode — 跟踪器已禁用。_",
+        "stats_total":       "**张量操作总数：** {total}",
+        "stats_device_line": "- `{dev}`: {cnt} ({pct:.1f}%)",
+        "stats_cpu_header":  "**CPU 算子 Top 列表**（正是它们拖慢速度）：",
+        "stats_cpu_line":    "- `{op}`: {cnt} 次在 CPU 上执行（占该算子的 {pct:.0f}%)",
+        "stats_none":        "算子跟踪器未记录任何操作（可能已禁用）。",
+        "stats_disabled":    "_当前 PyTorch 版本不支持 torch.overrides.TorchFunctionMode — 跟踪器已禁用。_",
+        # ----- 纹理生成 (PBR) -----
+        "tex_header":      "### 纹理生成（PBR）",
+        "tex_help": (
+            "使用 Hunyuan3D paint 模型生成 albedo 与 metallic-roughness 贴图，"
+            "然后烘焙到网格 UV 上。\n\n"
+            "- 需要本地扩展（`custom_rasterizer`、`mesh_inpaint_processor`）"
+            "以及 `hunyuan3d-paintpbr-v2-1` 权重。\n"
+            "- 比形状生成消耗更多内存。建议从「低」开始。\n"
+            "- paint 模型内部会重新网格化到约 4 万三角面，因此纹理化之前的"
+            "强力简化是徒劳的。\n"
+        ),
+        "tex_views":       "视角数量（越多覆盖越好，也更耗内存）",
+        "tex_resolution":  "多视角分辨率",
+        "tex_preset":      "内存预设",
+        "tex_preset_safe":   "安全（6 视角，256，贴图 2048）— 无需 flash attention",
+        "tex_preset_low":    "低（6 视角，512，贴图 2048）— 需要 flash attention",
+        "tex_preset_normal": "常规（8 视角，768，贴图 4096）— 需要 flash attention",
+        "tex_raster":      "光栅化后端",
+        "tex_raster_auto": "自动（依据检测到的后端）",
+        "tex_raster_gpu":  "GPU（HIP/CUDA 内核）",
+        "tex_raster_cpu":  "CPU（通用；GPU 输出异常时的回退方案）",
+        "tex_btn":         "🎨 生成纹理",
+        "tex_log":         "纹理生成日志",
+        "tex_preview":     "带纹理的结果",
+        "tex_maps":        "PBR 贴图",
+        "tex_dl_btn":      "💾 下载带纹理的模型",
+        "tex_dl_file":     "带纹理的文件",
+        "tex_use_remesh":  "允许 paint 模型重新网格化（推荐）",
+        "log_tex_no_mesh":   "⚠️ 请先生成网格，然后再进行纹理生成。",
+        "log_tex_disabled":  "纹理生成不可用：{reason}",
+        "log_tex_start":     "纹理生成：预设「{preset}」，views={views}，resolution={resolution}，光栅化器={raster}",
+        "log_tex_unload":    "在加载 paint 模型之前释放 shape 流水线……",
+        "log_tex_loading":   "加载 paint 模型（首次运行需下载数 GB）……",
+        "log_tex_input":     "输入网格：{faces} 个面，已保存到 {path}",
+        "log_tex_running":   "正在运行多视角扩散、超分辨率与烘焙。这是最慢的阶段。",
+        "log_tex_done":      "✅ 纹理完成，用时 {elapsed:.1f} 秒：{path}",
+        "log_tex_err_oom":   "❌ 纹理生成时内存不足：{msg}\n\n提示：切换到「低」预设、减少视角数量，或将光栅化器设为 CPU。\n\nTraceback：\n{tb}",
+        "log_tex_err":       "❌ 纹理生成错误：{name}: {e}\n\nTraceback：\n{tb}",
     },
     "ru": {
         "lang_label": "Язык интерфейса",
         "description": (
-            "# Hunyuan3D 2.1 — локальный интерфейс (Apple Silicon)\n\n"
+            "# Hunyuan3D 2.1 — локальный интерфейс\n\n"
             "Генерация 3D-меша из одного изображения с помощью Tencent Hunyuan3D 2.1.\n\n"
-            "**Устройство:** `{device}` • **dtype:** `{dtype}` • **Проект:** `{project}`\n\n"
-            "> На Mac работает только генерация формы (shape). Текстурирование "
-            "требует CUDA и по умолчанию отключено. На M4 Pro при octree=256 "
-            "один меш занимает ориентировочно **10-20 минут** — MPS "
-            "используется, но часть операций автоматически падает на CPU "
-            "(включи «Считать долю операций MPS vs CPU», чтобы увидеть точную "
+            "**Бэкенд:** `{backend}` • **GPU:** {gpu} • **dtype:** `{dtype}` • "
+            "**растеризатор:** `{raster}`\n\n"
+            "**Проект:** `{project}`\n\n"
+            "> Генерация формы идёт на GPU. Текстурирование (PBR) доступно ниже, "
+            "когда меш готов — нужны собранные нативные расширения и скачанные "
+            "paint-веса. Часть операций может автоматически уходить на CPU "
+            "(включи «Считать долю операций GPU vs CPU», чтобы увидеть точную "
             "раскладку)."
         ),
         "input_image":    "Входное изображение (объект на простом фоне)",
         "remove_bg":      "Автоматически удалять фон (rembg)",
-        "track_mps":      "Считать долю операций MPS vs CPU",
+        "track_gpu":      "Считать долю операций GPU vs CPU",
         "gen_params":     "Параметры генерации",
         "num_steps":      "Шагов диффузии (больше = качественнее, дольше)",
         "guidance":       "Guidance scale (сила классификатора)",
@@ -418,9 +461,9 @@ I18N: dict[str, dict[str, str]] = {
         "generate_btn":   "🚀 Сгенерировать 3D-объект",
         "log_label":      "Лог выполнения",
         "preview_label":  "Результат (превью)",
-        "mps_stats_initial": "_MPS-трекер выключен. Включи слева чек-бокс, чтобы увидеть долю MPS vs CPU._",
-        "mps_stats_header":  "### MPS vs CPU (операции во время генерации)\n",
-        "mps_stats_off_note": "_Трекинг запрошен, но `torch.overrides.TorchFunctionMode` недоступен в этой версии PyTorch._",
+        "gpu_stats_initial": "_Трекер операций выключен. Включи слева чек-бокс, чтобы увидеть долю GPU vs CPU._",
+        "gpu_stats_header":  "### GPU vs CPU (операции во время генерации)\n",
+        "gpu_stats_off_note": "_Трекинг запрошен, но `torch.overrides.TorchFunctionMode` недоступен в этой версии PyTorch._",
         "postproc_header":  "### Пост-обработка (декимация меша)",
         "opt_level_label":  "Уровень оптимизации (всегда применяется к исходному мешу)",
         "opt_mode_label":   "Алгоритм",
@@ -446,8 +489,13 @@ I18N: dict[str, dict[str, str]] = {
             "### Советы\n"
             "- Быстрый тест: `octree=128`, `steps=30`\n"
             "- Максимум качества: `octree=320+`, `steps=80+` (долго!)\n"
-            "- Если MPS падает по памяти — закрой другие приложения или уменьши octree\n"
+            "- Если GPU падает по памяти — закрой другие приложения или уменьши octree\n"
+            "- «Считать долю операций GPU vs CPU» прогоняет каждую тензорную операцию "
+            "через Python и замедляет генерацию примерно на порядок. Включай для "
+            "диагностики, а не для обычных прогонов\n"
             "- Для CAD: начни со «Средней» оптимизации, глянь превью, при необходимости усиль\n"
+            "- Текстурирование требует существенно больше памяти, чем генерация формы. "
+            "Начинай с пресета «Низкий»\n"
             "- Выходные файлы сохраняются в `outputs/` рядом со скриптом\n"
         ),
         "opt_none":   "Без оптимизации",
@@ -464,14 +512,14 @@ I18N: dict[str, dict[str, str]] = {
         "log_after_size":      "Размер после предобработки: {size}",
         "log_loading_pipeline":"Загружаю пайплайн (первый запуск может занять минуты)...",
         "log_pipeline_comps":  "Компоненты пайплайна:\n{diag}",
-        "log_generation":      "Генерация меша: steps={steps}, guidance={guidance}, octree={octree}, seed={seed}, track_mps={track_mps}",
+        "log_generation":      "Генерация меша: steps={steps}, guidance={guidance}, octree={octree}, seed={seed}, track_gpu={track_gpu}",
         "log_mesh_ready":      "Меш готов: {verts} вершин, {faces} граней",
         "log_done":            "✅ Готово за {elapsed:.1f} с",
         "log_preview_glb":     "Превью (GLB): {path}",
         "log_next_step":       "Выбери формат справа для скачивания. Пост-обработка — там же.",
         "log_warn_no_image":   "⚠️ Загрузите входное изображение",
         "log_err_model":       "❌ Ошибка загрузки модели: {e}",
-        "log_err_oom":         "❌ Нехватка памяти или сбой MPS: {msg}\n\nСовет: уменьши octree_resolution до 128 или num_steps до 30.\n\nTraceback:\n{tb}",
+        "log_err_oom":         "❌ Нехватка памяти или сбой GPU: {msg}\n\nСовет: уменьши octree_resolution до 128 или num_steps до 30.\n\nTraceback:\n{tb}",
         "log_err_inference":   "❌ Ошибка inference: {msg}\n\nTraceback:\n{tb}",
         "log_err_unknown":     "❌ Неизвестная ошибка: {name}: {e}\n\nTraceback:\n{tb}",
         "log_no_mesh_yet":     "⚠️ Сначала сгенерируй меш, потом оптимизируй.",
@@ -482,12 +530,51 @@ I18N: dict[str, dict[str, str]] = {
         "log_auto_pick":       "Auto-классификатор: площадь крупных плоских регионов {ratio:.0f}% → выбран «{chosen}».",
         "log_decimation_done": "✅ Готово за {elapsed:.1f} с: {v0}→{v1} вершин, {f0}→{f1} граней (уменьшено на {pct:.1f}%)",
         "log_preview":         "Превью: {path}",
-        "mps_total":       "**Всего операций с тензорами:** {total}",
-        "mps_device_line": "- `{dev}`: {cnt} ({pct:.1f}%)",
-        "mps_cpu_header":  "**Топ CPU-операций** (именно эти ломают скорость):",
-        "mps_cpu_line":    "- `{op}`: {cnt} на CPU ({pct:.0f}% от этой операции)",
-        "mps_none":        "MPS-трекер не зафиксировал ни одной операции (возможно, отключён).",
-        "mps_disabled":    "_torch.overrides.TorchFunctionMode недоступен в этой версии PyTorch — трекер отключён._",
+        "stats_total":       "**Всего операций с тензорами:** {total}",
+        "stats_device_line": "- `{dev}`: {cnt} ({pct:.1f}%)",
+        "stats_cpu_header":  "**Топ CPU-операций** (именно эти ломают скорость):",
+        "stats_cpu_line":    "- `{op}`: {cnt} на CPU ({pct:.0f}% от этой операции)",
+        "stats_none":        "Трекер операций не зафиксировал ни одной операции (возможно, отключён).",
+        "stats_disabled":    "_torch.overrides.TorchFunctionMode недоступен в этой версии PyTorch — трекер отключён._",
+        # ----- текстурирование (PBR) -----
+        "tex_header":      "### Текстурирование (PBR)",
+        "tex_help": (
+            "Генерирует карты albedo и metallic-roughness моделью Hunyuan3D paint, "
+            "затем запекает их в UV меша.\n\n"
+            "- Нужны нативные расширения (`custom_rasterizer`, `mesh_inpaint_processor`) "
+            "и веса `hunyuan3d-paintpbr-v2-1`.\n"
+            "- Памяти требует значительно больше, чем генерация формы. Безопасный "
+            "старт — «Низкий».\n"
+            "- Paint-модель внутри сама ремешит до ~40k треугольников, поэтому "
+            "сильная декимация перед текстурированием — потерянная работа.\n"
+        ),
+        "tex_views":       "Ракурсов (больше = лучше покрытие, больше памяти)",
+        "tex_resolution":  "Разрешение multiview",
+        "tex_preset":      "Пресет памяти",
+        "tex_preset_safe":   "Безопасный (6 ракурсов, 256, текстура 2048) — работает без flash attention",
+        "tex_preset_low":    "Низкий (6 ракурсов, 512, текстура 2048) — нужен flash attention",
+        "tex_preset_normal": "Обычный (8 ракурсов, 768, текстура 4096) — нужен flash attention",
+        "tex_raster":      "Бэкенд растеризатора",
+        "tex_raster_auto": "Авто (по обнаруженному бэкенду)",
+        "tex_raster_gpu":  "GPU (ядро HIP/CUDA)",
+        "tex_raster_cpu":  "CPU (переносимый; он же обходной путь при битом выводе GPU)",
+        "tex_btn":         "🎨 Сгенерировать текстуру",
+        "tex_log":         "Лог текстурирования",
+        "tex_preview":     "Результат с текстурой",
+        "tex_maps":        "PBR-карты",
+        "tex_dl_btn":      "💾 Скачать модель с текстурой",
+        "tex_dl_file":     "Файл с текстурой",
+        "tex_use_remesh":  "Разрешить paint-модели ремешить (рекомендуется)",
+        "log_tex_no_mesh":   "⚠️ Сначала сгенерируй меш, потом текстурируй.",
+        "log_tex_disabled":  "Текстурирование недоступно: {reason}",
+        "log_tex_start":     "Текстурирование: пресет «{preset}», ракурсов={views}, разрешение={resolution}, растеризатор={raster}",
+        "log_tex_unload":    "Освобождаю shape-пайплайн перед загрузкой paint-модели...",
+        "log_tex_loading":   "Загружаю paint-модель (первый запуск скачает несколько ГБ)...",
+        "log_tex_input":     "Входной меш: {faces} граней, сохранён в {path}",
+        "log_tex_running":   "Запускаю multiview-диффузию, апскейл и запекание. Это самая долгая часть.",
+        "log_tex_done":      "✅ Текстура готова за {elapsed:.1f} с: {path}",
+        "log_tex_err_oom":   "❌ Нехватка памяти при текстурировании: {msg}\n\nСовет: переключись на пресет «Низкий», уменьши число ракурсов или поставь растеризатор на CPU.\n\nTraceback:\n{tb}",
+        "log_tex_err":       "❌ Ошибка текстурирования: {name}: {e}\n\nTraceback:\n{tb}",
     },
 }
 
@@ -523,6 +610,11 @@ def _load_pipeline():
             "Cannot import hy3dshape from the Hunyuan3D-2.1 repo. "
             f"Make sure it is cloned into {REPO_DIR}. Error: {e}"
         )
+
+    # Only possible once hy3dshape is importable, hence here rather than at
+    # startup. Guards against an intermittent IndexError that otherwise throws
+    # away a generation several minutes in — see the function's docstring.
+    compat_patches.patch_scheduler_timestep_lookup()
 
     model_path = str(WEIGHTS_DIR) if WEIGHTS_DIR.exists() else "tencent/Hunyuan3D-2.1"
     # Notes on the flags below:
@@ -790,13 +882,13 @@ def generate_3d(
     guidance_scale: float,
     octree_resolution: int,
     seed: int,
-    track_mps: bool,
+    track_gpu: bool,
     lang: str,
 ):
     """Generate a mesh from an image.
 
     Returns the tuple Gradio expects:
-      (preview_glb_path, mesh_state, log_text, mps_stats_markdown)
+      (preview_glb_path, mesh_state, log_text, gpu_stats_markdown)
     """
     if image is None:
         return None, None, t(lang, "log_warn_no_image"), ""
@@ -832,13 +924,13 @@ def generate_3d(
     log_lines.append(t(
         lang, "log_generation",
         steps=num_steps, guidance=guidance_scale,
-        octree=octree_resolution, seed=seed, track_mps=track_mps,
+        octree=octree_resolution, seed=seed, track_gpu=track_gpu,
     ))
 
     tracker: Optional[DeviceUsageTracker] = None
-    mps_stats_md = ""
+    gpu_stats_md = ""
     try:
-        if track_mps and _HAS_TFMODE:
+        if track_gpu and _HAS_TFMODE:
             tracker = DeviceUsageTracker()
             tracker_ctx = tracker
         else:
@@ -856,7 +948,7 @@ def generate_3d(
         msg = str(e)
         tb = traceback.format_exc()
         print(tb, flush=True)
-        if "out of memory" in msg.lower() or "mps" in msg.lower():
+        if "out of memory" in msg.lower() or "hip" in msg.lower() or "mps" in msg.lower():
             return None, None, t(lang, "log_err_oom", msg=msg, tb=tb), ""
         return None, None, t(lang, "log_err_inference", msg=msg, tb=tb), ""
     except Exception as e:
@@ -864,8 +956,7 @@ def generate_3d(
         print(tb, flush=True)
         return None, None, t(lang, "log_err_unknown", name=type(e).__name__, e=e, tb=tb), ""
     finally:
-        if DEVICE == "mps":
-            torch.mps.empty_cache()
+        backend_mod.empty_cache(BACKEND)
         gc.collect()
 
     mesh = result[0] if isinstance(result, (list, tuple)) else result
@@ -883,9 +974,9 @@ def generate_3d(
     log_lines.append(t(lang, "log_next_step"))
 
     if tracker is not None:
-        mps_stats_md = t(lang, "mps_stats_header") + "\n" + tracker.summary_text(lang=lang)
-    elif track_mps:
-        mps_stats_md = t(lang, "mps_stats_off_note")
+        gpu_stats_md = t(lang, "gpu_stats_header") + "\n" + tracker.summary_text(lang=lang)
+    elif track_gpu:
+        gpu_stats_md = t(lang, "gpu_stats_off_note")
 
     # mesh_state keeps two meshes:
     #   original — raw output of the model, IMMUTABLE
@@ -898,8 +989,27 @@ def generate_3d(
         "original_faces": n_f,
         "original_vertices": n_v,
         "last_op": "original",
+        # The preprocessed image is kept so texturing can reuse the exact
+        # conditioning the geometry was generated from.
+        "image": image,
     }
-    return glb_path, mesh_state, "\n".join(log_lines), mps_stats_md
+    return glb_path, mesh_state, "\n".join(log_lines), gpu_stats_md
+
+
+def unload_shape_pipeline() -> None:
+    """Free the shape pipeline so the paint model has room.
+
+    Shape and paint must never be resident at the same time: the paint pipeline
+    alone wants ~21 GB at upstream's defaults, and holding the DiT as well is
+    what makes texturing OOM on machines that could otherwise manage it.
+    """
+    global _pipeline
+    if _pipeline is None:
+        return
+    print("[init] unloading the shape pipeline to free memory for texturing", flush=True)
+    _pipeline = None
+    gc.collect()
+    backend_mod.empty_cache(BACKEND)
 
 
 # ==== Post-processing and download handlers ================================
@@ -1037,8 +1147,183 @@ def download_3d_handler(
     return path
 
 
+# ==== Texturing (PBR) =======================================================
+TEX_PRESET_ORDER = backend_mod.PAINT_PRESET_ORDER
+TEX_RASTER_ORDER = ("auto", "gpu", "cpu", "torch")
+
+
+def _texture_availability() -> tuple[bool, str]:
+    """Check texturing readiness without letting a broken install kill the UI.
+
+    Called while the Blocks are being built, so it must never raise: a missing
+    upstream clone or unbuilt extension should grey the button out and explain
+    itself, not prevent the app from starting.
+    """
+    try:
+        import paint
+
+        return paint.availability()
+    except Exception as e:
+        return False, f"{type(e).__name__}: {e}"
+
+
+def _tex_preset_choices(lang: str) -> list[tuple[str, str]]:
+    return [(t(lang, f"tex_preset_{k}"), k) for k in TEX_PRESET_ORDER]
+
+
+def _tex_raster_choices(lang: str) -> list[tuple[str, str]]:
+    return [(t(lang, f"tex_raster_{k}"), k) for k in TEX_RASTER_ORDER]
+
+
+def _zip_textured(saved: dict) -> Optional[str]:
+    """Bundle the OBJ, its MTL and every generated map into one archive.
+
+    A bare .obj is useless to a user — the maps and the .mtl that references
+    them have to travel with it.
+    """
+    import zipfile
+
+    obj = saved.get("obj")
+    if not obj or not os.path.exists(obj):
+        return None
+    base = os.path.splitext(obj)[0]
+    zip_path = base + ".zip"
+    members = [obj]
+    mtl = base + ".mtl"
+    if os.path.exists(mtl):
+        members.append(mtl)
+    members.extend(p for p in saved.get("maps", {}).values() if os.path.exists(p))
+    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
+        for m in members:
+            zf.write(m, arcname=os.path.basename(m))
+    return zip_path
+
+
+def texture_3d_handler(
+    mesh_state: Optional[dict],
+    image: Optional[Image.Image],
+    preset_key: str,
+    views: int,
+    resolution: int,
+    raster_key: str,
+    use_remesh: bool,
+    lang: str,
+    preview_path: Optional[str] = None,
+):
+    """Generate PBR textures for the current mesh.
+
+    Returns (textured_glb_path, gallery_items, tex_state, log_text).
+    """
+    import paint
+
+    mesh_state = _recover_mesh_state(mesh_state, preview_path)
+    if not mesh_state or "mesh" not in mesh_state:
+        return None, None, None, t(lang, "log_tex_no_mesh")
+
+    ok, reason = paint.availability()
+    if not ok:
+        return None, None, None, t(lang, "log_tex_disabled", reason=reason)
+
+    cond = image or mesh_state.get("image")
+    if cond is None:
+        return None, None, None, t(lang, "log_tex_no_mesh")
+
+    overrides = {"max_num_view": views, "resolution": resolution}
+    params = paint.resolve_params(preset_key, overrides)
+    tex_backend = (
+        BACKEND if raster_key == "auto"
+        else backend_mod.detect(force_kind=BACKEND.kind, force_raster=raster_key)
+    )
+
+    # Check the attention memory budget before touching anything: on an AMD APU
+    # an over-large attention matrix does not raise, it resets the GPU driver and
+    # takes the machine with it. Failing here also avoids writing a mesh to disk
+    # and unloading the shape pipeline for nothing.
+    safe, why = paint.attention_preflight(
+        tex_backend, params["max_num_view"], params["resolution"]
+    )
+    if not safe:
+        return None, None, None, t(lang, "log_tex_disabled", reason=why)
+
+    log_lines = [t(
+        lang, "log_tex_start",
+        preset=preset_key, views=params["max_num_view"],
+        resolution=params["resolution"], raster=tex_backend.raster,
+    )]
+
+    mesh: trimesh.Trimesh = mesh_state["mesh"]
+    # The paint pipeline reads its input from disk, so the current mesh has to be
+    # materialised first. OBJ, because the pipeline's own remesh step round-trips
+    # through pymeshlab and handles it most predictably.
+    src_path = mesh_to_file(mesh, "obj", suffix="for_texture")
+    log_lines.append(t(lang, "log_tex_input", faces=len(mesh.faces), path=src_path))
+
+    log_lines.append(t(lang, "log_tex_unload"))
+    unload_shape_pipeline()
+
+    log_lines.append(t(lang, "log_tex_loading"))
+    log_lines.append(t(lang, "log_tex_running"))
+
+    try:
+        saved = paint.texture_mesh(
+            mesh_path=src_path,
+            image=cond,
+            b=tex_backend,
+            preset=preset_key,
+            overrides=overrides,
+            use_remesh=bool(use_remesh),
+            output_dir=str(OUTPUT_DIR),
+            log=lambda m: print(f"[paint] {m}", flush=True),
+        )
+    except RuntimeError as e:
+        msg = str(e)
+        tb = traceback.format_exc()
+        print(tb, flush=True)
+        if "out of memory" in msg.lower() or "hip" in msg.lower() or "mps" in msg.lower():
+            log_lines.append(t(lang, "log_tex_err_oom", msg=msg, tb=tb))
+        else:
+            log_lines.append(t(lang, "log_tex_err", name=type(e).__name__, e=e, tb=tb))
+        return None, None, None, "\n".join(log_lines)
+    except Exception as e:
+        tb = traceback.format_exc()
+        print(tb, flush=True)
+        log_lines.append(t(lang, "log_tex_err", name=type(e).__name__, e=e, tb=tb))
+        return None, None, None, "\n".join(log_lines)
+    finally:
+        backend_mod.empty_cache(BACKEND)
+        gc.collect()
+
+    preview = saved.get("glb") or saved.get("obj")
+    log_lines.append(t(lang, "log_tex_done", elapsed=saved.get("elapsed", 0.0), path=preview))
+
+    gallery = [(p, k) for k, p in saved.get("maps", {}).items() if os.path.exists(p)]
+    return preview, gallery, saved, "\n".join(log_lines)
+
+
+def texture_download_handler(tex_state: Optional[dict], want_zip: bool):
+    """Hand back the textured GLB, or a zip of OBJ + MTL + maps."""
+    if not tex_state:
+        return None
+    if want_zip:
+        return _zip_textured(tex_state)
+    return tex_state.get("glb") or tex_state.get("obj")
+
+
 # ==== Gradio UI =============================================================
 DEFAULT_LANG = "en"
+
+
+def _desc_kwargs() -> dict:
+    """Substitutions for the `description` header — one definition, two uses
+    (initial render and language switch)."""
+    return dict(
+        backend=BACKEND.label,
+        gpu=BACKEND.gpu_name,
+        device=BACKEND.device,
+        dtype=str(BACKEND.dtype).replace("torch.", ""),
+        raster=BACKEND.raster,
+        project=PROJECT_DIR,
+    )
 
 with gr.Blocks(title="Hunyuan3D 2.1") as demo:
     # Language state — stored as an internal code ("en"/"zh"/"ru").
@@ -1053,10 +1338,7 @@ with gr.Blocks(title="Hunyuan3D 2.1") as demo:
         label=t(DEFAULT_LANG, "lang_label"),
     )
 
-    desc_md = gr.Markdown(t(
-        DEFAULT_LANG, "description",
-        device=DEVICE, dtype=DTYPE, project=PROJECT_DIR,
-    ))
+    desc_md = gr.Markdown(t(DEFAULT_LANG, "description", **_desc_kwargs()))
 
     with gr.Row():
         with gr.Column(scale=1):
@@ -1070,8 +1352,8 @@ with gr.Blocks(title="Hunyuan3D 2.1") as demo:
                 label=t(DEFAULT_LANG, "remove_bg"),
                 value=True,
             )
-            track_mps = gr.Checkbox(
-                label=t(DEFAULT_LANG, "track_mps"),
+            track_gpu = gr.Checkbox(
+                label=t(DEFAULT_LANG, "track_gpu"),
                 value=False,
             )
             with gr.Accordion(t(DEFAULT_LANG, "gen_params"), open=False) as gen_acc:
@@ -1101,7 +1383,7 @@ with gr.Blocks(title="Hunyuan3D 2.1") as demo:
                 height=420,
             )
 
-            mps_stats = gr.Markdown(value=t(DEFAULT_LANG, "mps_stats_initial"))
+            gpu_stats = gr.Markdown(value=t(DEFAULT_LANG, "gpu_stats_initial"))
 
             with gr.Group():
                 postproc_md = gr.Markdown(t(DEFAULT_LANG, "postproc_header"))
@@ -1134,6 +1416,66 @@ with gr.Blocks(title="Hunyuan3D 2.1") as demo:
                 dl_btn = gr.Button(t(DEFAULT_LANG, "dl_btn"), variant="secondary")
                 dl_file = gr.File(label=t(DEFAULT_LANG, "dl_file"))
 
+    # --- texturing (PBR) ---------------------------------------------------
+    _tex_ok, _tex_reason = _texture_availability()
+    tex_state = gr.State(value=None)
+
+    with gr.Group():
+        tex_md = gr.Markdown(t(DEFAULT_LANG, "tex_header"))
+        tex_status = gr.Markdown(
+            value="" if _tex_ok else t(DEFAULT_LANG, "log_tex_disabled", reason=_tex_reason)
+        )
+        tex_help = gr.Markdown(t(DEFAULT_LANG, "tex_help"))
+
+        with gr.Row():
+            with gr.Column(scale=1):
+                tex_preset = gr.Radio(
+                    choices=_tex_preset_choices(DEFAULT_LANG),
+                    value=backend_mod.suggest_paint_preset(BACKEND),
+                    label=t(DEFAULT_LANG, "tex_preset"),
+                )
+                _suggested = backend_mod.PAINT_PRESETS[backend_mod.suggest_paint_preset(BACKEND)]
+                tex_views = gr.Slider(
+                    minimum=6, maximum=9, step=1,
+                    value=_suggested["max_num_view"],
+                    label=t(DEFAULT_LANG, "tex_views"),
+                )
+                # 256 and 320 are here because they are what fits on a GPU without
+                # flash attention: attention memory grows with the square of
+                # views x tokens, so 256px needs 4.2 GiB where 512px needs 67.5.
+                tex_resolution = gr.Dropdown(
+                    choices=[256, 320, 512, 768],
+                    value=_suggested["resolution"],
+                    label=t(DEFAULT_LANG, "tex_resolution"),
+                )
+                tex_raster = gr.Radio(
+                    choices=_tex_raster_choices(DEFAULT_LANG),
+                    value="auto",
+                    label=t(DEFAULT_LANG, "tex_raster"),
+                )
+                tex_remesh = gr.Checkbox(
+                    label=t(DEFAULT_LANG, "tex_use_remesh"), value=True
+                )
+                tex_btn = gr.Button(
+                    t(DEFAULT_LANG, "tex_btn"), variant="primary", interactive=_tex_ok
+                )
+                tex_log = gr.Textbox(
+                    label=t(DEFAULT_LANG, "tex_log"), lines=10, max_lines=25, interactive=False
+                )
+
+            with gr.Column(scale=1):
+                tex_model3d = gr.Model3D(
+                    label=t(DEFAULT_LANG, "tex_preview"),
+                    clear_color=[0.0, 0.0, 0.0, 0.0],
+                    height=420,
+                )
+                tex_gallery = gr.Gallery(
+                    label=t(DEFAULT_LANG, "tex_maps"), columns=3, height=200, show_label=True
+                )
+                tex_zip = gr.Checkbox(label="OBJ + MTL + maps (.zip)", value=False)
+                tex_dl_btn = gr.Button(t(DEFAULT_LANG, "tex_dl_btn"), variant="secondary")
+                tex_dl_file = gr.File(label=t(DEFAULT_LANG, "tex_dl_file"))
+
     tips_md = gr.Markdown(t(DEFAULT_LANG, "tips"))
 
     # --- language switching logic ------------------------------------------
@@ -1143,11 +1485,10 @@ with gr.Blocks(title="Hunyuan3D 2.1") as demo:
         return (
             lang,  # lang_state
             gr.update(label=t(lang, "lang_label")),                          # lang_radio
-            gr.update(value=t(lang, "description",
-                              device=DEVICE, dtype=DTYPE, project=PROJECT_DIR)),  # desc_md
+            gr.update(value=t(lang, "description", **_desc_kwargs())),       # desc_md
             gr.update(label=t(lang, "input_image")),                         # img_in
             gr.update(label=t(lang, "remove_bg")),                           # remove_bg
-            gr.update(label=t(lang, "track_mps")),                           # track_mps
+            gr.update(label=t(lang, "track_gpu")),                           # track_gpu
             gr.update(label=t(lang, "gen_params")),                          # gen_acc
             gr.update(label=t(lang, "num_steps")),                           # num_steps
             gr.update(label=t(lang, "guidance")),                            # guidance_scale
@@ -1156,7 +1497,7 @@ with gr.Blocks(title="Hunyuan3D 2.1") as demo:
             gr.update(value=t(lang, "generate_btn")),                        # btn
             gr.update(label=t(lang, "log_label")),                           # log
             gr.update(label=t(lang, "preview_label")),                       # model3d
-            gr.update(value=t(lang, "mps_stats_initial")),                   # mps_stats
+            gr.update(value=t(lang, "gpu_stats_initial")),                   # gpu_stats
             gr.update(value=t(lang, "postproc_header")),                     # postproc_md
             gr.update(
                 choices=_opt_mode_choices(lang),
@@ -1173,6 +1514,24 @@ with gr.Blocks(title="Hunyuan3D 2.1") as demo:
             gr.update(label=t(lang, "dl_format")),                           # dl_format
             gr.update(value=t(lang, "dl_btn")),                              # dl_btn
             gr.update(label=t(lang, "dl_file")),                             # dl_file
+            # --- texturing ---
+            gr.update(value=t(lang, "tex_header")),                          # tex_md
+            gr.update(value="" if _tex_ok
+                      else t(lang, "log_tex_disabled", reason=_tex_reason)),  # tex_status
+            gr.update(value=t(lang, "tex_help")),                            # tex_help
+            gr.update(choices=_tex_preset_choices(lang),
+                      label=t(lang, "tex_preset")),                          # tex_preset
+            gr.update(label=t(lang, "tex_views")),                           # tex_views
+            gr.update(label=t(lang, "tex_resolution")),                      # tex_resolution
+            gr.update(choices=_tex_raster_choices(lang),
+                      label=t(lang, "tex_raster")),                          # tex_raster
+            gr.update(label=t(lang, "tex_use_remesh")),                      # tex_remesh
+            gr.update(value=t(lang, "tex_btn")),                             # tex_btn
+            gr.update(label=t(lang, "tex_log")),                             # tex_log
+            gr.update(label=t(lang, "tex_preview")),                         # tex_model3d
+            gr.update(label=t(lang, "tex_maps")),                            # tex_gallery
+            gr.update(value=t(lang, "tex_dl_btn")),                          # tex_dl_btn
+            gr.update(label=t(lang, "tex_dl_file")),                         # tex_dl_file
             gr.update(value=t(lang, "tips")),                                # tips_md
         )
 
@@ -1182,20 +1541,51 @@ with gr.Blocks(title="Hunyuan3D 2.1") as demo:
         outputs=[
             lang_state,
             lang_radio, desc_md,
-            img_in, remove_bg, track_mps,
+            img_in, remove_bg, track_gpu,
             gen_acc, num_steps, guidance_scale, octree_resolution, seed,
-            btn, log, model3d, mps_stats,
+            btn, log, model3d, gpu_stats,
             postproc_md, opt_mode, opt_mode_help, opt_level, opt_btn, opt_log,
             download_md, dl_format, dl_btn, dl_file,
+            tex_md, tex_status, tex_help, tex_preset, tex_views, tex_resolution,
+            tex_raster, tex_remesh, tex_btn, tex_log, tex_model3d, tex_gallery,
+            tex_dl_btn, tex_dl_file,
             tips_md,
         ],
+    )
+
+    # Selecting a memory preset moves the view/resolution sliders to its values;
+    # they stay editable so a preset is a starting point, not a cage.
+    def apply_tex_preset(preset_key: str):
+        params = backend_mod.PAINT_PRESETS.get(preset_key, backend_mod.PAINT_PRESETS["low"])
+        return (
+            gr.update(value=params["max_num_view"]),
+            gr.update(value=params["resolution"]),
+        )
+
+    tex_preset.change(
+        fn=apply_tex_preset,
+        inputs=[tex_preset],
+        outputs=[tex_views, tex_resolution],
+    )
+
+    tex_btn.click(
+        fn=texture_3d_handler,
+        inputs=[mesh_state, img_in, tex_preset, tex_views, tex_resolution,
+                tex_raster, tex_remesh, lang_state, model3d],
+        outputs=[tex_model3d, tex_gallery, tex_state, tex_log],
+    )
+
+    tex_dl_btn.click(
+        fn=texture_download_handler,
+        inputs=[tex_state, tex_zip],
+        outputs=[tex_dl_file],
     )
 
     btn.click(
         fn=generate_3d,
         inputs=[img_in, remove_bg, num_steps, guidance_scale,
-                octree_resolution, seed, track_mps, lang_state],
-        outputs=[model3d, mesh_state, log, mps_stats],
+                octree_resolution, seed, track_gpu, lang_state],
+        outputs=[model3d, mesh_state, log, gpu_stats],
     )
 
     opt_btn.click(
@@ -1212,7 +1602,8 @@ with gr.Blocks(title="Hunyuan3D 2.1") as demo:
 
 # ==== Entry point ===========================================================
 if __name__ == "__main__":
-    print(f"[launch] Device: {DEVICE}, Weights: {WEIGHTS_DIR}")
+    print(f"[launch] {backend_mod.describe(BACKEND)}")
+    print(f"[launch] Weights: {WEIGHTS_DIR}")
     port = int(os.environ.get("GRADIO_PORT", "7860"))
     demo.queue(max_size=4).launch(
         server_name="127.0.0.1",

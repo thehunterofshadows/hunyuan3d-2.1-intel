@@ -7,6 +7,12 @@ weights/
 # Generated outputs
 outputs/
 
+# Native extension build records and staged (patched) upstream sources
+.build/
+
+# MIOpen kernel autotune cache
+.cache/
+
 # Python virtualenv
 venv/
 env/

@@ -123,11 +123,11 @@ You agree not to use the Model or Derivatives of the Model:
 
 ================================================================================
 
-ADDITIONAL NOTICE — Mac / Apple Silicon port (this repository)
+ADDITIONAL NOTICE — Apple Silicon (MPS) and AMD (ROCm) port (this repository)
 
-This repository (hunyuan3d-2.1-mac) is an independent third-party project that
-adds Mac / Apple Silicon (MPS) support around the upstream Tencent Hunyuan 3D
-2.1 model. It is NOT produced or endorsed by Tencent.
+This repository (hunyuan3d-2.1-mac-rocm) is an independent third-party project
+that adds Apple Silicon (MPS) and AMD ROCm support around the upstream Tencent
+Hunyuan 3D 2.1 model. It is NOT produced or endorsed by Tencent.
 
 The following files in this repository are original work by Vladimir Talyzin
 (2026) and are licensed under the MIT License — see the LICENSE-WRAPPERS file:
@@ -135,8 +135,22 @@ The following files in this repository are original work by Vladimir Talyzin
     install.sh
     fix.sh
     launch.sh
+    launch.ps1
     gradio_app.py
+    backend.py
+    compat_patches.py
+    paint.py
+    mesh_io.py
+    torch_rasterizer.py
+    lowpoly.py
     requirements_mac.txt
+    requirements_rocm.txt
+    scripts/install_rocm.sh
+    scripts/install_rocm_windows.ps1
+    scripts/build_extensions.py
+    scripts/doctor.py
+    tests/test_torch_rasterizer.py
+    docs/ROCM_TEXTURING_PLAN.md
     README.md
 
 These wrapper scripts DO NOT contain or redistribute any Tencent Hunyuan 3D
@@ -146,12 +160,49 @@ https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1 at install time, and model
 weights are downloaded directly from Hugging Face
 (https://huggingface.co/tencent/Hunyuan3D-2.1) by the end user.
 
-Modifications applied at install time by fix.sh:
-  - Patch hardcoded CUDA device references to also support Apple MPS / CPU.
-  - Patch the weight loader to accept the .ckpt file shipped on Hugging Face
-    in addition to .safetensors.
-No modification is redistributed in binary form; the patches are applied as
-runtime sed/patch steps against the user's local clone of the upstream repo.
+Statement of modifications to the upstream work
+-----------------------------------------------
+None of the following is redistributed. Every change is applied either at
+runtime, against the user's own local clone, or to a temporary copy of upstream
+sources under .build/ that is produced on the user's machine at install time.
+
+Applied at runtime (monkey patches, in compat_patches.py and paint.py):
+  - Redirect hardcoded CUDA device references (device="cuda", .to("cuda"),
+    .to("cuda:0")) to Apple MPS or CPU. Not applied on ROCm or CUDA, where the
+    device is already reported as "cuda".
+  - Replace torch.autocast(device_type="cuda") and torch.cuda.synchronize /
+    Event / empty_cache / torch.backends.cuda.sdp_kernel with no-ops or
+    backend-appropriate equivalents on devices that are not CUDA-like.
+  - Load the shape checkpoint from the .ckpt file shipped on Hugging Face
+    instead of .safetensors.
+  - Pass the active device into DifferentiableRenderer.MeshRender, which
+    upstream constructs without one so it defaults to "cuda".
+  - Wrap MeshRender.raster_rasterize to accept half-precision vertex buffers
+    and, when the native CPU rasterizer is in use on a GPU device, to run only
+    the rasterization call on CPU.
+  - Replace MeshRender.save_mesh and the pipeline's GLB export, both of which
+    require Blender (bpy), with a Blender-free implementation (mesh_io.py).
+  - Install an import stub for bpy so hy3dpaint's mesh_utils module can be
+    imported without Blender.
+  - Let an existing local weights directory satisfy
+    huggingface_hub.snapshot_download instead of re-downloading.
+  - Construct RealESRGAN with a device and precision suited to the backend.
+
+Applied to a temporary copy of upstream sources at install time
+(scripts/build_extensions.py, only when a native rasterizer is being built):
+  - custom_rasterizer's rasterizer.h: make the ATen/cuda/CUDAContext.h include
+    conditional on a device compiler and replace __host__ __device__ with a
+    macro, so the file compiles with a plain host C++ compiler.
+  - custom_rasterizer's rasterizer.cpp: dispatch rasterize_image to its existing
+    CPU implementation, and exclude the build_hierarchy / build_hierarchy_with_feat
+    pybind bindings, in the CPU-only build configuration.
+
+Independent reimplementation (not derived from Tencent source):
+  - torch_rasterizer.py reimplements the rasterization step in PyTorch so that
+    no C++ or HIP compiler is required. It reproduces the documented behaviour
+    of upstream's rasterizer (packed-depth z-buffer, perspective-correct
+    barycentric coordinates) and is verified against it by
+    tests/test_torch_rasterizer.py.
 
 All use of the Tencent Hunyuan 3D 2.1 model, weights and any derivatives
 generated with them remains governed by the TENCENT HUNYUAN 3D 2.1 COMMUNITY
