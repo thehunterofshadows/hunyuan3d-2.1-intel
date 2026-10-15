@@ -1,0 +1,37 @@
+{
+  "env": {
+    "generated_at": "2026-10-15 22:41:50",
+    "backend": "xpu",
+    "device": "xpu:0",
+    "dtype": "float16",
+    "rasterizer": "torch",
+    "gpu": "Intel(R) Arc(TM) Pro B70 Graphics",
+    "gpu_memory_gib": "31.9",
+    "version": "torch 2.13.0+xpu, XPU 20260000",
+    "input_image": "/work/Hunyuan3D-2.1/assets/demo.png",
+    "shape_params": "steps=30 guidance=5.0 octree=192 seed=42"
+  },
+  "stages": [
+    {
+      "name": "import gradio_app (builds the UI graph)",
+      "status": "pass",
+      "elapsed": 3.86,
+      "detail": "UI graph constructed",
+      "error": ""
+    },
+    {
+      "name": "shape generation (DiT + VAE)",
+      "status": "pass",
+      "elapsed": 91.71,
+      "detail": "89672 verts, 179344 faces",
+      "error": ""
+    },
+    {
+      "name": "render untextured mesh (torch_rasterizer)",
+      "status": "pass",
+      "elapsed": 0.51,
+      "detail": "89672 verts, 179344 faces",
+      "error": ""
+    }
+  ]
+}

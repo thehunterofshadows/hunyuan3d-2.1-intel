@@ -1,0 +1,11 @@
+{
+  "device": "xpu:0",
+  "total_gib": 31.890625,
+  "memory_allocated_bytes": 0,
+  "memory_reserved_bytes": 65011712,
+  "max_memory_allocated_bytes": 8806630400,
+  "free_bytes": 32515952640,
+  "total_bytes": 34242297856,
+  "elapsed_seconds": 106.4957662950037,
+  "torch": "2.13.0+xpu"
+}

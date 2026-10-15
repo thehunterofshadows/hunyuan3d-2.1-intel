@@ -175,8 +175,8 @@ def main() -> int:
     ap.add_argument("--views", type=int, default=4, help="preview turntable views")
     ap.add_argument("--resolution", type=int, default=448, help="preview render resolution")
     ap.add_argument("--tex-preset", default="safe", choices=("safe", "low", "normal"))
-    ap.add_argument("--tex-views", type=int, default=6)
-    ap.add_argument("--tex-resolution", type=int, default=512)
+    ap.add_argument("--tex-views", type=int, default=None)
+    ap.add_argument("--tex-resolution", type=int, default=None)
     ap.add_argument("--raster", default="auto", choices=("auto", "gpu", "cpu", "torch"))
     ap.add_argument("--skip-texture", action="store_true")
     ap.add_argument(
@@ -203,6 +203,11 @@ def main() -> int:
     import backend as backend_mod
 
     b = backend_mod.detect()
+    preset = backend_mod.PAINT_PRESETS[args.tex_preset]
+    if args.tex_views is None:
+        args.tex_views = preset["max_num_view"]
+    if args.tex_resolution is None:
+        args.tex_resolution = preset["resolution"]
     env = {
         "generated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
         "backend": b.kind,
@@ -330,7 +335,8 @@ def main() -> int:
         )
         stages.append(st_tex)
         if not ok:
-            st_tex.status = "skipped"
+            # Texturing was requested; missing prerequisites are a failed test.
+            st_tex.status = "fail"
             st_tex.error = reason
         else:
             t0 = time.time()

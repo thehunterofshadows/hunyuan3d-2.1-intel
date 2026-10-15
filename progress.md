@@ -7,3 +7,14 @@ compatibility routing, model-free probes and Docker diagnostic harness.
 See [Intel port notes](docs/intel/README.md) for scope, reproduction and remaining
 gates. Full shape/paint model execution and performance qualification remain open.
 Existing GPU workloads were preserved.
+
+2026-10-15, full runtime validation:
+- [x] Dedicated Docker test environment and independent Python dependencies.
+- [x] Shape generation on B70, 30 steps and octree 192.
+- [x] Safe-preset PBR generation, GLB export and four-view rendering.
+- [x] Finite geometry/UV and embedded PBR material validation.
+- [x] Recorded timings, allocation telemetry and visual evidence.
+- [ ] Matched reference-backend comparison and game-quality visual acceptance.
+- [ ] Higher-resolution presets, performance optimization and portable release image.
+
+See docs/intel/e2e-2026-10-15/README.md for measured results and limitations.

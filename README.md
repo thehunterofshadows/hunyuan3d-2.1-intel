@@ -1,6 +1,6 @@
 # Experimental Intel XPU fork
 
-Intel development is on `dev`. Start with [Intel port status and diagnostics](docs/intel/README.md). Backend and small GPU tests are validated on Arc Pro B70; full model generation is not yet qualified. The original documentation below describes the upstream AMD/Apple port, not a working Intel installer.
+Intel development is on `dev`. Start with [Intel port status and diagnostics](docs/intel/README.md). A complete shape → PBR texture → GLB test passed on Arc Pro B70 at the safe preset. [Results and previews](docs/intel/e2e-2026-10-15/README.md). Visual quality and higher presets remain unqualified. The original documentation below describes the upstream AMD/Apple port, not a working Intel installer.
 
 ---
 

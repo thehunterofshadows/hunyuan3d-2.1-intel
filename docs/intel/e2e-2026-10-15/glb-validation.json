@@ -1,0 +1,37 @@
+{
+  "file": "hunyuan3d_20261015_224514_for_texture_textured.glb",
+  "geometry": [
+    {
+      "name": "geometry_0",
+      "vertices": 22768,
+      "triangles": 40000,
+      "extents": [
+        1.2471303939819336,
+        1.9887752532958984,
+        1.1402170658111572
+      ],
+      "watertight": false,
+      "maps": {
+        "baseColorTexture": {
+          "width": 1024,
+          "height": 1024,
+          "rgb_std": [
+            78.89087444773504,
+            69.70131811762455,
+            79.33065658204444
+          ]
+        },
+        "metallicRoughnessTexture": {
+          "width": 1024,
+          "height": 1024,
+          "rgb_std": [
+            0.0,
+            84.18501098277488,
+            15.849322003813008
+          ]
+        }
+      }
+    }
+  ],
+  "status": "passed_structural_checks_not_artistic_quality"
+}
