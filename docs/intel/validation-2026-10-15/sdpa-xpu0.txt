@@ -1,0 +1,13 @@
+[compat] SDPA will chunk queries when the score matrix would exceed 0.0 GiB
+device: xpu:0
+  [PASS] basic 4d             shape=(2, 4, 64, 16) mask=none       max_diff=0.00e+00 (tol 1e-05)
+  [PASS] many heads           shape=(1, 12, 128, 32) mask=none       max_diff=2.38e-07 (tol 1e-05)
+  [PASS] fp16                 shape=(2, 8, 96, 32) mask=none       max_diff=4.88e-04 (tol 2e-03)
+  [PASS] 3d (no head axis)    shape=(6, 80, 24) mask=none       max_diff=0.00e+00 (tol 1e-05)
+  [PASS] additive mask        shape=(2, 4, 48, 16) mask=additive   max_diff=0.00e+00 (tol 1e-05)
+  [PASS] bool mask            shape=(2, 4, 48, 16) mask=bool       max_diff=0.00e+00 (tol 1e-05)
+  [PASS] broadcast mask       shape=(2, 4, 48, 16) mask=broadcast  max_diff=0.00e+00 (tol 1e-05)
+  [PASS] uneven split         shape=(1, 3, 37, 8) mask=none       max_diff=0.00e+00 (tol 1e-05)
+  [PASS] below-budget calls are bit-identical
+
+ALL SDPA CHUNKING TESTS PASSED

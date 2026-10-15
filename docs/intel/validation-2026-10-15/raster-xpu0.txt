@@ -1,0 +1,18 @@
+device: cpu
+  [PASS] 8 overlapping triangles 64x64          device=cpu   covered=  1122/  4096 findices_equal=True max_bary_diff=4.31e-06
+  [PASS] 40 triangles, clipped, 96x64           device=cpu   covered=  5985/  6144 findices_equal=True max_bary_diff=1.31e-06
+  [PASS] 25 triangles 128x48 (non-square)       device=cpu   covered=  1956/  6144 findices_equal=True max_bary_diff=1.23e-06
+  [PASS] with a degenerate triangle             device=cpu   covered=   525/  4096 findices_equal=True max_bary_diff=2.96e-07
+  [PASS] all off-screen                         device=cpu   covered=     0/  2304 findices_equal=True max_bary_diff=0.00e+00
+  [PASS] depth prior active                     device=cpu   covered=  1537/  4096 findices_equal=True max_bary_diff=2.26e-06
+  [PASS] perspective (non-unit w)               device=cpu   covered=   787/  4096 findices_equal=True max_bary_diff=1.98e-06
+device: xpu:0
+  [PASS] 8 overlapping triangles 64x64          device=xpu:0 covered=  1122/  4096 findices_equal=True max_bary_diff=4.31e-06
+  [PASS] 40 triangles, clipped, 96x64           device=xpu:0 covered=  5985/  6144 findices_equal=True max_bary_diff=1.31e-06
+  [PASS] 25 triangles 128x48 (non-square)       device=xpu:0 covered=  1956/  6144 findices_equal=True max_bary_diff=1.23e-06
+  [PASS] with a degenerate triangle             device=xpu:0 covered=   525/  4096 findices_equal=True max_bary_diff=2.96e-07
+  [PASS] all off-screen                         device=xpu:0 covered=     0/  2304 findices_equal=True max_bary_diff=0.00e+00
+  [PASS] depth prior active                     device=xpu:0 covered=  1537/  4096 findices_equal=True max_bary_diff=2.26e-06
+  [PASS] perspective (non-unit w)               device=xpu:0 covered=   787/  4096 findices_equal=True max_bary_diff=1.98e-06
+
+ALL TESTS PASSED
