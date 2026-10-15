@@ -1,0 +1,37 @@
+{
+  "file": "bumper.glb",
+  "geometry": [
+    {
+      "name": "geometry_0",
+      "vertices": 26840,
+      "triangles": 40000,
+      "extents": [
+        1.9868824481964111,
+        1.3758563995361328,
+        1.9869202375411987
+      ],
+      "watertight": false,
+      "maps": {
+        "baseColorTexture": {
+          "width": 1024,
+          "height": 1024,
+          "rgb_std": [
+            72.97784890962225,
+            76.27509143365835,
+            78.24218501221495
+          ]
+        },
+        "metallicRoughnessTexture": {
+          "width": 1024,
+          "height": 1024,
+          "rgb_std": [
+            0.0,
+            55.16859308673227,
+            92.3997416198798
+          ]
+        }
+      }
+    }
+  ],
+  "status": "passed_structural_checks_not_artistic_quality"
+}

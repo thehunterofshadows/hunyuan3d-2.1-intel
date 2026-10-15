@@ -1,0 +1,51 @@
+{
+  "env": {
+    "generated_at": "2026-10-15 22:54:44",
+    "backend": "xpu",
+    "device": "xpu:0",
+    "dtype": "float16",
+    "rasterizer": "torch",
+    "gpu": "Intel(R) Arc(TM) Pro B70 Graphics",
+    "gpu_memory_gib": "31.9",
+    "version": "torch 2.13.0+xpu, XPU 20260000",
+    "input_image": "assets/intel-bumper/reference.png",
+    "shape_params": "steps=30 guidance=5.0 octree=256 seed=42"
+  },
+  "stages": [
+    {
+      "name": "import gradio_app (builds the UI graph)",
+      "status": "pass",
+      "elapsed": 3.51,
+      "detail": "UI graph constructed",
+      "error": ""
+    },
+    {
+      "name": "shape generation (DiT + VAE)",
+      "status": "pass",
+      "elapsed": 61.09,
+      "detail": "353005 verts, 706958 faces",
+      "error": ""
+    },
+    {
+      "name": "render untextured mesh (torch_rasterizer)",
+      "status": "pass",
+      "elapsed": 0.8,
+      "detail": "353005 verts, 706958 faces",
+      "error": ""
+    },
+    {
+      "name": "PBR texturing",
+      "status": "pass",
+      "elapsed": 43.58,
+      "detail": "preset=safe views=6 res=256 raster=torch -> hunyuan3d_20261015_225550_for_texture_textured.glb",
+      "error": ""
+    },
+    {
+      "name": "render textured mesh (torch_rasterizer)",
+      "status": "pass",
+      "elapsed": 0.68,
+      "detail": "26840 verts, 40000 faces, texture [1024, 1024]",
+      "error": ""
+    }
+  ]
+}
