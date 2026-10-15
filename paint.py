@@ -220,6 +220,13 @@ def attention_preflight(b, views: int, resolution: int) -> tuple[bool, str]:
             f"generation is unaffected."
         )
 
+    if b.kind == "xpu":
+        return False, (
+            f"XPU attention at {views} views / {resolution}px is not qualified yet "
+            f"(dense estimate {need / (1 << 30):.1f} GiB). "
+            "Use the safe preset until real workload attention profiling passes."
+        )
+
     if os.environ.get("TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL") == "1":
         return False, (
             f"estimated attention matrix is {need / (1 << 30):.1f} GiB and AOTriton "
@@ -595,6 +602,8 @@ def _patch_super_resolution(b) -> None:
                         num_grow_ch=32, scale=4)
         if b.is_cuda_like:
             device, half = None, True          # let RealESRGANer pick cuda; fp16 is fine
+        elif b.kind == "xpu":
+            device, half = torch.device(b.device), b.dtype == torch.float16
         elif b.kind == "mps":
             # RealESRGANer would fall back to CPU here, where fp16 is far slower
             # than fp32. Run it on MPS in fp32 instead.
@@ -674,7 +683,7 @@ def load_pipeline(b, preset: str = "low", overrides: Optional[dict] = None):
     """Lazily build the paint pipeline for the given memory preset."""
     global _pipeline
     params = resolve_params(preset, overrides)
-    key = (b.kind, b.raster, tuple(sorted(params.items())))
+    key = (b.kind, b.device, b.dtype, b.raster, tuple(sorted(params.items())))
 
     if _pipeline is not None and getattr(_pipeline, "_hy3d_key", None) == key:
         return _pipeline

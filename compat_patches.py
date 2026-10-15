@@ -24,6 +24,7 @@ import os
 import torch
 
 _APPLIED = False
+_APPLIED_BACKEND = None
 
 
 def apply(b) -> bool:
@@ -45,9 +46,16 @@ def apply(b) -> bool:
 
     Returns True if anything was patched.
     """
-    global _APPLIED
+    global _APPLIED, _APPLIED_BACKEND
+    signature = (b.kind, b.device, b.dtype)
     if _APPLIED:
+        if _APPLIED_BACKEND != signature:
+            raise RuntimeError("Backend changes require a fresh worker process")
         return True
+
+    if b.kind == "xpu":
+        import backend as backend_mod
+        backend_mod.activate(b)
 
     applied: list[str] = []
 
@@ -74,6 +82,7 @@ def apply(b) -> bool:
 
     if applied:
         _APPLIED = True
+        _APPLIED_BACKEND = signature
         print(f"[compat] {b.kind}: patched {', '.join(applied)}", flush=True)
     return bool(applied)
 
@@ -95,7 +104,12 @@ def _patch_autocast(b) -> None:
             self._ctx = None
 
         def __enter__(self):
-            if self.device_type == "cuda" or not b.autocast_ok:
+            if b.kind == "xpu" and self.device_type in ("cuda", "xpu"):
+                kwargs = dict(self.kwargs)
+                if not self.args:
+                    kwargs.setdefault("dtype", b.dtype)
+                self._ctx = orig_autocast("xpu", *self.args, **kwargs)
+            elif self.device_type == "cuda" or not b.autocast_ok:
                 self._ctx = contextlib.nullcontext()
             else:
                 self._ctx = orig_autocast(self.device_type, *self.args, **self.kwargs)
@@ -123,6 +137,20 @@ def _patch_autocast(b) -> None:
 def _patch_torch_cuda_namespace(b) -> None:
     """Stub the `torch.cuda` calls upstream sprinkles through the pipelines."""
     if getattr(torch.cuda, "_hy3d_patched", False):
+        return
+
+    if b.kind == "xpu":
+        # Compatibility-only baseline. Worker device is fixed by apply().
+        # Preserve real event timing; do not use DummyEvent on Intel.
+        torch.cuda.synchronize = lambda *a, **k: torch.xpu.synchronize(b.device)
+        torch.cuda.Event = torch.xpu.Event
+
+        def xpu_empty_cache():
+            with torch.xpu.device(b.device):
+                torch.xpu.empty_cache()
+
+        torch.cuda.empty_cache = xpu_empty_cache
+        torch.cuda._hy3d_patched = True
         return
 
     class DummyEvent:

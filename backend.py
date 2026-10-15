@@ -3,11 +3,12 @@
 """Compute-backend detection and policy for the Hunyuan3D 2.1 port.
 
 One module answers every "where does this run and in what precision" question
-for all four supported backends:
+for the available backends (Intel support is experimental):
 
     rocm  — AMD GPU via PyTorch/ROCm (HIP). Reports itself as `cuda`.
     cuda  — NVIDIA GPU.
     mps   — Apple Silicon via Metal Performance Shaders.
+    xpu   — Intel GPU via native PyTorch XPU.
     cpu   — fallback.
 
 Import this BEFORE `torch` anywhere else: the MPS fallback flag has to be in
@@ -99,7 +100,7 @@ import torch  # noqa: E402
 PROJECT_DIR = Path(__file__).resolve().parent
 BUILD_INFO_PATH = PROJECT_DIR / ".build" / "extensions.json"
 
-KINDS = ("rocm", "cuda", "mps", "cpu")
+KINDS = ("rocm", "cuda", "mps", "xpu", "cpu")
 
 # Rasterizer backends for the paint pipeline, in descending preference:
 #   "gpu"   native custom_rasterizer extension, CUDA/HIP kernel
@@ -126,7 +127,7 @@ class Backend:
     # --- capability flags used by the rest of the app ---
     @property
     def is_gpu(self) -> bool:
-        return self.kind in ("rocm", "cuda", "mps")
+        return self.kind in ("rocm", "cuda", "mps", "xpu")
 
     @property
     def is_cuda_like(self) -> bool:
@@ -145,12 +146,12 @@ class Backend:
     @property
     def autocast_ok(self) -> bool:
         """MPS autocast is unreliable; CPU fp16 autocast is pointless."""
-        return self.is_cuda_like
+        return self.is_cuda_like or self.kind == "xpu"
 
     @property
     def label(self) -> str:
         """Short backend label for the UI, e.g. `ROCm (HIP 6.4)`."""
-        pretty = {"rocm": "ROCm", "cuda": "CUDA", "mps": "MPS", "cpu": "CPU"}[self.kind]
+        pretty = {"rocm": "ROCm", "cuda": "CUDA", "mps": "MPS", "xpu": "Intel XPU", "cpu": "CPU"}[self.kind]
         return f"{pretty} ({self.version})" if self.version else pretty
 
 
@@ -189,7 +190,7 @@ def _default_raster(kind: str) -> str:
     built = _extension_raster_capability()
     if built == "gpu" and kind in ("rocm", "cuda"):
         return "gpu"
-    if built == "cpu" and kind != "mps":
+    if built == "cpu" and kind not in ("mps", "xpu"):
         return "cpu"
     return "torch"
 
@@ -199,14 +200,16 @@ def detect(
     force_kind: Optional[str] = None,
     force_raster: Optional[str] = None,
     force_dtype: Optional[str] = None,
+    force_device: Optional[str] = None,
 ) -> Backend:
     """Detect the active backend.
 
     Overridable through the environment, which is what makes the ROCm texture
     corruption bisect (ROCm/ROCm#5981) practical without code edits:
 
-        HY3D_BACKEND=cpu|mps|cuda|rocm
-        HY3D_RASTER=gpu|cpu
+        HY3D_BACKEND=cpu|mps|cuda|rocm|xpu
+        HY3D_DEVICE=xpu:0
+        HY3D_RASTER=gpu|cpu|torch
         HY3D_DTYPE=float16|bfloat16|float32
     """
     force_kind = force_kind or os.environ.get("HY3D_BACKEND") or None
@@ -220,7 +223,21 @@ def detect(
 
     kind = force_kind or _detect_kind()
 
-    device = {"rocm": "cuda", "cuda": "cuda", "mps": "mps", "cpu": "cpu"}[kind]
+    requested_device = force_device or os.environ.get("HY3D_DEVICE")
+    device = {"rocm": "cuda", "cuda": "cuda", "mps": "mps", "xpu": "xpu:0", "cpu": "cpu"}[kind]
+    if requested_device:
+        selected = torch.device(requested_device)
+        if selected.type != torch.device(device).type:
+            raise ValueError(f"device {requested_device!r} does not match backend {kind!r}")
+        device = str(selected)
+    if kind == "xpu":
+        if not hasattr(torch, "xpu") or not torch.xpu.is_available():
+            raise RuntimeError("Intel XPU was requested but is not available")
+        index = torch.device(device).index
+        index = 0 if index is None else index
+        if index < 0 or index >= torch.xpu.device_count():
+            raise ValueError(f"XPU device index {index} is unavailable")
+        device = f"xpu:{index}"
     dtype = _resolve_dtype(kind, force_dtype)
     raster = force_raster or _default_raster(kind)
 
@@ -234,7 +251,7 @@ def detect(
         device=device,
         dtype=dtype,
         raster=raster,
-        gpu_name=_gpu_name(kind),
+        gpu_name=_gpu_name(kind, device),
         version=_version_string(kind),
     )
 
@@ -242,6 +259,8 @@ def detect(
 def _detect_kind() -> str:
     if torch.cuda.is_available():
         return "rocm" if getattr(torch.version, "hip", None) else "cuda"
+    if hasattr(torch, "xpu") and torch.xpu.is_available():
+        return "xpu"
     if getattr(torch.backends, "mps", None) is not None and torch.backends.mps.is_available():
         return "mps"
     return "cpu"
@@ -259,13 +278,15 @@ def _resolve_dtype(kind: str, force: Optional[str]) -> torch.dtype:
     # The shape checkpoint ships as fp16 (`model.fp16.ckpt`) and the paint
     # pipeline is loaded with torch_dtype=float16, so fp16 is the native
     # choice on every real GPU. CPU has no usable fp16 kernels.
-    return torch.float16 if kind in ("rocm", "cuda", "mps") else torch.float32
+    return torch.float16 if kind in ("rocm", "cuda", "mps", "xpu") else torch.float32
 
 
-def _gpu_name(kind: str) -> str:
+def _gpu_name(kind: str, device: Optional[str] = None) -> str:
     try:
         if kind in ("rocm", "cuda"):
-            return torch.cuda.get_device_name(0)
+            return torch.cuda.get_device_name(device or 0)
+        if kind == "xpu":
+            return torch.xpu.get_device_name(device or 0)
         if kind == "mps":
             return f"Apple Silicon ({platform.machine()})"
     except Exception:
@@ -278,6 +299,8 @@ def _version_string(kind: str) -> str:
         return f"HIP {getattr(torch.version, 'hip', '?')}"
     if kind == "cuda":
         return f"CUDA {getattr(torch.version, 'cuda', '?')}"
+    if kind == "xpu":
+        return f"torch {torch.__version__}, XPU {getattr(torch.version, 'xpu', 'unknown')}"
     return f"torch {torch.__version__}"
 
 
@@ -287,6 +310,9 @@ def empty_cache(b: Backend) -> None:
     try:
         if b.is_cuda_like:
             torch.cuda.empty_cache()
+        elif b.kind == "xpu":
+            with torch.xpu.device(b.device):
+                torch.xpu.empty_cache()
         elif b.kind == "mps":
             torch.mps.empty_cache()
     except Exception as e:
@@ -302,17 +328,59 @@ def gpu_memory_gb(b: Backend) -> Optional[float]:
     """
     try:
         if b.is_cuda_like:
-            return torch.cuda.get_device_properties(0).total_memory / (1024 ** 3)
+            return torch.cuda.get_device_properties(b.device).total_memory / (1024 ** 3)
+        if b.kind == "xpu":
+            return torch.xpu.get_device_properties(b.device).total_memory / (1024 ** 3)
         if b.kind == "mps":
             return torch.mps.recommended_max_memory() / (1024 ** 3)
     except Exception:
         pass
+    if b.kind == "xpu":
+        # System RAM is not a substitute for a discrete card's VRAM.
+        return None
     try:
         import psutil
 
         return psutil.virtual_memory().total / (1024 ** 3)
     except Exception:
         return None
+
+
+def synchronize(b: Backend) -> None:
+    """Wait for the selected accelerator, including for trustworthy timings."""
+    if b.kind == "xpu":
+        torch.xpu.synchronize(b.device)
+    elif b.is_cuda_like:
+        torch.cuda.synchronize(b.device)
+    elif b.kind == "mps":
+        torch.mps.synchronize()
+
+
+def activate(b: Backend) -> None:
+    """Choose one device before constructing a worker's models and events."""
+    if b.kind == "xpu":
+        torch.xpu.set_device(b.device)
+    elif b.is_cuda_like:
+        torch.cuda.set_device(b.device)
+
+
+def memory_snapshot(b: Backend) -> dict:
+    """Real device counters; absent APIs stay unknown rather than using RAM."""
+    out = {"device": b.device, "total_gib": gpu_memory_gb(b)}
+    api = torch.xpu if b.kind == "xpu" else torch.cuda if b.is_cuda_like else None
+    if api is None:
+        return out
+    for name in ("memory_allocated", "memory_reserved", "max_memory_allocated"):
+        try:
+            out[name + "_bytes"] = int(getattr(api, name)(b.device))
+        except (AttributeError, RuntimeError):
+            out[name + "_bytes"] = None
+    try:
+        free, total = api.mem_get_info(b.device)
+        out.update(free_bytes=int(free), total_bytes=int(total))
+    except (AttributeError, RuntimeError):
+        out.update(free_bytes=None, total_bytes=None)
+    return out
 
 
 # ---- Memory presets for the paint pipeline --------------------------------

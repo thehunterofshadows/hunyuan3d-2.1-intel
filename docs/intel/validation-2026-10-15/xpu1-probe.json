@@ -1,0 +1,66 @@
+{
+  "scope": "model-free bounded operator probes",
+  "torch": "2.13.0+xpu",
+  "backend": "backend=xpu device=xpu:1 dtype=float16 raster=torch gpu=Intel(R) Arc(TM) Pro B70 Graphics, 31.9 GiB [torch 2.13.0+xpu, XPU 20260000]",
+  "before": {
+    "device": "xpu:1",
+    "total_gib": 31.890625,
+    "memory_allocated_bytes": 0,
+    "memory_reserved_bytes": 0,
+    "max_memory_allocated_bytes": 0,
+    "free_bytes": 12308680704,
+    "total_bytes": 34242297856
+  },
+  "checks": [
+    {
+      "op": "matmul",
+      "dtype": "torch.float32",
+      "pass": true
+    },
+    {
+      "op": "matmul",
+      "dtype": "torch.float16",
+      "pass": true
+    },
+    {
+      "op": "matmul",
+      "dtype": "torch.bfloat16",
+      "pass": true
+    },
+    {
+      "op": "sdpa_small",
+      "dtype": "torch.float16",
+      "max_abs_error": 0.0004677772521972656,
+      "tolerance": 0.002,
+      "elapsed_ms": 0.07525098044425249,
+      "pass": true
+    },
+    {
+      "op": "sdpa_small",
+      "dtype": "torch.bfloat16",
+      "max_abs_error": 0.0041158199310302734,
+      "tolerance": 0.01,
+      "elapsed_ms": 0.06920995656400919,
+      "pass": true
+    },
+    {
+      "op": "int64_scatter_amin",
+      "pass": true
+    }
+  ],
+  "attention_trace": [
+    "aten::scaled_dot_product_attention",
+    "aten::_scaled_dot_product_fused_attention_overrideable",
+    "micro_sdpa"
+  ],
+  "after": {
+    "device": "xpu:1",
+    "total_gib": 31.890625,
+    "memory_allocated_bytes": 394752,
+    "memory_reserved_bytes": 2097152,
+    "max_memory_allocated_bytes": 852480,
+    "free_bytes": 12026343424,
+    "total_bytes": 34242297856
+  },
+  "status": "passed_operator_probes_only"
+}

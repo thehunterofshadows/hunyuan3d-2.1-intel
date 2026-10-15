@@ -1,3 +1,9 @@
+# Experimental Intel XPU fork
+
+Intel development is on `dev`. Start with [Intel port status and diagnostics](docs/intel/README.md). Backend and small GPU tests are validated on Arc Pro B70; full model generation is not yet qualified. The original documentation below describes the upstream AMD/Apple port, not a working Intel installer.
+
+---
+
 # Hunyuan3D 2.1 without CUDA — Apple Silicon (MPS) and AMD (ROCm)
 
 **Run Tencent's Hunyuan3D 2.1 image-to-3D model on hardware it was never shipped for:** Apple Silicon Macs via Metal Performance Shaders, and AMD GPUs via ROCm on Linux or Windows. No NVIDIA GPU, no Linux VM, no cloud.
