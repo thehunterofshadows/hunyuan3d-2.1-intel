@@ -1,0 +1,37 @@
+{
+  "file": "railgun.glb",
+  "geometry": [
+    {
+      "name": "geometry_0",
+      "vertices": 29087,
+      "triangles": 40000,
+      "extents": [
+        1.9875138998031616,
+        0.45954054594039917,
+        0.15769368410110474
+      ],
+      "watertight": false,
+      "maps": {
+        "baseColorTexture": {
+          "width": 1024,
+          "height": 1024,
+          "rgb_std": [
+            87.77472779935584,
+            87.86590325482832,
+            89.69373746937895
+          ]
+        },
+        "metallicRoughnessTexture": {
+          "width": 1024,
+          "height": 1024,
+          "rgb_std": [
+            0.0,
+            38.264688088305476,
+            78.19775277435104
+          ]
+        }
+      }
+    }
+  ],
+  "status": "passed_structural_checks_not_artistic_quality"
+}

@@ -1,0 +1,51 @@
+{
+  "env": {
+    "generated_at": "2026-10-15 23:06:24",
+    "backend": "xpu",
+    "device": "xpu:0",
+    "dtype": "float16",
+    "rasterizer": "torch",
+    "gpu": "Intel(R) Arc(TM) Pro B70 Graphics",
+    "gpu_memory_gib": "31.9",
+    "version": "torch 2.13.0+xpu, XPU 20260000",
+    "input_image": "assets/intel-railgun/reference.png",
+    "shape_params": "steps=30 guidance=5.0 octree=256 seed=42"
+  },
+  "stages": [
+    {
+      "name": "import gradio_app (builds the UI graph)",
+      "status": "pass",
+      "elapsed": 3.48,
+      "detail": "UI graph constructed",
+      "error": ""
+    },
+    {
+      "name": "shape generation (DiT + VAE)",
+      "status": "pass",
+      "elapsed": 59.72,
+      "detail": "33672 verts, 67356 faces",
+      "error": ""
+    },
+    {
+      "name": "render untextured mesh (torch_rasterizer)",
+      "status": "pass",
+      "elapsed": 0.45,
+      "detail": "33672 verts, 67356 faces",
+      "error": ""
+    },
+    {
+      "name": "PBR texturing",
+      "status": "pass",
+      "elapsed": 45.9,
+      "detail": "preset=safe views=6 res=256 raster=torch -> hunyuan3d_20261015_230729_for_texture_textured.glb",
+      "error": ""
+    },
+    {
+      "name": "render textured mesh (torch_rasterizer)",
+      "status": "pass",
+      "elapsed": 0.48,
+      "detail": "29087 verts, 40000 faces, texture [1024, 1024]",
+      "error": ""
+    }
+  ]
+}
