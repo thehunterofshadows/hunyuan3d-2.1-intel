@@ -9,3 +9,6 @@
 !assets/intel-woman/
 !assets/intel-woman/**
 viewer/node_modules
+!assets/railgun-built/
+!assets/railgun-built/**
+**/*.blend1

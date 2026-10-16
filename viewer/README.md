@@ -5,8 +5,8 @@ Source stays on the existing fork's dev branch. A built Docker image is deployed
 This does not promote or change the upstream main branch.
 
 ## Features
-Three.js 0.186.1 served locally (no CDN); three original GLB models; mouse/touch orbit, zoom and pan; camera presets, reset, fullscreen where supported; studio lighting; exposure; backgrounds; clay, normal and wireframe inspection; reference image and GLB download.
-Models are unmodified experimental outputs. Character has no skeleton/animations and significant texture defects. Original PBR maps are displayed honestly.
+Three.js 0.186.1 served locally (no CDN); four GLB models, including a modeled railgun rebuild; mouse/touch orbit, zoom and pan; camera presets, reset, fullscreen where supported; studio lighting; exposure; backgrounds; clay, normal and wireframe inspection; reference image and GLB download.
+The original three models are unmodified experimental outputs. Railgun · rebuilt is a separately authored hard-surface asset with 35,116 triangles and eight material groups; its editable Blender source is included. Character has no skeleton/animations and significant texture defects. Original PBR maps are displayed honestly.
 
 ## Build and deploy
 From repository root:
