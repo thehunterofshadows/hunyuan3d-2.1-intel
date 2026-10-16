@@ -5,6 +5,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const $=id=>document.getElementById(id);
 const models=[
+ {id:'trellis-bumper',name:'Bumper · TRELLIS.2',type:'B70 Vulkan · 1024 generation',file:'bumper.glb',note:'Actual TRELLIS.2 output from the original red-cap bumper reference. Static evaluation mesh with generated PBR materials; not yet optimized or wired into pinball physics.',front:Math.PI,reference:'/models/bumper/reference.png',thumbnail:'/models/trellis-bumper/preview.png',textureLabel:'2048px textures'},
  {id:'trellis-railgun',name:'Railgun · TRELLIS.2',type:'B70 Vulkan · 1024 generation',file:'railgun.glb',note:'Actual TRELLIS.2 output from the original reference, generated on one B70 in 221 seconds. More detail than the 512 test, but surfaces remain imperfect and the cyan glow was not reproduced. Unoptimized evaluation mesh.',front:Math.PI,reference:'/models/railgun/reference.png',thumbnail:'/models/trellis-railgun/preview.png',textureLabel:'2048px textures'},
  {id:'railgun-built',name:'Railgun · rebuilt',type:'Clean hard-surface model',file:'railgun.glb',note:'Modeled mechanical parts, beveled edges, clean metal and rubber materials, and emissive cyan inserts. Static weapon with named attachment points; not yet integrated into Instagib.',front:0,reference:'/models/railgun/reference.png'},
  {id:'railgun',name:'Railgun · AI draft',type:'Weapon',file:'railgun.glb',note:'Long accelerator rails and cyan accents. First-pass geometry with visible texture artifacts.',front:Math.PI},
@@ -91,7 +92,7 @@ async function load(entry){
   $('stats').textContent=triangles.toLocaleString()+' triangles · '+(entry.textureLabel||(entry.id==='railgun-built'?'procedural materials':'1024px textures'));
   $('download').href='/models/'+entry.id+'/'+entry.file+'?v=build1';
   $('reference-image').src=entry.reference||'/models/'+entry.id+'/reference.png';
-  document.querySelector('.pill').textContent=entry.id==='trellis-railgun'?'TRELLIS.2 OUTPUT':entry.id==='railgun-built'?'MODELED REBUILD':'FIRST-PASS ASSET';
+  document.querySelector('.pill').textContent=entry.id.startsWith('trellis-')?'TRELLIS.2 OUTPUT':entry.id==='railgun-built'?'MODELED REBUILD':'FIRST-PASS ASSET';
   $('reference-link').href=$('reference-image').src;
   for(const button of document.querySelectorAll('.model'))button.setAttribute('aria-pressed',String(button.dataset.model===entry.id));
   history.replaceState(null,'','#'+entry.id);

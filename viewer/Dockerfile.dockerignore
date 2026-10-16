@@ -15,3 +15,6 @@ viewer/node_modules
 
 !assets/trellis-railgun/
 !assets/trellis-railgun/**
+
+!assets/trellis-bumper/
+!assets/trellis-bumper/**
