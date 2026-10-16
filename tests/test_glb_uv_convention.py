@@ -1,6 +1,8 @@
 """Regression: inspect raw glTF UVs, not a trimesh roundtrip that hides flips."""
 import json, struct, tempfile
 from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import numpy as np
 from mesh_io import export_glb_pbr
 
