@@ -1,0 +1,48 @@
+const {chromium}=require('/opt/checks/node_modules/playwright');
+const assert=require('node:assert/strict');
+(async()=>{
+ const b=await chromium.launch({args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+ const p=await b.newPage({viewport:{width:1440,height:1100}}),errors=[];
+ p.on('pageerror',e=>errors.push(e.message));const base=process.env.VIEWER_URL;
+ await p.goto(base+'#portable-pinball');await p.waitForSelector('#viewport[data-state=ready]');
+ const hash=await p.evaluate(async()=>{const m=await import('/part-inspector.js');return m.sha256(new TextEncoder().encode('abc'));});
+ assert.equal(hash,'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad');
+ const canvas=p.locator('#viewport canvas');
+ async function pickPart(name){
+  await p.selectOption('#cad-part',name);await canvas.scrollIntoViewIfNeeded();await p.waitForTimeout(500);
+  const r=await canvas.boundingBox();await p.mouse.click(r.x+r.width/2,r.y+r.height/2);
+  await p.waitForSelector('#part-popup:not([hidden])');assert.equal(await p.locator('#part-popup').getAttribute('data-part-id'),'cad:'+name);
+ }
+ await pickPart('front_button_panel');
+ await p.locator('#part-note').fill('Move Launch button 8 mm right — integration check');
+ await p.click('#save-note');await p.waitForFunction(()=>document.querySelector('#note-status').textContent.startsWith('Saved on Mini'));
+ let doc=await p.evaluate(()=>fetch('/api/part-notes').then(r=>r.json()));
+ const note=doc.notes.find(n=>n.part.id==='cad:front_button_panel');
+ assert.equal(note.part.cadName,'front_button_panel');assert.equal(note.part.geometryFingerprint.length,64);assert.equal(note.anchor.sourceCadPointMm.length,3);assert.ok(note.part.nodePath);assert.equal(note.revision,1);
+ await p.selectOption('#part-opacity','0.5');assert.equal(await p.locator('#part-opacity').inputValue(),'0.5');
+ await p.screenshot({path:'/evidence/part-notes-popup.png'});
+ await p.click('#part-close');
+ await pickPart('left_front_wall');assert.equal(await p.locator('#part-opacity').inputValue(),'1','other part stays opaque');
+ await p.click('#part-close');await pickPart('front_button_panel');assert.equal(await p.locator('#part-opacity').inputValue(),'0.5');
+ assert.match(await p.locator('#part-note').inputValue(),/Move Launch/);
+ await p.selectOption('#part-opacity','0');await p.click('#part-close');
+ assert.match(await p.locator('#hidden-parts').textContent(),/\(1\)/);
+ const r=await canvas.boundingBox();await p.mouse.click(r.x+5,r.y+5,{button:'right'});
+ await p.waitForSelector('#parts-menu:not([hidden])');assert.match(await p.locator('#restore-list').textContent(),/front button panel/);
+ await p.click('#restore-all');assert.match(await p.locator('#hidden-parts').textContent(),/\(0\)/);
+ await p.reload();await p.waitForSelector('#viewport[data-state=ready]');await pickPart('front_button_panel');
+ await p.waitForFunction(()=>document.querySelector('#part-note').value.includes('Move Launch'));assert.equal(await p.locator('#part-opacity').inputValue(),'1');
+ const exportWait=p.waitForEvent('download');await p.click('#part-close');await p.click('#export-notes');assert.equal((await exportWait).suggestedFilename(),'intel3d-part-notes.json');
+ const conflict=await p.evaluate(async n=>{const r=await fetch('/api/part-notes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...n,text:'stale',expectedRevision:0})});return r.status;},note);assert.equal(conflict,409);
+ const other=await b.newContext();const q=await other.newPage();await q.goto(base);
+ assert.equal((await q.evaluate(()=>fetch('/api/part-notes').then(r=>r.json()))).notes.length,0,'browser workspace is private');
+ const cross=await p.request.post(base+'api/part-notes',{headers:{Origin:'https://different.example'},data:note});assert.equal(cross.status(),403);
+ await p.click('[data-model=trellis-bumper]');await p.waitForSelector('#viewport[data-state=ready][data-model=trellis-bumper]');
+ await canvas.scrollIntoViewIfNeeded();const a=await canvas.boundingBox();await p.mouse.click(a.x+a.width/2,a.y+a.height/2);await p.waitForSelector('#part-popup:not([hidden])');
+ assert.match(await p.locator('#part-popup').getAttribute('data-part-id'),/^mesh:/);
+ await p.click('#part-close');await p.mouse.move(a.x+a.width/2,a.y+a.height/2);await p.mouse.down();await p.mouse.move(a.x+a.width*.65,a.y+a.height*.6,{steps:8});await p.mouse.up();assert.equal(await p.locator('#part-popup').isVisible(),false,'orbit drag does not select');
+ await p.close();
+ const mobile=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});await mobile.goto(base+'#portable-pinball',{waitUntil:'domcontentloaded',timeout:60000});await mobile.waitForSelector('#viewport[data-state=ready]',{timeout:60000});await mobile.selectOption('#cad-part','front_button_panel');const mc=mobile.locator('#viewport canvas');await mc.scrollIntoViewIfNeeded();await mobile.waitForTimeout(400);const mr=await mc.boundingBox();await mobile.touchscreen.tap(mr.x+mr.width/2,mr.y+mr.height/2);await mobile.waitForSelector('#part-popup:not([hidden])');assert.equal(await mobile.locator('#part-popup').getAttribute('data-part-id'),'cad:front_button_panel');assert.ok(await mobile.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await mobile.selectOption('#part-opacity','0');await mobile.click('#part-close');await mobile.click('#hidden-parts');await mobile.locator('#restore-list button').click();assert.match(await mobile.locator('#hidden-parts').textContent(),/\(0\)/);await mobile.screenshot({path:'/evidence/part-notes-mobile.png'});
+ assert.deepEqual(errors,[]);console.log('PASS: raycast selection; note persistence and CAD anchors; SHA256; per-part opacity; right-click restore; JSON export; workspace isolation; revision conflict; origin rejection; generated-model selection');
+ await b.close();
+})().catch(e=>{console.error(e);process.exit(1)});

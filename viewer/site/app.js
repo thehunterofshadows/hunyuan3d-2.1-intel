@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createPartInspector } from './part-inspector.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js';
@@ -21,14 +22,14 @@ const models=[
  {id:'woman',name:'Woman character',type:'Character study',file:'woman.glb',note:'Static, unrigged character. Face, hands and clothing show significant reconstruction artifacts.',front:Math.PI}
 ];
 document.querySelector('.eyebrow').textContent='COLLECTION / '+String(models.length).padStart(2,'0');
-let scene,camera,renderer,controls,model,grid,envRT,key,fill,hemi;
+let scene,camera,renderer,controls,model,grid,envRT,key,fill,hemi,inspector;
 let ticket=0,active,meshes=[],fitDistance=4,radius=1,frame=0;
 const viewport=$('viewport'), status=$('status');
 const clay=new THREE.MeshStandardMaterial({color:0xbcc4cc,roughness:0.75,metalness:0});
 const normals=new THREE.MeshNormalMaterial();
 function dispose(root){
  const geometries=new Set(),materials=new Set(),textures=new Set();
- root.traverse(o=>{if(!o.isMesh)return;geometries.add(o.geometry);const orig=o.userData.originalMaterial||o.material;for(const m of (Array.isArray(orig)?orig:[orig])){materials.add(m);for(const v of Object.values(m))if(v?.isTexture)textures.add(v);}});
+ root.traverse(o=>{if(!o.isMesh)return;geometries.add(o.geometry);if(o.userData.clayMaterial)materials.add(o.userData.clayMaterial);if(o.userData.normalMaterial)materials.add(o.userData.normalMaterial);const orig=o.userData.originalMaterial||o.material;for(const m of (Array.isArray(orig)?orig:[orig])){materials.add(m);for(const v of Object.values(m))if(v?.isTexture)textures.add(v);}});
  for(const t of textures){t.dispose();t.source?.data?.close?.();}
  for(const m of materials)m.dispose();for(const g of geometries)g.dispose();
 }
@@ -112,8 +113,9 @@ function polishTarget(material){
 function surface(){
  const mode=$('surface').value,wire=$('wireframe').checked;
  for(const mesh of meshes){
-  mesh.material=mode==='clay'?clay:mode==='normals'?normals:mesh.userData.originalMaterial;
+  mesh.material=mode==='clay'?mesh.userData.clayMaterial:mode==='normals'?mesh.userData.normalMaterial:mesh.userData.originalMaterial;
   for(const m of (Array.isArray(mesh.material)?mesh.material:[mesh.material]))m.wireframe=wire;
+  inspector?.applyAppearance(mesh);
  }
  requestRender();
 }
@@ -141,6 +143,7 @@ async function load(entry){
    gltf={scene:root};
   }else gltf=await new GLTFLoader().loadAsync('/models/'+entry.id+'/'+entry.file+'?v=build1');
   if(current!==ticket){dispose(gltf.scene);if(entry.local)URL.revokeObjectURL(entry.url);return;}
+  inspector?.beforeModelChange();
   if(model){scene.remove(model);dispose(model);if(active?.local)URL.revokeObjectURL(active.url);}
   model=gltf.scene;active=entry;meshes=[];
   model.rotation.y=entry.front;
@@ -149,8 +152,8 @@ async function load(entry){
   model.position.sub(center);model.updateMatrixWorld(true);
   radius=box.getBoundingSphere(new THREE.Sphere()).radius;
   let triangles=0;
-  model.traverse(o=>{if(o.isMesh){if(entry.id==='trellis-pinball-target')for(const m of (Array.isArray(o.material)?o.material:[o.material]))polishTarget(m);if(['trellis-bumper','trellis-pinball-pop-bumper'].includes(entry.id))for(const m of (Array.isArray(o.material)?o.material:[o.material]))polishBumper(m);o.userData.originalMaterial=o.material;meshes.push(o);triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;}});
-  scene.add(model);configureAssembly();
+  model.traverse(o=>{if(o.isMesh){o.material=Array.isArray(o.material)?o.material.map(m=>m.clone()):o.material.clone();o.userData.clayMaterial=clay.clone();o.userData.normalMaterial=normals.clone();o.userData.baseVisible=o.visible;if(entry.id==='trellis-pinball-target')for(const m of (Array.isArray(o.material)?o.material:[o.material]))polishTarget(m);if(['trellis-bumper','trellis-pinball-pop-bumper'].includes(entry.id))for(const m of (Array.isArray(o.material)?o.material:[o.material]))polishBumper(m);o.userData.originalMaterial=o.material;meshes.push(o);triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;}});
+  scene.add(model);configureAssembly();inspector?.setModel();
   if(grid){scene.remove(grid);grid.geometry.dispose();for(const m of (Array.isArray(grid.material)?grid.material:[grid.material]))m.dispose();}
   grid=new THREE.GridHelper(radius*5,20,0x425464,0x293947);grid.position.y=box.min.y-center.y-0.015*radius;grid.visible=$('grid').checked;scene.add(grid);
   $('chrome-control').hidden=!['trellis-bumper','trellis-pinball-pop-bumper','trellis-pinball-target'].includes(entry.id);$('polish-label').textContent=entry.id==='trellis-pinball-target'?'Target color correction':'Chrome polish';
@@ -178,7 +181,7 @@ async function load(entry){
 function visibleBounds(){
  const bounds=new THREE.Box3();model.updateMatrixWorld(true);
  for(const mesh of meshes){if(!mesh.visible)continue;mesh.geometry.computeBoundingBox();bounds.union(mesh.geometry.boundingBox.clone().applyMatrix4(mesh.matrixWorld));}
- return bounds;
+ return bounds.isEmpty()?new THREE.Box3().setFromObject(model):bounds;
 }
 function configureAssembly(){
  $('cad-controls').hidden=!active?.cad;
@@ -197,9 +200,10 @@ function applyAssembly(){
  for(const mesh of meshes){
   const data=mesh.userData;
   if(data.assembledPosition)mesh.position.copy(data.assembledPosition).addScaledVector(new THREE.Vector3(...(data.explode||[0,0,0])),amount);
-  if(data.cadPart)mesh.visible=selected==='all'?($('cad-panels').checked||!['lid','bezel'].includes(data.kind)):mesh.name===selected;
-  if(data.cadReference)mesh.visible=selected==='all'&&$('cad-'+data.cadReference).checked;
+  if(data.cadPart)data.baseVisible=selected==='all'?($('cad-panels').checked||!['lid','bezel'].includes(data.kind)):mesh.name===selected;
+  if(data.cadReference)data.baseVisible=selected==='all'&&$('cad-'+data.cadReference).checked;
  }
+ if(inspector)inspector.applyVisibility();else for(const mesh of meshes)mesh.visible=mesh.userData.baseVisible!==false;
  $('explode-value').textContent=amount===0?'Assembled':Math.round(amount*100)+'% separated';
  requestRender();
 }
@@ -239,6 +243,7 @@ try {
  document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(frame);frame=0;}else requestRender();});
  viewport.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='r')fit();});
  renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();status.hidden=false;status.textContent='Graphics context lost. Reload this page to resume.';});
+ inspector=createPartInspector({context:()=>({entry:active,model,meshes,scene,camera,controls,renderer}),render:requestRender,appearance:surface,restoreAssembly:mesh=>{if(!active?.cad)return;$('cad-part').value='all';$('cad-panels').checked=true;if(mesh?.userData.cadReference)$('cad-'+mesh.userData.cadReference).checked=true;applyAssembly();}});
  load(models.find(m=>m.id===location.hash.slice(1))||models[0]);
 }catch(error){
  console.error(error);status.hidden=false;status.textContent='3D rendering could not start. Enable hardware acceleration or try another browser.';

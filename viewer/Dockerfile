@@ -26,6 +26,9 @@ COPY assets/trellis-pinball-pop-bumper /usr/share/nginx/html/models/trellis-pinb
 
 # Content-based URLs keep model-list updates fresh even behind CDN browser TTL rules.
 RUN cd /usr/share/nginx/html && \
+    digest=$(sha256sum part-inspector.js | cut -c1-16); \
+    cp part-inspector.js "part-inspector.$digest.js"; \
+    sed -i "s|./part-inspector.js|./part-inspector.$digest.js|g" app.js; \
     for asset in app.js style.css; do \
       digest=$(sha256sum "$asset" | cut -c1-16); \
       name="${asset%.*}.$digest.${asset##*.}"; \

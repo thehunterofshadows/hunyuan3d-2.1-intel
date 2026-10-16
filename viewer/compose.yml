@@ -7,10 +7,28 @@ services:
     container_name: intel-3d-studio-prod-web
     restart: unless-stopped
     networks: [edge]
+    depends_on:
+      notes:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/health"]
       interval: 30s
       timeout: 3s
+  notes:
+    build:
+      context: ..
+      dockerfile: viewer/notes/Dockerfile
+    image: intel-3d-studio-notes:latest
+    container_name: intel-3d-studio-part-notes
+    restart: unless-stopped
+    volumes:
+      - /home/justin/.local/state/intel3d/part-notes:/data
+    networks: [edge]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health')"]
+      interval: 15s
+      timeout: 3s
+      retries: 4
 networks:
   edge:
     external: true
