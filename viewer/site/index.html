@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101419"><title>Intel 3D Studio</title><link rel="stylesheet" href="/style.css">
+<script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js","three/addons/":"/vendor/three/examples/jsm/"}}</script>
+</head><body>
+<header><a class="brand" href="/">◈ <span>Intel <b>3D Studio</b></span></a><span class="sub">THE ASSET LAB</span><a class="back" href="https://projects.fireorbooty.com/">Projects ↗</a></header>
+<main><aside>
+<div class="eyebrow">COLLECTION / 03</div><h1>Take a closer look.</h1><p class="intro">Explore the actual generated meshes. Every angle, every detail.</p>
+<nav id="models" aria-label="Choose model"></nav>
+<section class="details"><span class="pill">FIRST-PASS ASSET</span><h2 id="title">Railgun</h2><p id="description"></p><div id="stats" class="stats"></div><a id="download" class="download" download>Download GLB ↓</a></section>
+<details id="reference"><summary>Original reference image <span>↗</span></summary><p class="caption">AI-generated input, not the reconstructed mesh.</p><a id="reference-link" target="_blank" rel="noopener"><img id="reference-image" alt="Original reference" loading="lazy"></a></details>
+</aside>
+<section class="workspace" aria-label="Interactive 3D model viewer">
+<div class="viewbar"><span><i></i> LIVE MODEL</span><button id="fullscreen" title="Expand viewer">Fullscreen ⛶</button></div>
+<div id="viewport" tabindex="0" aria-label="Drag to rotate. Scroll or pinch to zoom. Right drag or two fingers to pan."><div id="status" role="status">Loading model…</div></div>
+<div class="view-controls"><button data-view="front">Front</button><button data-view="back">Back</button><button data-view="left">Left</button><button data-view="right">Right</button><button data-view="top">Top</button><button id="reset">Reset view</button></div>
+<p class="hint">Drag to rotate · Scroll / pinch to zoom · Right-drag / two fingers to pan</p>
+<div class="settings">
+<label>Surface<select id="surface"><option value="pbr">Original materials</option><option value="clay">Clay / geometry</option><option value="normals">Surface normals</option></select></label>
+<label>Lighting<select id="lighting"><option value="studio">Studio</option><option value="soft">Soft fill</option><option value="dramatic">Side light</option></select></label>
+<label>Background<select id="background"><option value="#161d25">Slate</option><option value="#07090c">Dark</option><option value="#dce1e7">Light</option></select></label>
+<label>Exposure <input id="exposure" aria-label="Exposure" type="range" min="0.3" max="2.5" step="0.05" value="1"></label>
+<label class="check"><input id="wireframe" type="checkbox"> Wireframe</label><label class="check"><input id="rotate" type="checkbox"> Auto-rotate</label><label class="check"><input id="grid" type="checkbox" checked> Ground grid</label>
+</div></section></main>
+<footer>Generated on Intel Arc Pro B70 · Rendered on your device <span>No AI model required to view</span></footer>
+<script type="module" src="/app.js"></script></body></html>

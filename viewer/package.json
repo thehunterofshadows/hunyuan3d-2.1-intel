@@ -1,0 +1,9 @@
+{
+  "name": "intel-3d-studio-viewer",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "dependencies": {
+    "three": "0.186.1"
+  }
+}

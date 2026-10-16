@@ -1,0 +1,16 @@
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: viewer/Dockerfile
+    image: intel-3d-studio:latest
+    container_name: intel-3d-studio-prod-web
+    restart: unless-stopped
+    networks: [edge]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost/health"]
+      interval: 30s
+      timeout: 3s
+networks:
+  edge:
+    external: true

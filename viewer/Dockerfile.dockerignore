@@ -1,0 +1,11 @@
+**
+!viewer/
+!viewer/**
+!assets/
+!assets/intel-bumper/
+!assets/intel-bumper/**
+!assets/intel-railgun/
+!assets/intel-railgun/**
+!assets/intel-woman/
+!assets/intel-woman/**
+viewer/node_modules

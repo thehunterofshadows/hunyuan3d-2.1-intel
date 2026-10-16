@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "host": "mini",
+  "project_id": "intel-3d-studio",
+  "name": "Intel 3D Studio",
+  "description": "Interactive gallery of B70-generated GLB game assets",
+  "repository": "thehunterofshadows/hunyuan3d-2.1-intel",
+  "project_path": "/home/justin/projects/hunyuan3d-2.1-intel",
+  "prod_path": null,
+  "zone_domain": "fireorbooty.com",
+  "dev_hostname": null,
+  "prod_hostname": "3d.fireorbooty.com",
+  "web_service": "web",
+  "internal_http_port": 80,
+  "dev_container": null,
+  "prod_container": "intel-3d-studio-prod-web",
+  "card_tag": "AI",
+  "access_requested": false,
+  "deployment": "Production-only immutable Docker image from existing dev source branch; no main merge or Dev deployment",
+  "watcher": "Not enabled; viewer deployment only",
+  "ai_runner": "Not enabled; viewer deployment only",
+  "test_command": "See viewer/README.md browser verification"
+}

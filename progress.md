@@ -18,3 +18,11 @@ Existing GPU workloads were preserved.
 - [ ] Higher-resolution presets, performance optimization and portable release image.
 
 See docs/intel/e2e-2026-10-15/README.md for measured results and limitations.
+
+## Production-only model viewer — 2026-10-16 UTC
+
+- [x] Three.js gallery for bumper, railgun and woman; rotate/zoom/pan and inspection controls.
+- [x] Docker deployment on Mini; approved hostname 3d.fireorbooty.com only.
+- [x] Browser checks: all three GLBs, rotation/zoom, materials, mobile layout.
+- [x] Shared Cloudflare route and DNS verified.
+- [ ] Repair source assets and qualify game-ready character topology/rigging (separate work).

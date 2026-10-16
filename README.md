@@ -1,5 +1,7 @@
 # Experimental Intel XPU fork
 
+**Interactive model gallery:** [Intel 3D Studio](https://3d.fireorbooty.com/) — rotate, zoom, inspect materials and download the generated assets. [Viewer deployment documentation](viewer/README.md).
+
 Intel development is on `dev`. Start with [Intel port status and diagnostics](docs/intel/README.md). A complete shape → PBR texture → GLB test passed on Arc Pro B70 at the safe preset. [Results and previews](docs/intel/e2e-2026-10-15/README.md). Visual quality and higher presets remain unqualified. The original documentation below describes the upstream AMD/Apple port, not a working Intel installer.
 
 ---
