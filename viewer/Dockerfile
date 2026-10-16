@@ -17,6 +17,8 @@ COPY assets/trellis-bumper /usr/share/nginx/html/models/trellis-bumper
 
 COPY assets/trellis-woman /usr/share/nginx/html/models/trellis-woman
 
+COPY assets/portable-pinball /usr/share/nginx/html/models/portable-pinball
+
 # Content-based URLs keep model-list updates fresh even behind CDN browser TTL rules.
 RUN cd /usr/share/nginx/html && \
     for asset in app.js style.css; do \

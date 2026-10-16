@@ -39,3 +39,17 @@ approximation, not semantic segmentation; small misclassified areas can remain.
 The download is explicitly labeled **original GLB** and excludes this shader.
 Other assets and geometry are unchanged. The bumper browser check compares actual
 rendered pixels with polish on/off and captures all views.
+
+
+### Portable pinball CAD
+The Portable Pinball card uses exact tessellations of the supplied cabinet CAD: 47 named printable parts and three explicitly marked reference envelopes. Assembly controls separate parts, hide top panels, toggle monitor/PC/cover references and isolate a named part. Download links preserve the original STEP assembly and CAD/STL print pack. No inference is used for the cabinet. It is a prototype; physical fit checks remain pending.
+
+Open STL file parses ASCII or binary STL locally using the bundled Three.js STLLoader, converts millimeters Z-up to the viewer's meter Y-up convention, and leaves the file in the browser. No upload endpoint is added. STEP is supplied as an editable download; the browser displays its preconverted GLB geometry.
+
+The portable-pinball browser test verifies the actual part count, all view modes, explode/hide/isolation, local STL loading, downloads, rotation/zoom and mobile layout. Run it in the same Playwright image as the existing tests.
+
+Regenerate the cabinet web asset from the extracted CAD pack:
+```sh
+python3 viewer/tools/export_pinball_glb.py --cad-dir /path/to/pinball_cad_v1 --output assets/portable-pinball --print-pack /path/to/pinball_cabinet_v1_print_pack.zip
+```
+The converter uses NumPy and preserves named parts and reference metadata.

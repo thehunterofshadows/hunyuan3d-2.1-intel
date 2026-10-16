@@ -1,0 +1,1 @@
+Exact Mini VPin V1 CAD tessellation. 47 printable parts + 3 named reference envelopes. World axes converted from mm Z-up to meters Y-up. Source STEP and print pack included; no AI generation was used for this cabinet. Mesh sources were supplied by the user in this conversation. Prototype; physical fit tests pending.

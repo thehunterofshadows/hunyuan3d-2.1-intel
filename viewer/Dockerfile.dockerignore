@@ -21,3 +21,6 @@ viewer/node_modules
 
 !assets/trellis-woman/
 !assets/trellis-woman/**
+
+!assets/portable-pinball/
+!assets/portable-pinball/**

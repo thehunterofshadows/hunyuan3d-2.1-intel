@@ -1,10 +1,12 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const $=id=>document.getElementById(id);
 const models=[
+ {id:'portable-pinball',name:'Portable Pinball · CAD V1',type:'Printable cabinet assembly',file:'cabinet.glb',cad:true,front:0,reference:'/models/portable-pinball/preview.png',thumbnail:'/models/portable-pinball/preview.png',note:'Actual cabinet CAD: 47 printed parts, a monitor envelope, Dell 3050 allowance and folded-cover reserve. HDMI/USB-C front-left; monitor controls rear-left. Front game buttons are shifted right for cable clearance. Physical fit tests are pending. Use the assembly controls to look inside; download STEP/STLs to edit or print.'},
  {id:'trellis-woman',name:'Woman · TRELLIS.2',type:'B70 Vulkan · 1024 generation',file:'woman.glb',note:'Actual TRELLIS.2 reconstruction of the armored woman reference. Static, unrigged evaluation mesh with generated PBR textures; not yet optimized or animated for Instagib.',front:0,reference:'/models/woman/reference.png',thumbnail:'/models/trellis-woman/preview.png',textureLabel:'2048px textures'},
  {id:'trellis-bumper',name:'Bumper · TRELLIS.2',type:'B70 Vulkan · 1024 generation',file:'bumper.glb',note:'Actual TRELLIS.2 output from the original red-cap bumper reference. Chrome polish is enabled in this viewer: reflective silver, glossy red and matte rubber. Toggle it off to compare the generated materials. Download contains the original GLB. Static evaluation mesh; not yet optimized for pinball.',front:Math.PI,reference:'/models/bumper/reference.png',thumbnail:'/models/trellis-bumper/preview.png',textureLabel:'2048px textures'},
  {id:'trellis-railgun',name:'Railgun · TRELLIS.2',type:'B70 Vulkan · 1024 generation',file:'railgun.glb',note:'Actual TRELLIS.2 output from the original reference, generated on one B70 in 221 seconds. More detail than the 512 test, but surfaces remain imperfect and the cyan glow was not reproduced. Unoptimized evaluation mesh.',front:Math.PI,reference:'/models/railgun/reference.png',thumbnail:'/models/trellis-railgun/preview.png',textureLabel:'2048px textures'},
@@ -13,6 +15,7 @@ const models=[
  {id:'bumper',name:'Pinball bumper',type:'Table component',file:'bumper.glb',note:'Red cap, impact ring and metal pedestal. Generated textures still need cleanup.',front:Math.PI},
  {id:'woman',name:'Woman character',type:'Character study',file:'woman.glb',note:'Static, unrigged character. Face, hands and clothing show significant reconstruction artifacts.',front:Math.PI}
 ];
+document.querySelector('.eyebrow').textContent='COLLECTION / '+String(models.length).padStart(2,'0');
 let scene,camera,renderer,controls,model,grid,envRT,key,fill,hemi;
 let ticket=0,active,meshes=[],fitDistance=4,radius=1,frame=0;
 const viewport=$('viewport'), status=$('status');
@@ -36,20 +39,22 @@ function fit(view='home'){
  const vfov=THREE.MathUtils.degToRad(camera.fov);
  const hfov=2*Math.atan(Math.tan(vfov/2)*camera.aspect);
  fitDistance=radius/Math.sin(Math.min(vfov,hfov)/2)*1.12;
- const directions={home:[0.6,0.3,1],front:[0,0,1],back:[0,0,-1],left:[-1,0,0],right:[1,0,0],top:[0,1,0.001]};
+ const target=new THREE.Vector3();
+ if(active?.cad){const b=visibleBounds();if(!b.isEmpty()){b.getCenter(target);radius=b.getBoundingSphere(new THREE.Sphere()).radius;}fitDistance=radius/Math.sin(Math.min(vfov,hfov)/2)*1.12;}
+ const directions={home:active?.cad?[-0.7,0.6,1]:[0.6,0.3,1],front:[0,0,1],back:[0,0,-1],left:[-1,0,0],right:[1,0,0],top:[0,1,0.001]};
  const direction=new THREE.Vector3(...directions[view]).normalize();
- if(active?.id==='railgun-built'||active?.id==='trellis-railgun'){
-  const bounds=new THREE.Box3().setFromObject(model);
+ if(active?.id==='railgun-built'||active?.id==='trellis-railgun'||active?.cad){
+  const bounds=active?.cad?visibleBounds():new THREE.Box3().setFromObject(model);
   const right=new THREE.Vector3().crossVectors(new THREE.Vector3(0,1,0),direction).normalize();
   const up=new THREE.Vector3().crossVectors(direction,right).normalize();
   fitDistance=0;
   for(const x of [bounds.min.x,bounds.max.x])for(const y of [bounds.min.y,bounds.max.y])for(const z of [bounds.min.z,bounds.max.z]){
-   const p=new THREE.Vector3(x,y,z);
+   const p=new THREE.Vector3(x,y,z).sub(target);
    fitDistance=Math.max(fitDistance,p.dot(direction)+Math.max(Math.abs(p.dot(right))/Math.tan(hfov/2),Math.abs(p.dot(up))/Math.tan(vfov/2)));
   }
   fitDistance*=1.18;
  }
- controls.target.set(0,0,0);camera.position.copy(direction.multiplyScalar(fitDistance));
+ controls.target.copy(target);camera.position.copy(direction.multiplyScalar(fitDistance).add(target));
  camera.near=radius/1000;camera.far=radius*100;camera.updateProjectionMatrix();
  controls.minDistance=radius*0.04;controls.maxDistance=radius*20;controls.update();requestRender();
 }
@@ -100,9 +105,17 @@ async function load(entry){
  status.hidden=false;status.textContent='Loading '+entry.name+'…';
  viewport.dataset.state='loading';
  try {
-  const gltf=await new GLTFLoader().loadAsync('/models/'+entry.id+'/'+entry.file+'?v=build1');
-  if(current!==ticket){dispose(gltf.scene);return;}
-  if(model){scene.remove(model);dispose(model);}
+  let gltf;
+  if(entry.format==='stl'){
+   const geometry=await new STLLoader().loadAsync(entry.url);
+   const pos=geometry.getAttribute('position');
+   if(!pos||!pos.count||!Array.from(pos.array).every(Number.isFinite)){geometry.dispose();throw new Error('STL contains no valid geometry');}
+   geometry.rotateX(-Math.PI/2);geometry.scale(.001,.001,.001);geometry.computeVertexNormals();
+   const root=new THREE.Group();root.add(new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({color:0x8bb8c9,roughness:.72,metalness:0})));
+   gltf={scene:root};
+  }else gltf=await new GLTFLoader().loadAsync('/models/'+entry.id+'/'+entry.file+'?v=build1');
+  if(current!==ticket){dispose(gltf.scene);if(entry.local)URL.revokeObjectURL(entry.url);return;}
+  if(model){scene.remove(model);dispose(model);if(active?.local)URL.revokeObjectURL(active.url);}
   model=gltf.scene;active=entry;meshes=[];
   model.rotation.y=entry.front;
   model.updateMatrixWorld(true);
@@ -111,25 +124,58 @@ async function load(entry){
   radius=box.getBoundingSphere(new THREE.Sphere()).radius;
   let triangles=0;
   model.traverse(o=>{if(o.isMesh){if(entry.id==='trellis-bumper')for(const m of (Array.isArray(o.material)?o.material:[o.material]))polishBumper(m);o.userData.originalMaterial=o.material;meshes.push(o);triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;}});
-  scene.add(model);
+  scene.add(model);configureAssembly();
   if(grid){scene.remove(grid);grid.geometry.dispose();for(const m of (Array.isArray(grid.material)?grid.material:[grid.material]))m.dispose();}
   grid=new THREE.GridHelper(radius*5,20,0x425464,0x293947);grid.position.y=box.min.y-center.y-0.015*radius;grid.visible=$('grid').checked;scene.add(grid);
   $('chrome-control').hidden=entry.id!=='trellis-bumper';
-  $('download').textContent=entry.id==='trellis-bumper'?'Download original GLB ↓':'Download GLB ↓';
+  $('download').textContent=entry.format==='stl'?'Download STL ↓':entry.id==='trellis-bumper'?'Download original GLB ↓':'Download GLB ↓';
   $('title').textContent=entry.name;$('description').textContent=entry.note;
-  $('stats').textContent=triangles.toLocaleString()+' triangles · '+(entry.textureLabel||(entry.id==='railgun-built'?'procedural materials':'1024px textures'));
-  $('download').href='/models/'+entry.id+'/'+entry.file+'?v=build1';
-  $('reference-image').src=entry.reference||'/models/'+entry.id+'/reference.png';
-  document.querySelector('.pill').textContent=entry.id.startsWith('trellis-')?'TRELLIS.2 OUTPUT':entry.id==='railgun-built'?'MODELED REBUILD':'FIRST-PASS ASSET';
+  $('stats').textContent=triangles.toLocaleString()+' triangles · '+(entry.cad?'47 printed parts · 3 reference envelopes':entry.format==='stl'?'STL geometry · '+[box.max.x-box.min.x,box.max.y-box.min.y,box.max.z-box.min.z].map(v=>(v*1000).toFixed(1)).join(' × ')+' mm':(entry.textureLabel||(entry.id==='railgun-built'?'procedural materials':'1024px textures')));
+  $('download').href=entry.local?entry.url:'/models/'+entry.id+'/'+entry.file+'?v=build1';
+  $('download').download=entry.local?entry.name:entry.file;
+  $('cad-downloads').hidden=!entry.cad;
+  $('reference').hidden=!!entry.local;
+  $('reference').querySelector('summary').textContent=entry.cad?'Actual CAD preview ↗':'Original reference image ↗';
+  $('reference').querySelector('.caption').textContent=entry.cad?'Rendered from the CAD assembly. Physical fit tests are pending.':'AI-generated input, not the reconstructed mesh.';
+  if(!entry.local)$('reference-image').src=entry.reference||'/models/'+entry.id+'/reference.png';
+  document.querySelector('.pill').textContent=entry.cad?'CAD PROTOTYPE':entry.local?'LOCAL STL':entry.id.startsWith('trellis-')?'TRELLIS.2 OUTPUT':entry.id==='railgun-built'?'MODELED REBUILD':'FIRST-PASS ASSET';
   $('reference-link').href=$('reference-image').src;
   for(const button of document.querySelectorAll('.model'))button.setAttribute('aria-pressed',String(button.dataset.model===entry.id));
-  history.replaceState(null,'','#'+entry.id);
+  if(!entry.local)history.replaceState(null,'','#'+entry.id);
   surface();fit();status.hidden=true;viewport.dataset.state='ready';viewport.dataset.model=entry.id;
  }catch(error){
   if(current!==ticket)return;
-  console.error(error);status.textContent='Could not load this model. Check your connection and select it again to retry.';
+  console.error(error);if(entry.local)URL.revokeObjectURL(entry.url);status.textContent=entry.local?'Could not read this STL. Choose a valid ASCII or binary STL file.':'Could not load this model. Check your connection and select it again to retry.';
   viewport.dataset.state='error';
  }
+}
+function visibleBounds(){
+ const bounds=new THREE.Box3();model.updateMatrixWorld(true);
+ for(const mesh of meshes){if(!mesh.visible)continue;mesh.geometry.computeBoundingBox();bounds.union(mesh.geometry.boundingBox.clone().applyMatrix4(mesh.matrixWorld));}
+ return bounds;
+}
+function configureAssembly(){
+ $('cad-controls').hidden=!active?.cad;
+ if(!active?.cad)return;
+ $('explode').value='0';$('cad-monitor').checked=true;$('cad-pc').checked=true;$('cad-cover').checked=false;$('cad-panels').checked=true;
+ const select=$('cad-part');select.replaceChildren(new Option('All printed parts','all'));
+ for(const mesh of meshes){
+  mesh.userData.assembledPosition=mesh.position.clone();
+  if(mesh.userData.cadPart)select.add(new Option(mesh.name.replaceAll('_',' '),mesh.name));
+ }
+ applyAssembly();
+}
+function applyAssembly(){
+ if(!active?.cad)return;
+ const amount=Number($('explode').value),selected=$('cad-part').value;
+ for(const mesh of meshes){
+  const data=mesh.userData;
+  if(data.assembledPosition)mesh.position.copy(data.assembledPosition).addScaledVector(new THREE.Vector3(...(data.explode||[0,0,0])),amount);
+  if(data.cadPart)mesh.visible=selected==='all'?($('cad-panels').checked||!['lid','bezel'].includes(data.kind)):mesh.name===selected;
+  if(data.cadReference)mesh.visible=selected==='all'&&$('cad-'+data.cadReference).checked;
+ }
+ $('explode-value').textContent=amount===0?'Assembled':Math.round(amount*100)+'% separated';
+ requestRender();
 }
 for(const entry of models){
  const button=document.createElement('button');button.className='model';button.dataset.model=entry.id;button.setAttribute('aria-pressed','false');
@@ -152,6 +198,10 @@ try {
  envRT=pmrem.fromScene(room,0.04);room.dispose();pmrem.dispose();lights();
  new ResizeObserver(resize).observe(viewport);resize();
  $('reset').onclick=()=>fit();
+ $('explode').oninput=applyAssembly;$('explode').onchange=()=>fit();
+ for(const id of ['cad-monitor','cad-pc','cad-cover','cad-panels','cad-part'])$(id).onchange=()=>{applyAssembly();fit();};
+ $('open-stl').onclick=()=>$('stl-file').click();
+ $('stl-file').onchange=()=>{const file=$('stl-file').files[0];if(!file)return;load({id:'local-stl',name:file.name,type:'Local STL',format:'stl',url:URL.createObjectURL(file),local:true,front:0,note:'Local STL geometry, displayed in millimeters. This file stays in your browser and is not uploaded. Use mouse or touch to rotate, zoom and inspect.'});$('stl-file').value='';};
  for(const b of document.querySelectorAll('[data-view]'))b.onclick=()=>fit(b.dataset.view);
  $('chrome').onchange=()=>{chromeEnabled.value=$('chrome').checked?1:0;requestRender();};
  $('surface').onchange=surface;$('wireframe').onchange=surface;$('lighting').onchange=lights;
