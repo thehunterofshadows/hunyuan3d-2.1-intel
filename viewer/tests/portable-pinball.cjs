@@ -7,14 +7,14 @@ const assert=require('node:assert/strict');
  const base=process.env.VIEWER_URL||'http://pinball-cad-viewer-check/';
  await p.goto(base+'#portable-pinball');await p.waitForSelector('#viewport[data-state=ready][data-model=portable-pinball]',{timeout:60000});
  assert.equal(await p.locator('#cad-part option').count(),48,'47 printed parts plus All');
- assert.match(await p.locator('#stats').innerText(),/37,364 triangles · 47 printed parts · 3 reference envelopes/);
+ assert.match(await p.locator('#stats').innerText(),/37,380 triangles · 47 printed parts · 3 reference envelopes/);
  assert.match(await p.locator('#reference .caption').textContent(),/CAD assembly/);
  assert.equal(await p.locator('#chrome-control').isVisible(),false);
  const response=await p.request.get(new URL(await p.locator('#download').getAttribute('href'),p.url()).href);
  assert.equal(response.status(),200);const glb=await response.body();assert.equal(glb.subarray(0,4).toString(),'glTF');
  const jsonSize=glb.readUInt32LE(12);const doc=JSON.parse(glb.subarray(20,20+jsonSize).toString());
  assert.equal(doc.nodes.filter(n=>n.extras?.cadPart).length,47);assert.equal(doc.nodes.filter(n=>n.extras?.cadReference).length,3);
- for(const path of ['cad-print-pack.zip','cabinet.step']){
+ for(const path of ['cad-print-pack-v1_1.zip','cabinet-v1_1.step']){
   const r=await p.request.get(new URL('/models/portable-pinball/'+path,p.url()).href);assert.equal(r.status(),200);
   const content=await r.body();assert.ok(path.endsWith('zip')?content.subarray(0,2).toString()==='PK':content.subarray(0,30).toString().includes('ISO-10303-21'));
  }
