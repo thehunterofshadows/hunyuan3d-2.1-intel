@@ -1,0 +1,19 @@
+{
+  "model_family": "Pixal3D",
+  "engine": "pwilkin/trellis.cpp v0.8.1 Vulkan",
+  "hardware": "Intel Arc Pro B70 GPU 0, Skynet",
+  "source_image": "reference.png",
+  "source_glb": "/home/justin/ai/trellis2/output/pixal3d-railgun-1536-20261016T234632Z.glb",
+  "output": "railgun.glb",
+  "resolution": 1536,
+  "steps": 12,
+  "seed": 42,
+  "fov_degrees": 49.13,
+  "texture_atlas": 2048,
+  "triangles": 283266,
+  "bytes": 21066352,
+  "sha256": "fc456396a0004298add64fdbec4e15a07f749fc676fd48721fa443e728ba6218",
+  "generation_seconds": 487.1,
+  "peak_vram_mib": 7863.88,
+  "verified": "GLB v2 with indexed triangles, UVs and PBR images"
+}
