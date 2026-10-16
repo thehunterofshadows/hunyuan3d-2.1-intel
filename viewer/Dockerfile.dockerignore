@@ -12,3 +12,6 @@ viewer/node_modules
 !assets/railgun-built/
 !assets/railgun-built/**
 **/*.blend1
+
+!assets/trellis-railgun/
+!assets/trellis-railgun/**

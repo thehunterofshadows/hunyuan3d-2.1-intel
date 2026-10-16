@@ -5,6 +5,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const $=id=>document.getElementById(id);
 const models=[
+ {id:'trellis-railgun',name:'Railgun · TRELLIS.2',type:'B70 Vulkan · 1024 generation',file:'railgun.glb',note:'Actual TRELLIS.2 output from the original reference, generated on one B70 in 221 seconds. More detail than the 512 test, but surfaces remain imperfect and the cyan glow was not reproduced. Unoptimized evaluation mesh.',front:Math.PI,reference:'/models/railgun/reference.png',thumbnail:'/models/trellis-railgun/preview.png',textureLabel:'2048px textures'},
  {id:'railgun-built',name:'Railgun · rebuilt',type:'Clean hard-surface model',file:'railgun.glb',note:'Modeled mechanical parts, beveled edges, clean metal and rubber materials, and emissive cyan inserts. Static weapon with named attachment points; not yet integrated into Instagib.',front:0,reference:'/models/railgun/reference.png'},
  {id:'railgun',name:'Railgun · AI draft',type:'Weapon',file:'railgun.glb',note:'Long accelerator rails and cyan accents. First-pass geometry with visible texture artifacts.',front:Math.PI},
  {id:'bumper',name:'Pinball bumper',type:'Table component',file:'bumper.glb',note:'Red cap, impact ring and metal pedestal. Generated textures still need cleanup.',front:Math.PI},
@@ -35,7 +36,7 @@ function fit(view='home'){
  fitDistance=radius/Math.sin(Math.min(vfov,hfov)/2)*1.12;
  const directions={home:[0.6,0.3,1],front:[0,0,1],back:[0,0,-1],left:[-1,0,0],right:[1,0,0],top:[0,1,0.001]};
  const direction=new THREE.Vector3(...directions[view]).normalize();
- if(active?.id==='railgun-built'){
+ if(active?.id==='railgun-built'||active?.id==='trellis-railgun'){
   const bounds=new THREE.Box3().setFromObject(model);
   const right=new THREE.Vector3().crossVectors(new THREE.Vector3(0,1,0),direction).normalize();
   const up=new THREE.Vector3().crossVectors(direction,right).normalize();
@@ -87,10 +88,10 @@ async function load(entry){
   if(grid){scene.remove(grid);grid.geometry.dispose();for(const m of (Array.isArray(grid.material)?grid.material:[grid.material]))m.dispose();}
   grid=new THREE.GridHelper(radius*5,20,0x425464,0x293947);grid.position.y=box.min.y-center.y-0.015*radius;grid.visible=$('grid').checked;scene.add(grid);
   $('title').textContent=entry.name;$('description').textContent=entry.note;
-  $('stats').textContent=triangles.toLocaleString()+' triangles · '+(entry.id==='railgun-built'?'procedural materials':'1024px textures');
+  $('stats').textContent=triangles.toLocaleString()+' triangles · '+(entry.textureLabel||(entry.id==='railgun-built'?'procedural materials':'1024px textures'));
   $('download').href='/models/'+entry.id+'/'+entry.file+'?v=build1';
   $('reference-image').src=entry.reference||'/models/'+entry.id+'/reference.png';
-  document.querySelector('.pill').textContent=entry.id==='railgun-built'?'MODELED REBUILD':'FIRST-PASS ASSET';
+  document.querySelector('.pill').textContent=entry.id==='trellis-railgun'?'TRELLIS.2 OUTPUT':entry.id==='railgun-built'?'MODELED REBUILD':'FIRST-PASS ASSET';
   $('reference-link').href=$('reference-image').src;
   for(const button of document.querySelectorAll('.model'))button.setAttribute('aria-pressed',String(button.dataset.model===entry.id));
   history.replaceState(null,'','#'+entry.id);
@@ -103,7 +104,7 @@ async function load(entry){
 }
 for(const entry of models){
  const button=document.createElement('button');button.className='model';button.dataset.model=entry.id;button.setAttribute('aria-pressed','false');
- const img=document.createElement('img');img.src=entry.id==='railgun-built'?'/models/railgun-built/preview.png':('/models/'+entry.id+'/reference.png');img.alt='';
+ const img=document.createElement('img');img.src=entry.thumbnail||(entry.id==='railgun-built'?'/models/railgun-built/preview.png':('/models/'+entry.id+'/reference.png'));img.alt='';
  const text=document.createElement('span'),strong=document.createElement('strong'),small=document.createElement('small');
  strong.textContent=entry.name;small.textContent=entry.type;text.append(strong,small);button.append(img,text);
  button.onclick=()=>load(entry);$('models').append(button);
