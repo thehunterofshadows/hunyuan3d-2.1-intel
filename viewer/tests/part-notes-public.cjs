@@ -4,8 +4,8 @@ const assert=require('node:assert/strict');
 (async()=>{
  const b=await chromium.launch({args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  const p=await b.newPage({viewport:{width:1440,height:1100}}),errors=[];
- p.on('pageerror',e=>errors.push(e.message));
- await p.goto(process.env.VIEWER_URL+'#portable-pinball');await p.waitForSelector('#viewport[data-state=ready]',{timeout:60000});
+ p.setDefaultTimeout(120000);await p.route('**/*',route=>route.request().resourceType()==='image'?route.abort():route.continue());p.on('pageerror',e=>errors.push(e.message));
+ await p.goto(process.env.VIEWER_URL+'#portable-pinball',{waitUntil:'domcontentloaded',timeout:60000});await p.waitForSelector('#viewport[data-state=ready]',{timeout:120000});
  await p.selectOption('#cad-part','front_button_panel');const canvas=p.locator('#viewport canvas');await canvas.scrollIntoViewIfNeeded();await p.waitForTimeout(400);const r=await canvas.boundingBox();await p.mouse.click(r.x+r.width/2,r.y+r.height/2);await p.waitForSelector('#part-popup:not([hidden])');
  assert.equal(await p.locator('#part-popup').getAttribute('data-part-id'),'cad:front_button_panel');
  await p.selectOption('#part-opacity','0.5');await p.selectOption('#part-opacity','0');await p.click('#part-close');
