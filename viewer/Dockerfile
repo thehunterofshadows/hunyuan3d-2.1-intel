@@ -14,3 +14,12 @@ COPY assets/railgun-built /usr/share/nginx/html/models/railgun-built
 COPY assets/trellis-railgun /usr/share/nginx/html/models/trellis-railgun
 
 COPY assets/trellis-bumper /usr/share/nginx/html/models/trellis-bumper
+
+# Content-based URLs keep model-list updates fresh even behind CDN browser TTL rules.
+RUN cd /usr/share/nginx/html && \
+    for asset in app.js style.css; do \
+      digest=$(sha256sum "$asset" | cut -c1-16); \
+      name="${asset%.*}.$digest.${asset##*.}"; \
+      cp "$asset" "$name"; \
+      sed -i "s|/$asset[^\"]*|/$name|g" index.html; \
+    done
