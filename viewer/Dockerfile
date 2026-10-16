@@ -18,6 +18,11 @@ COPY assets/trellis-bumper /usr/share/nginx/html/models/trellis-bumper
 COPY assets/trellis-woman /usr/share/nginx/html/models/trellis-woman
 
 COPY assets/portable-pinball /usr/share/nginx/html/models/portable-pinball
+COPY assets/trellis-pinball-flipper /usr/share/nginx/html/models/trellis-pinball-flipper
+COPY assets/trellis-pinball-plunger /usr/share/nginx/html/models/trellis-pinball-plunger
+COPY assets/trellis-pinball-slingshot /usr/share/nginx/html/models/trellis-pinball-slingshot
+COPY assets/trellis-pinball-target /usr/share/nginx/html/models/trellis-pinball-target
+COPY assets/trellis-pinball-pop-bumper /usr/share/nginx/html/models/trellis-pinball-pop-bumper
 
 # Content-based URLs keep model-list updates fresh even behind CDN browser TTL rules.
 RUN cd /usr/share/nginx/html && \

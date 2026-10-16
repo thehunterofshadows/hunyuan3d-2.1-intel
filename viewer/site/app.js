@@ -7,6 +7,11 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 const $=id=>document.getElementById(id);
 const models=[
  {id:'portable-pinball',name:'Portable Pinball · CAD V1',type:'Printable cabinet assembly',file:'cabinet.glb',cad:true,front:0,reference:'/models/portable-pinball/preview.png',thumbnail:'/models/portable-pinball/preview.png',note:'Actual cabinet CAD: 47 printed parts, a monitor envelope, Dell 3050 allowance and folded-cover reserve. HDMI/USB-C front-left; monitor controls rear-left. Front game buttons are shifted right for cable clearance. Physical fit tests are pending. Use the assembly controls to look inside; download STEP/STLs to edit or print.'},
+ {id:'trellis-pinball-flipper',name:'Flipper bat · TRELLIS.2',type:'Pinball component · Arc B70 Vulkan',file:'flipper.glb',front:0,reference:'/models/trellis-pinball-flipper/reference.png',thumbnail:'/models/trellis-pinball-flipper/preview.png',textureLabel:'2048px textures',note:'Actual TRELLIS.2 mesh reconstructed from an original illustrated classic white bat with red rebound rubber reference. 512-resolution exploratory output. Geometry and surfaces may differ from the input; not optimized or mechanically functional.'},
+ {id:'trellis-pinball-plunger',name:'Ball launcher / plunger · TRELLIS.2',type:'Pinball component · Arc B70 Vulkan',file:'plunger.glb',front:0,reference:'/models/trellis-pinball-plunger/reference.png',thumbnail:'/models/trellis-pinball-plunger/preview.png',textureLabel:'2048px textures',note:'Actual TRELLIS.2 mesh reconstructed from an original illustrated steel spring-loaded launcher with red pull knob reference. 512-resolution exploratory output. Geometry and surfaces may differ from the input; not optimized or mechanically functional.'},
+ {id:'trellis-pinball-slingshot',name:'Slingshot bumper · TRELLIS.2',type:'Pinball component · Arc B70 Vulkan',file:'slingshot.glb',front:0,reference:'/models/trellis-pinball-slingshot/reference.png',thumbnail:'/models/trellis-pinball-slingshot/preview.png',textureLabel:'2048px textures',note:'Actual TRELLIS.2 mesh reconstructed from an original illustrated triangular rebound bumper and metal guide posts reference. 512-resolution exploratory output. Geometry and surfaces may differ from the input; not optimized or mechanically functional.'},
+ {id:'trellis-pinball-target',name:'Drop target · TRELLIS.2',type:'Pinball component · Arc B70 Vulkan',file:'target.glb',front:0,reference:'/models/trellis-pinball-target/reference.png',thumbnail:'/models/trellis-pinball-target/preview.png',textureLabel:'2048px textures',note:'Actual TRELLIS.2 mesh reconstructed from an original illustrated yellow stand-up drop target with hinge reference. 512-resolution exploratory output. Geometry and surfaces may differ from the input; not optimized or mechanically functional.'},
+ {id:'trellis-pinball-pop-bumper',name:'Pop bumper · TRELLIS.2',type:'Pinball component · Arc B70 Vulkan',file:'pop-bumper.glb',front:0,reference:'/models/trellis-pinball-pop-bumper/reference.png',thumbnail:'/models/trellis-pinball-pop-bumper/preview.png',textureLabel:'2048px textures',note:'Actual TRELLIS.2 mesh reconstructed from an original illustrated red-cap pop bumper for the pinball playfield reference. 512-resolution exploratory output. Geometry and surfaces may differ from the input; not optimized or mechanically functional.'},
  {id:'trellis-woman',name:'Woman · TRELLIS.2',type:'B70 Vulkan · 1024 generation',file:'woman.glb',note:'Actual TRELLIS.2 reconstruction of the armored woman reference. Static, unrigged evaluation mesh with generated PBR textures; not yet optimized or animated for Instagib.',front:0,reference:'/models/woman/reference.png',thumbnail:'/models/trellis-woman/preview.png',textureLabel:'2048px textures'},
  {id:'trellis-bumper',name:'Bumper · TRELLIS.2',type:'B70 Vulkan · 1024 generation',file:'bumper.glb',note:'Actual TRELLIS.2 output from the original red-cap bumper reference. Chrome polish is enabled in this viewer: reflective silver, glossy red and matte rubber. Toggle it off to compare the generated materials. Download contains the original GLB. Static evaluation mesh; not yet optimized for pinball.',front:Math.PI,reference:'/models/bumper/reference.png',thumbnail:'/models/trellis-bumper/preview.png',textureLabel:'2048px textures'},
  {id:'trellis-railgun',name:'Railgun · TRELLIS.2',type:'B70 Vulkan · 1024 generation',file:'railgun.glb',note:'Actual TRELLIS.2 output from the original reference, generated on one B70 in 221 seconds. More detail than the 512 test, but surfaces remain imperfect and the cyan glow was not reproduced. Unoptimized evaluation mesh.',front:Math.PI,reference:'/models/railgun/reference.png',thumbnail:'/models/trellis-railgun/preview.png',textureLabel:'2048px textures'},
@@ -83,6 +88,27 @@ function polishBumper(material){
  material.customProgramCacheKey=()=> 'bumper-chrome-v1';
  material.needsUpdate=true;
 }
+// Viewer-only correction of TRELLIS's heavily darkened target panel.
+// The original exported GLB stays unchanged and downloadable.
+function polishTarget(material){
+ material.onBeforeCompile=shader=>{
+  shader.uniforms.targetColor=chromeEnabled;
+  shader.fragmentShader='uniform float targetColor;\n'+shader.fragmentShader;
+  shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',`
+    #include <map_fragment>
+    if(targetColor > 0.5){
+      float cmax=max(diffuseColor.r,max(diffuseColor.g,diffuseColor.b));
+      float redProtect=smoothstep(0.02,0.09,diffuseColor.r-max(diffuseColor.g,diffuseColor.b));
+      float blueProtect=smoothstep(0.01,0.06,diffuseColor.b-max(diffuseColor.r,diffuseColor.g));
+      float dark=1.0-smoothstep(0.12,0.27,cmax);
+      float panel=dark*(1.0-redProtect)*(1.0-blueProtect);
+      diffuseColor.rgb=mix(diffuseColor.rgb,vec3(0.92,0.64,0.09),panel*0.92);
+    }
+  `);
+ };
+ material.customProgramCacheKey=()=> 'target-color-v1';
+ material.needsUpdate=true;
+}
 function surface(){
  const mode=$('surface').value,wire=$('wireframe').checked;
  for(const mesh of meshes){
@@ -123,12 +149,12 @@ async function load(entry){
   model.position.sub(center);model.updateMatrixWorld(true);
   radius=box.getBoundingSphere(new THREE.Sphere()).radius;
   let triangles=0;
-  model.traverse(o=>{if(o.isMesh){if(entry.id==='trellis-bumper')for(const m of (Array.isArray(o.material)?o.material:[o.material]))polishBumper(m);o.userData.originalMaterial=o.material;meshes.push(o);triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;}});
+  model.traverse(o=>{if(o.isMesh){if(entry.id==='trellis-pinball-target')for(const m of (Array.isArray(o.material)?o.material:[o.material]))polishTarget(m);if(['trellis-bumper','trellis-pinball-pop-bumper'].includes(entry.id))for(const m of (Array.isArray(o.material)?o.material:[o.material]))polishBumper(m);o.userData.originalMaterial=o.material;meshes.push(o);triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;}});
   scene.add(model);configureAssembly();
   if(grid){scene.remove(grid);grid.geometry.dispose();for(const m of (Array.isArray(grid.material)?grid.material:[grid.material]))m.dispose();}
   grid=new THREE.GridHelper(radius*5,20,0x425464,0x293947);grid.position.y=box.min.y-center.y-0.015*radius;grid.visible=$('grid').checked;scene.add(grid);
-  $('chrome-control').hidden=entry.id!=='trellis-bumper';
-  $('download').textContent=entry.format==='stl'?'Download STL ↓':entry.id==='trellis-bumper'?'Download original GLB ↓':'Download GLB ↓';
+  $('chrome-control').hidden=!['trellis-bumper','trellis-pinball-pop-bumper','trellis-pinball-target'].includes(entry.id);$('polish-label').textContent=entry.id==='trellis-pinball-target'?'Target color correction':'Chrome polish';
+  $('download').textContent=entry.format==='stl'?'Download STL ↓':['trellis-bumper','trellis-pinball-pop-bumper'].includes(entry.id)?'Download original GLB ↓':'Download GLB ↓';
   $('title').textContent=entry.name;$('description').textContent=entry.note;
   $('stats').textContent=triangles.toLocaleString()+' triangles · '+(entry.cad?'47 printed parts · 3 reference envelopes':entry.format==='stl'?'STL geometry · '+[box.max.x-box.min.x,box.max.y-box.min.y,box.max.z-box.min.z].map(v=>(v*1000).toFixed(1)).join(' × ')+' mm':(entry.textureLabel||(entry.id==='railgun-built'?'procedural materials':'1024px textures')));
   $('download').href=entry.local?entry.url:'/models/'+entry.id+'/'+entry.file+'?v=build1';
@@ -136,7 +162,7 @@ async function load(entry){
   $('cad-downloads').hidden=!entry.cad;
   $('reference').hidden=!!entry.local;
   $('reference').querySelector('summary').textContent=entry.cad?'Actual CAD preview ↗':'Original reference image ↗';
-  $('reference').querySelector('.caption').textContent=entry.cad?'Rendered from the CAD assembly. Physical fit tests are pending.':'AI-generated input, not the reconstructed mesh.';
+  $('reference').querySelector('.caption').textContent=entry.cad?'Rendered from the CAD assembly. Physical fit tests are pending.':entry.id.startsWith('trellis-pinball-')?'Illustrated source reference, not the reconstructed model.':'AI-generated input, not the reconstructed mesh.';
   if(!entry.local)$('reference-image').src=entry.reference||'/models/'+entry.id+'/reference.png';
   document.querySelector('.pill').textContent=entry.cad?'CAD PROTOTYPE':entry.local?'LOCAL STL':entry.id.startsWith('trellis-')?'TRELLIS.2 OUTPUT':entry.id==='railgun-built'?'MODELED REBUILD':'FIRST-PASS ASSET';
   $('reference-link').href=$('reference-image').src;

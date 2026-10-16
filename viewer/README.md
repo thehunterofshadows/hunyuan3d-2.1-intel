@@ -53,3 +53,8 @@ Regenerate the cabinet web asset from the extracted CAD pack:
 python3 viewer/tools/export_pinball_glb.py --cad-dir /path/to/pinball_cad_v1 --output assets/portable-pinball --print-pack /path/to/pinball_cabinet_v1_print_pack.zip
 ```
 The converter uses NumPy and preserves named parts and reference metadata.
+
+### TRELLIS.2 pinball component collection (2026-10-16)
+Five **actual GLB exports** from Skynet's trellis.cpp v0.8.1 image-to-3D Vulkan backend: flipper bat, plunger, slingshot, drop target, pop bumper. GPU0 and GPU1 ran simultaneous worker processes, one per B70. All five are 512 geometry resolution, seed 42, 12 inference steps, with 2048px PBR atlases; 140k–148k triangles each. Files and original illustrated inputs are stored under `assets/trellis-pinball-*`, with provenance and SHA256 in per-part READMEs. `viewer/tools/sync_pinball_trellis.py` syncs the outputs over SSH and registers the viewer.
+
+The sidebar `preview.png` images are **screenshots of the actual GLBs** from Playwright/WebGL, not image generation mockups. Generated results are experimental: surfaces and colors are approximate, especially the slingshot and target; none are mechanically functional, optimized or print ready. The slingshot has unwanted bulky geometry. The target uses optional, viewer-only color correction; pop bumper offers optional chrome polish. Downloads remain the untouched exports. `viewer/tests/pinball-parts.cjs` loads all five, verifies geometry/downloads, captures previews, and checks mobile layout.
