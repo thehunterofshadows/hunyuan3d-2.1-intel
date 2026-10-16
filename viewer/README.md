@@ -29,3 +29,13 @@ Optional VIEWER_URL container environment selects a public deployment.
 Add asset under assets/, update Dockerfile COPY and models list in site/app.js, rebuild and verify. No inference runs automatically.
 Before updates, tag the existing Docker image for rollback. To roll back, retag the saved image as intel-3d-studio:latest and run compose up -d --force-recreate --no-build.
 No mutable user data exists; source/assets are backed by Git. No automatic watcher or AI Runner registration was requested as part of this viewer deployment.
+
+### Bumper chrome preview
+The TRELLIS bumper enables **Chrome polish** by default. This viewer-only shader
+uses base-color saturation/brightness to approximate silver, red cap and rubber
+regions, adjusts roughness/metalness, and uses the existing studio environment.
+Turn the checkbox off to compare the untouched generated material. This is an
+approximation, not semantic segmentation; small misclassified areas can remain.
+The download is explicitly labeled **original GLB** and excludes this shader.
+Other assets and geometry are unchanged. The bumper browser check compares actual
+rendered pixels with polish on/off and captures all views.

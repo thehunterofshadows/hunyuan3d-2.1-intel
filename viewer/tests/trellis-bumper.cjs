@@ -1,7 +1,7 @@
 const {chromium}=require('/opt/checks/node_modules/playwright');
 (async()=>{const b=await chromium.launch({args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
 const p=await b.newPage({viewport:{width:1440,height:1000}});
-const errors=[];p.on('pageerror',e=>errors.push(e.message));
+const errors=[];p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
 await p.goto(process.env.VIEWER_URL||'http://trellis-bumper-check/#trellis-bumper');
 await p.waitForSelector('#viewport[data-state=ready]',{timeout:60000});
 for(const view of ['front','back','top']){
@@ -10,6 +10,13 @@ await p.locator('#viewport canvas').screenshot({path:'/evidence/'+view+'.png'});
 }
 await p.click('#reset');await p.waitForTimeout(300);await p.locator('#viewport canvas').screenshot({path:'/evidence/actual-model.png'});
 const assert=require('node:assert/strict');
+assert.equal(await p.locator('#chrome').isChecked(),true);
+const polished=await p.locator('#viewport canvas').screenshot();
+await p.locator('#chrome').uncheck();await p.waitForTimeout(300);
+const original=await p.locator('#viewport canvas').screenshot({path:'/evidence/original-material.png'});
+assert.notDeepEqual(polished,original,'Chrome must change the rendered model');
+await p.locator('#chrome').check();await p.waitForTimeout(300);
+
 assert.match(await p.locator('#stats').innerText(),/[0-9,]+ triangles · 2048px textures/);
 const res=await p.request.get(new URL(await p.locator('#download').getAttribute('href'),p.url()).href);
 assert.equal(res.status(),200);assert.equal((await res.body()).subarray(0,4).toString(),'glTF');

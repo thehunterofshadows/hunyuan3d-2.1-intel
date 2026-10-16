@@ -5,7 +5,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const $=id=>document.getElementById(id);
 const models=[
- {id:'trellis-bumper',name:'Bumper · TRELLIS.2',type:'B70 Vulkan · 1024 generation',file:'bumper.glb',note:'Actual TRELLIS.2 output from the original red-cap bumper reference. Static evaluation mesh with generated PBR materials; not yet optimized or wired into pinball physics.',front:Math.PI,reference:'/models/bumper/reference.png',thumbnail:'/models/trellis-bumper/preview.png',textureLabel:'2048px textures'},
+ {id:'trellis-bumper',name:'Bumper · TRELLIS.2',type:'B70 Vulkan · 1024 generation',file:'bumper.glb',note:'Actual TRELLIS.2 output from the original red-cap bumper reference. Chrome polish is enabled in this viewer: reflective silver, glossy red and matte rubber. Toggle it off to compare the generated materials. Download contains the original GLB. Static evaluation mesh; not yet optimized for pinball.',front:Math.PI,reference:'/models/bumper/reference.png',thumbnail:'/models/trellis-bumper/preview.png',textureLabel:'2048px textures'},
  {id:'trellis-railgun',name:'Railgun · TRELLIS.2',type:'B70 Vulkan · 1024 generation',file:'railgun.glb',note:'Actual TRELLIS.2 output from the original reference, generated on one B70 in 221 seconds. More detail than the 512 test, but surfaces remain imperfect and the cyan glow was not reproduced. Unoptimized evaluation mesh.',front:Math.PI,reference:'/models/railgun/reference.png',thumbnail:'/models/trellis-railgun/preview.png',textureLabel:'2048px textures'},
  {id:'railgun-built',name:'Railgun · rebuilt',type:'Clean hard-surface model',file:'railgun.glb',note:'Modeled mechanical parts, beveled edges, clean metal and rubber materials, and emissive cyan inserts. Static weapon with named attachment points; not yet integrated into Instagib.',front:0,reference:'/models/railgun/reference.png'},
  {id:'railgun',name:'Railgun · AI draft',type:'Weapon',file:'railgun.glb',note:'Long accelerator rails and cyan accents. First-pass geometry with visible texture artifacts.',front:Math.PI},
@@ -52,6 +52,31 @@ function fit(view='home'){
  camera.near=radius/1000;camera.far=radius*100;camera.updateProjectionMatrix();
  controls.minDistance=radius*0.04;controls.maxDistance=radius*20;controls.update();requestRender();
 }
+// Viewer-only material polish: infer silver/red/rubber from the generated base color.
+// Keep the source GLB untouched; expose the original for comparison and download.
+const chromeEnabled={value:1};
+function polishBumper(material){
+ material.onBeforeCompile=shader=>{
+  shader.uniforms.bumperChrome=chromeEnabled;
+  shader.fragmentShader='uniform float bumperChrome;\n'+shader.fragmentShader;
+  shader.fragmentShader=shader.fragmentShader.replace('#include <metalnessmap_fragment>', `
+   #include <metalnessmap_fragment>
+   if(bumperChrome > 0.5){
+    float hi=max(diffuseColor.r,max(diffuseColor.g,diffuseColor.b));
+    float lo=min(diffuseColor.r,min(diffuseColor.g,diffuseColor.b));
+    float saturation=(hi-lo)/max(hi,0.001);
+    float silver=(1.0-smoothstep(0.18,0.42,saturation))*smoothstep(0.055,0.20,hi);
+    float red=smoothstep(1.3,2.2,diffuseColor.r/max(max(diffuseColor.g,diffuseColor.b),0.001));
+    roughnessFactor=mix(0.72,0.24,red);
+    roughnessFactor=mix(roughnessFactor,0.13,silver);
+    metalnessFactor=silver;
+    diffuseColor.rgb=mix(diffuseColor.rgb,vec3(0.72,0.75,0.78),silver*0.85);
+   }
+  `);
+ };
+ material.customProgramCacheKey=()=> 'bumper-chrome-v1';
+ material.needsUpdate=true;
+}
 function surface(){
  const mode=$('surface').value,wire=$('wireframe').checked;
  for(const mesh of meshes){
@@ -84,10 +109,12 @@ async function load(entry){
   model.position.sub(center);model.updateMatrixWorld(true);
   radius=box.getBoundingSphere(new THREE.Sphere()).radius;
   let triangles=0;
-  model.traverse(o=>{if(o.isMesh){o.userData.originalMaterial=o.material;meshes.push(o);triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;}});
+  model.traverse(o=>{if(o.isMesh){if(entry.id==='trellis-bumper')for(const m of (Array.isArray(o.material)?o.material:[o.material]))polishBumper(m);o.userData.originalMaterial=o.material;meshes.push(o);triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;}});
   scene.add(model);
   if(grid){scene.remove(grid);grid.geometry.dispose();for(const m of (Array.isArray(grid.material)?grid.material:[grid.material]))m.dispose();}
   grid=new THREE.GridHelper(radius*5,20,0x425464,0x293947);grid.position.y=box.min.y-center.y-0.015*radius;grid.visible=$('grid').checked;scene.add(grid);
+  $('chrome-control').hidden=entry.id!=='trellis-bumper';
+  $('download').textContent=entry.id==='trellis-bumper'?'Download original GLB ↓':'Download GLB ↓';
   $('title').textContent=entry.name;$('description').textContent=entry.note;
   $('stats').textContent=triangles.toLocaleString()+' triangles · '+(entry.textureLabel||(entry.id==='railgun-built'?'procedural materials':'1024px textures'));
   $('download').href='/models/'+entry.id+'/'+entry.file+'?v=build1';
@@ -125,6 +152,7 @@ try {
  new ResizeObserver(resize).observe(viewport);resize();
  $('reset').onclick=()=>fit();
  for(const b of document.querySelectorAll('[data-view]'))b.onclick=()=>fit(b.dataset.view);
+ $('chrome').onchange=()=>{chromeEnabled.value=$('chrome').checked?1:0;requestRender();};
  $('surface').onchange=surface;$('wireframe').onchange=surface;$('lighting').onchange=lights;
  $('background').onchange=()=>{scene.background.set($('background').value);requestRender();};
  $('exposure').oninput=()=>{renderer.toneMappingExposure=Number($('exposure').value);requestRender();};
