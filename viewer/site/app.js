@@ -60,7 +60,7 @@ async function load(entry){
  status.hidden=false;status.textContent='Loading '+entry.name+'…';
  viewport.dataset.state='loading';
  try {
-  const gltf=await new GLTFLoader().loadAsync('/models/'+entry.id+'/'+entry.file);
+  const gltf=await new GLTFLoader().loadAsync('/models/'+entry.id+'/'+entry.file+'?v=uv2');
   if(current!==ticket){dispose(gltf.scene);return;}
   if(model){scene.remove(model);dispose(model);}
   model=gltf.scene;active=entry;meshes=[];
@@ -76,7 +76,7 @@ async function load(entry){
   grid=new THREE.GridHelper(radius*5,20,0x425464,0x293947);grid.position.y=box.min.y-center.y-0.015*radius;grid.visible=$('grid').checked;scene.add(grid);
   $('title').textContent=entry.name;$('description').textContent=entry.note;
   $('stats').textContent=triangles.toLocaleString()+' triangles · 1024px textures';
-  $('download').href='/models/'+entry.id+'/'+entry.file;
+  $('download').href='/models/'+entry.id+'/'+entry.file+'?v=uv2';
   $('reference-image').src='/models/'+entry.id+'/reference.png';
   $('reference-link').href=$('reference-image').src;
   for(const button of document.querySelectorAll('.model'))button.setAttribute('aria-pressed',String(button.dataset.model===entry.id));

@@ -11,3 +11,7 @@ Settings: seed 42, shape 30 steps, octree 256, safe texture preset (six views at
 [Experimental GLB](woman.glb)
 
 Severe texture distortion affects face, head and clothing; face-like detail appears on the back of the head. Limbs are separated but hands and facial detail need reconstruction. Not suitable as a finished game character. No skeleton, skinning, animations, collision or game integration. Preview is albedo plus diffuse shading, not full PBR rendering. Qwen was temporarily unloaded and restored; health endpoint confirmed OK.
+
+## UV export repair — 2026-10-16
+
+Corrected the double vertical UV conversion in the downloadable GLB. Geometry and embedded texture images are unchanged. The old Python preview compensated for the error on import, hiding the discrepancy with Three.js. Browser material placement is now consistent with the repaired preview renderer. Remaining generated texture defects are still present.

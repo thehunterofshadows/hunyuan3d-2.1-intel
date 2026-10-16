@@ -26,3 +26,5 @@ See docs/intel/e2e-2026-10-15/README.md for measured results and limitations.
 - [x] Browser checks: all three GLBs, rotation/zoom, materials, mobile layout.
 - [x] Shared Cloudflare route and DNS verified.
 - [ ] Repair source assets and qualify game-ready character topology/rigging (separate work).
+
+- [x] Fixed double-V GLB export conversion; repaired all three gallery GLBs; raw-accessor regression and browser visual checks passed.

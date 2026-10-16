@@ -22,3 +22,7 @@ production/game component. Preview uses albedo plus diffuse shading, not full PB
 reflections. Collision geometry, dimensions, animation and gameplay integration
 are not included. The original `reference.png` is the image-generation input,
 not a render of the resulting mesh.
+
+## UV export repair — 2026-10-16
+
+Corrected the double vertical UV conversion in the downloadable GLB. Geometry and embedded texture images are unchanged. The old Python preview compensated for the error on import, hiding the discrepancy with Three.js. Browser material placement is now consistent with the repaired preview renderer. Remaining generated texture defects are still present.

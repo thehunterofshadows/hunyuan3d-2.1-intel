@@ -163,9 +163,10 @@ def render(
         uv_map = tr.interpolate(uv_t, findices, bary, tri)[0]     # (H, W, 2)
         tex = torch.from_numpy(albedo).to(device)
         th, tw = tex.shape[0], tex.shape[1]
-        # glTF UV origin is top-left, matching image row order directly.
+        # trimesh converts glTF UVs to bottom-origin on import.
+        # Image rows are top-origin; undo that conversion when sampling.
         px = (uv_map[..., 0].clamp(0, 1) * (tw - 1)).long()
-        py = (uv_map[..., 1].clamp(0, 1) * (th - 1)).long()
+        py = ((1.0 - uv_map[..., 1]).clamp(0, 1) * (th - 1)).long()
         base = tex[py, px]
     else:
         base = torch.full((resolution, resolution, 3), 0.72, device=device)

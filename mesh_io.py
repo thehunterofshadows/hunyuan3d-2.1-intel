@@ -159,7 +159,11 @@ def export_glb_pbr(
         kwargs["normalTexture"] = Image.fromarray(nrm[..., :3])
 
     material = PBRMaterial(name="PBR_Material", **kwargs)
-    mesh.visual = TextureVisuals(uv=np.asarray(vtx_uv, dtype=np.float64), material=material)
+    # Public input is top-origin glTF UVs; trimesh TextureVisuals uses
+    # bottom-origin UVs and its GLB exporter flips V itself.
+    uv_trimesh = np.asarray(vtx_uv, dtype=np.float64).copy()
+    uv_trimesh[:, 1] = 1.0 - uv_trimesh[:, 1]
+    mesh.visual = TextureVisuals(uv=uv_trimesh, material=material)
 
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     mesh.export(out_path)
