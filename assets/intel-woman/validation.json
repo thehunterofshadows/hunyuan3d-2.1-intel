@@ -1,0 +1,37 @@
+{
+  "file": "woman.glb",
+  "geometry": [
+    {
+      "name": "geometry_0",
+      "vertices": 25938,
+      "triangles": 40000,
+      "extents": [
+        0.9103236198425293,
+        1.986257791519165,
+        0.326323926448822
+      ],
+      "watertight": false,
+      "maps": {
+        "baseColorTexture": {
+          "width": 1024,
+          "height": 1024,
+          "rgb_std": [
+            77.19975049148165,
+            62.74880602550254,
+            59.82191857272995
+          ]
+        },
+        "metallicRoughnessTexture": {
+          "width": 1024,
+          "height": 1024,
+          "rgb_std": [
+            0.0,
+            56.02724663992633,
+            56.010975778780825
+          ]
+        }
+      }
+    }
+  ],
+  "status": "passed_structural_checks_not_artistic_quality"
+}

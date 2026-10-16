@@ -1,0 +1,51 @@
+{
+  "env": {
+    "generated_at": "2026-10-16 00:36:00",
+    "backend": "xpu",
+    "device": "xpu:0",
+    "dtype": "float16",
+    "rasterizer": "torch",
+    "gpu": "Intel(R) Arc(TM) Pro B70 Graphics",
+    "gpu_memory_gib": "31.9",
+    "version": "torch 2.13.0+xpu, XPU 20260000",
+    "input_image": "assets/intel-woman/reference.png",
+    "shape_params": "steps=30 guidance=5.0 octree=256 seed=42"
+  },
+  "stages": [
+    {
+      "name": "import gradio_app (builds the UI graph)",
+      "status": "pass",
+      "elapsed": 3.46,
+      "detail": "UI graph constructed",
+      "error": ""
+    },
+    {
+      "name": "shape generation (DiT + VAE)",
+      "status": "pass",
+      "elapsed": 60.21,
+      "detail": "67013 verts, 134038 faces",
+      "error": ""
+    },
+    {
+      "name": "render untextured mesh (torch_rasterizer)",
+      "status": "pass",
+      "elapsed": 0.68,
+      "detail": "67013 verts, 134038 faces",
+      "error": ""
+    },
+    {
+      "name": "PBR texturing",
+      "status": "pass",
+      "elapsed": 40.16,
+      "detail": "preset=safe views=6 res=256 raster=torch -> hunyuan3d_20261016_003705_for_texture_textured.glb",
+      "error": ""
+    },
+    {
+      "name": "render textured mesh (torch_rasterizer)",
+      "status": "pass",
+      "elapsed": 0.64,
+      "detail": "25938 verts, 40000 faces, texture [1024, 1024]",
+      "error": ""
+    }
+  ]
+}
