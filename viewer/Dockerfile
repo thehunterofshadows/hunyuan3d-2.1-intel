@@ -15,6 +15,8 @@ COPY assets/trellis-railgun /usr/share/nginx/html/models/trellis-railgun
 
 COPY assets/trellis-bumper /usr/share/nginx/html/models/trellis-bumper
 
+COPY assets/trellis-woman /usr/share/nginx/html/models/trellis-woman
+
 # Content-based URLs keep model-list updates fresh even behind CDN browser TTL rules.
 RUN cd /usr/share/nginx/html && \
     for asset in app.js style.css; do \
