@@ -7,6 +7,7 @@ const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console'
 await page.goto(process.env.VIEWER_URL||'http://intel-3d-studio-prod-web/');
 await page.waitForSelector('#viewport[data-state=ready]',{timeout:60000});
 for(const id of ['bumper','woman','railgun']){
+ await page.locator('[data-model="'+id+'"]').evaluate(el=>el.closest('details').open=true);
  await page.click('[data-model="'+id+'"]');
  await page.waitForSelector('#viewport[data-state=ready][data-model="'+id+'"]');
  assert.match(await page.locator('#stats').textContent(),/40,000/);
@@ -25,11 +26,11 @@ await page.selectOption('#surface','clay');await page.check('#wireframe');await 
 await page.click('[data-view=back]');await page.click('#reset');
 await page.uncheck('#wireframe');await page.selectOption('#surface','pbr');await page.selectOption('#background','#161d25');await page.selectOption('#lighting','studio');
 await page.screenshot({path:'/evidence/desktop.png',fullPage:true});
-await page.click('[data-model=woman]');await page.waitForSelector('#viewport[data-state=ready][data-model=woman]');
+await page.locator('[data-model=woman]').evaluate(el=>el.closest('details').open=true);await page.click('[data-model=woman]');await page.waitForSelector('#viewport[data-state=ready][data-model=woman]');
 await page.screenshot({path:'/evidence/woman.png',fullPage:true});
 const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:1});
 await mobile.goto(process.env.VIEWER_URL||'http://intel-3d-studio-prod-web/');await mobile.waitForSelector('#viewport[data-state=ready]',{timeout:60000});
-await mobile.locator('[data-model=bumper]').tap();await mobile.waitForSelector('#viewport[data-state=ready][data-model=bumper]');
+await mobile.locator('[data-model=bumper]').evaluate(el=>el.closest('details').open=true);await mobile.locator('[data-model=bumper]').tap();await mobile.waitForSelector('#viewport[data-state=ready][data-model=bumper]');
 assert.ok(await mobile.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no horizontal overflow');
 await mobile.screenshot({path:'/evidence/mobile.png',fullPage:true});
 assert.deepEqual(errors,[]);console.log('PASS: three GLBs, desktop rotate/zoom, inspection controls, mobile selection/layout; no browser errors');

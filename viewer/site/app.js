@@ -7,24 +7,24 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const $=id=>document.getElementById(id);
 const models=[
- {id:'trellis-railgun-ultra',name:'Ultra Railgun · TRELLIS.2',type:'B70 Vulkan · 1536 generation',file:'railgun-ultra.glb',front:Math.PI,reference:'/models/trellis-railgun-ultra/reference.png',thumbnail:'/models/trellis-railgun-ultra/preview.png',textureLabel:'4096px textures',note:'Actual TRELLIS.2 model generated on Skynet: 1536 geometry resolution, 24 sampling steps and 4K PBR atlas. New concept with exposed copper heat pipes, layered cooling fins and twin accelerator rails. Reconstructed details and materials may differ from the concept. High-detail source for Instagib; game optimization and integration are pending.'},
- {id:'pixal3d-railgun-ultra',name:'Ultra Railgun · Pixal3D',type:'B70 Vulkan · 1536 / 24 steps',file:'railgun-ultra.glb',front:Math.PI,reference:'/models/pixal3d-railgun-ultra/reference.png',thumbnail:'/models/pixal3d-railgun-ultra/preview.png',textureLabel:'4096px PBR atlas',note:'Actual Pixal3D image-to-3D reconstruction from the SAME detailed railgun reference as TRELLIS.2 Ultra (heat pipes, cooling fins and accelerator rails). 1536 geometry, 24 diffusion steps, 4096-pixel PBR atlas, Intel Arc Pro B70 Vulkan. Generated details may not perfectly match the concept; experimental high-poly mesh, not optimized or integrated into Instagib.'},
- {id:'pixal3d-railgun',name:'Railgun · Pixal3D (1536)',type:'Intel B70 Vulkan · 1536 geometry',file:'railgun.glb',front:Math.PI,reference:'/models/pixal3d-railgun/reference.png',thumbnail:'/models/pixal3d-railgun/preview.png',textureLabel:'2048px PBR atlas',note:'Actual Pixal3D image-to-3D export generated on Skynet at 1536 geometry resolution, 12 steps, seed 42. Uses the same original railgun reference as the TRELLIS.2 comparison. Generated materials and hidden geometry are approximate. Experimental high-poly model; not optimized for Instagib.'},
- {id:'portable-pinball',name:'Portable Pinball · CAD V1.1',type:'Printable cabinet assembly',file:'cabinet-v1_1.glb',cad:true,front:0,reference:'/models/portable-pinball/preview-v1_1.png',thumbnail:'/models/portable-pinball/preview-v1_1.png',note:'V1.1: all four monitor supports have 6 mm locator lips, reinforced roots and 4 mm thicker shelves underneath. Monitor contact heights and clearances are unchanged. Support STLs print on their end faces. Actual cabinet CAD: 47 printed parts, a monitor envelope, Dell 3050 allowance and folded-cover reserve. HDMI/USB-C front-left; monitor controls rear-left. Front game buttons are shifted right for cable clearance. Physical fit tests are pending. Use the assembly controls to look inside; download STEP/STLs to edit or print.'},
- {id:'trellis-pinball-flipper',name:'Flipper bat · TRELLIS.2',type:'Pinball component · Arc B70 Vulkan',file:'flipper.glb',front:0,reference:'/models/trellis-pinball-flipper/reference.png',thumbnail:'/models/trellis-pinball-flipper/preview.png',textureLabel:'2048px textures',note:'Actual TRELLIS.2 mesh reconstructed from an original illustrated classic white bat with red rebound rubber reference. 512-resolution exploratory output. Geometry and surfaces may differ from the input; not optimized or mechanically functional.'},
- {id:'trellis-pinball-plunger',name:'Ball launcher / plunger · TRELLIS.2',type:'Pinball component · Arc B70 Vulkan',file:'plunger.glb',front:0,reference:'/models/trellis-pinball-plunger/reference.png',thumbnail:'/models/trellis-pinball-plunger/preview.png',textureLabel:'2048px textures',note:'Actual TRELLIS.2 mesh reconstructed from an original illustrated steel spring-loaded launcher with red pull knob reference. 512-resolution exploratory output. Geometry and surfaces may differ from the input; not optimized or mechanically functional.'},
- {id:'trellis-pinball-slingshot',name:'Slingshot bumper · TRELLIS.2',type:'Pinball component · Arc B70 Vulkan',file:'slingshot.glb',front:0,reference:'/models/trellis-pinball-slingshot/reference.png',thumbnail:'/models/trellis-pinball-slingshot/preview.png',textureLabel:'2048px textures',note:'Actual TRELLIS.2 mesh reconstructed from an original illustrated triangular rebound bumper and metal guide posts reference. 512-resolution exploratory output. Geometry and surfaces may differ from the input; not optimized or mechanically functional.'},
- {id:'trellis-pinball-target',name:'Drop target · TRELLIS.2',type:'Pinball component · Arc B70 Vulkan',file:'target.glb',front:0,reference:'/models/trellis-pinball-target/reference.png',thumbnail:'/models/trellis-pinball-target/preview.png',textureLabel:'2048px textures',note:'Actual TRELLIS.2 mesh reconstructed from an original illustrated yellow stand-up drop target with hinge reference. 512-resolution exploratory output. Geometry and surfaces may differ from the input; not optimized or mechanically functional.'},
- {id:'trellis-pinball-pop-bumper',name:'Pop bumper · TRELLIS.2',type:'Pinball component · Arc B70 Vulkan',file:'pop-bumper.glb',front:0,reference:'/models/trellis-pinball-pop-bumper/reference.png',thumbnail:'/models/trellis-pinball-pop-bumper/preview.png',textureLabel:'2048px textures',note:'Actual TRELLIS.2 mesh reconstructed from an original illustrated red-cap pop bumper for the pinball playfield reference. 512-resolution exploratory output. Geometry and surfaces may differ from the input; not optimized or mechanically functional.'},
- {id:'trellis-woman',name:'Woman · TRELLIS.2',type:'B70 Vulkan · 1024 generation',file:'woman.glb',note:'Actual TRELLIS.2 reconstruction of the armored woman reference. Static, unrigged evaluation mesh with generated PBR textures; not yet optimized or animated for Instagib.',front:0,reference:'/models/woman/reference.png',thumbnail:'/models/trellis-woman/preview.png',textureLabel:'2048px textures'},
- {id:'trellis-bumper',name:'Bumper · TRELLIS.2',type:'B70 Vulkan · 1024 generation',file:'bumper.glb',note:'Actual TRELLIS.2 output from the original red-cap bumper reference. Chrome polish is enabled in this viewer: reflective silver, glossy red and matte rubber. Toggle it off to compare the generated materials. Download contains the original GLB. Static evaluation mesh; not yet optimized for pinball.',front:Math.PI,reference:'/models/bumper/reference.png',thumbnail:'/models/trellis-bumper/preview.png',textureLabel:'2048px textures'},
- {id:'trellis-railgun',name:'Railgun · TRELLIS.2',type:'B70 Vulkan · 1024 generation',file:'railgun.glb',note:'Actual TRELLIS.2 output from the original reference, generated on one B70 in 221 seconds. More detail than the 512 test, but surfaces remain imperfect and the cyan glow was not reproduced. Unoptimized evaluation mesh.',front:Math.PI,reference:'/models/railgun/reference.png',thumbnail:'/models/trellis-railgun/preview.png',textureLabel:'2048px textures'},
- {id:'railgun-built',name:'Railgun · rebuilt',type:'Clean hard-surface model',file:'railgun.glb',note:'Modeled mechanical parts, beveled edges, clean metal and rubber materials, and emissive cyan inserts. Static weapon with named attachment points; not yet integrated into Instagib.',front:0,reference:'/models/railgun/reference.png'},
- {id:'railgun',name:'Railgun · AI draft',type:'Weapon',file:'railgun.glb',note:'Long accelerator rails and cyan accents. First-pass geometry with visible texture artifacts.',front:Math.PI},
- {id:'bumper',name:'Pinball bumper',type:'Table component',file:'bumper.glb',note:'Red cap, impact ring and metal pedestal. Generated textures still need cleanup.',front:Math.PI},
- {id:'woman',name:'Woman character',type:'Character study',file:'woman.glb',note:'Static, unrigged character. Face, hands and clothing show significant reconstruction artifacts.',front:Math.PI}
+ {id:'trellis-railgun-ultra',folder:'instagib',name:'Ultra Railgun · TRELLIS.2',type:'B70 Vulkan · 1536 generation',file:'railgun-ultra.glb',front:Math.PI,reference:'/models/trellis-railgun-ultra/reference.png',thumbnail:'/models/trellis-railgun-ultra/preview.png',textureLabel:'4096px textures',note:'Actual TRELLIS.2 model generated on Skynet: 1536 geometry resolution, 24 sampling steps and 4K PBR atlas. New concept with exposed copper heat pipes, layered cooling fins and twin accelerator rails. Reconstructed details and materials may differ from the concept. High-detail source for Instagib; game optimization and integration are pending.'},
+ {id:'pixal3d-railgun-ultra',folder:'instagib',name:'Ultra Railgun · Pixal3D',type:'B70 Vulkan · 1536 / 24 steps',file:'railgun-ultra.glb',front:Math.PI,reference:'/models/pixal3d-railgun-ultra/reference.png',thumbnail:'/models/pixal3d-railgun-ultra/preview.png',textureLabel:'4096px PBR atlas',note:'Actual Pixal3D image-to-3D reconstruction from the SAME detailed railgun reference as TRELLIS.2 Ultra (heat pipes, cooling fins and accelerator rails). 1536 geometry, 24 diffusion steps, 4096-pixel PBR atlas, Intel Arc Pro B70 Vulkan. Generated details may not perfectly match the concept; experimental high-poly mesh, not optimized or integrated into Instagib.'},
+ {id:'pixal3d-railgun',folder:'instagib',name:'Railgun · Pixal3D (1536)',type:'Intel B70 Vulkan · 1536 geometry',file:'railgun.glb',front:Math.PI,reference:'/models/pixal3d-railgun/reference.png',thumbnail:'/models/pixal3d-railgun/preview.png',textureLabel:'2048px PBR atlas',note:'Actual Pixal3D image-to-3D export generated on Skynet at 1536 geometry resolution, 12 steps, seed 42. Uses the same original railgun reference as the TRELLIS.2 comparison. Generated materials and hidden geometry are approximate. Experimental high-poly model; not optimized for Instagib.'},
+ {id:'portable-pinball',folder:'pinball',name:'Portable Pinball · CAD V1.1',type:'Printable cabinet assembly',file:'cabinet-v1_1.glb',cad:true,front:0,reference:'/models/portable-pinball/preview-v1_1.png',thumbnail:'/models/portable-pinball/preview-v1_1.png',note:'V1.1: all four monitor supports have 6 mm locator lips, reinforced roots and 4 mm thicker shelves underneath. Monitor contact heights and clearances are unchanged. Support STLs print on their end faces. Actual cabinet CAD: 47 printed parts, a monitor envelope, Dell 3050 allowance and folded-cover reserve. HDMI/USB-C front-left; monitor controls rear-left. Front game buttons are shifted right for cable clearance. Physical fit tests are pending. Use the assembly controls to look inside; download STEP/STLs to edit or print.'},
+ {id:'trellis-pinball-flipper',folder:'pinball',name:'Flipper bat · TRELLIS.2',type:'Pinball component · Arc B70 Vulkan',file:'flipper.glb',front:0,reference:'/models/trellis-pinball-flipper/reference.png',thumbnail:'/models/trellis-pinball-flipper/preview.png',textureLabel:'2048px textures',note:'Actual TRELLIS.2 mesh reconstructed from an original illustrated classic white bat with red rebound rubber reference. 512-resolution exploratory output. Geometry and surfaces may differ from the input; not optimized or mechanically functional.'},
+ {id:'trellis-pinball-plunger',folder:'pinball',name:'Ball launcher / plunger · TRELLIS.2',type:'Pinball component · Arc B70 Vulkan',file:'plunger.glb',front:0,reference:'/models/trellis-pinball-plunger/reference.png',thumbnail:'/models/trellis-pinball-plunger/preview.png',textureLabel:'2048px textures',note:'Actual TRELLIS.2 mesh reconstructed from an original illustrated steel spring-loaded launcher with red pull knob reference. 512-resolution exploratory output. Geometry and surfaces may differ from the input; not optimized or mechanically functional.'},
+ {id:'trellis-pinball-slingshot',folder:'pinball',name:'Slingshot bumper · TRELLIS.2',type:'Pinball component · Arc B70 Vulkan',file:'slingshot.glb',front:0,reference:'/models/trellis-pinball-slingshot/reference.png',thumbnail:'/models/trellis-pinball-slingshot/preview.png',textureLabel:'2048px textures',note:'Actual TRELLIS.2 mesh reconstructed from an original illustrated triangular rebound bumper and metal guide posts reference. 512-resolution exploratory output. Geometry and surfaces may differ from the input; not optimized or mechanically functional.'},
+ {id:'trellis-pinball-target',folder:'pinball',name:'Drop target · TRELLIS.2',type:'Pinball component · Arc B70 Vulkan',file:'target.glb',front:0,reference:'/models/trellis-pinball-target/reference.png',thumbnail:'/models/trellis-pinball-target/preview.png',textureLabel:'2048px textures',note:'Actual TRELLIS.2 mesh reconstructed from an original illustrated yellow stand-up drop target with hinge reference. 512-resolution exploratory output. Geometry and surfaces may differ from the input; not optimized or mechanically functional.'},
+ {id:'trellis-pinball-pop-bumper',folder:'pinball',name:'Pop bumper · TRELLIS.2',type:'Pinball component · Arc B70 Vulkan',file:'pop-bumper.glb',front:0,reference:'/models/trellis-pinball-pop-bumper/reference.png',thumbnail:'/models/trellis-pinball-pop-bumper/preview.png',textureLabel:'2048px textures',note:'Actual TRELLIS.2 mesh reconstructed from an original illustrated red-cap pop bumper for the pinball playfield reference. 512-resolution exploratory output. Geometry and surfaces may differ from the input; not optimized or mechanically functional.'},
+ {id:'trellis-woman',folder:'instagib',name:'Woman · TRELLIS.2',type:'B70 Vulkan · 1024 generation',file:'woman.glb',note:'Actual TRELLIS.2 reconstruction of the armored woman reference. Static, unrigged evaluation mesh with generated PBR textures; not yet optimized or animated for Instagib.',front:0,reference:'/models/woman/reference.png',thumbnail:'/models/trellis-woman/preview.png',textureLabel:'2048px textures'},
+ {id:'trellis-bumper',folder:'pinball',name:'Bumper · TRELLIS.2',type:'B70 Vulkan · 1024 generation',file:'bumper.glb',note:'Actual TRELLIS.2 output from the original red-cap bumper reference. Chrome polish is enabled in this viewer: reflective silver, glossy red and matte rubber. Toggle it off to compare the generated materials. Download contains the original GLB. Static evaluation mesh; not yet optimized for pinball.',front:Math.PI,reference:'/models/bumper/reference.png',thumbnail:'/models/trellis-bumper/preview.png',textureLabel:'2048px textures'},
+ {id:'trellis-railgun',folder:'instagib',name:'Railgun · TRELLIS.2',type:'B70 Vulkan · 1024 generation',file:'railgun.glb',note:'Actual TRELLIS.2 output from the original reference, generated on one B70 in 221 seconds. More detail than the 512 test, but surfaces remain imperfect and the cyan glow was not reproduced. Unoptimized evaluation mesh.',front:Math.PI,reference:'/models/railgun/reference.png',thumbnail:'/models/trellis-railgun/preview.png',textureLabel:'2048px textures'},
+ {id:'railgun-built',folder:'instagib',name:'Railgun · rebuilt',type:'Clean hard-surface model',file:'railgun.glb',note:'Modeled mechanical parts, beveled edges, clean metal and rubber materials, and emissive cyan inserts. Static weapon with named attachment points; not yet integrated into Instagib.',front:0,reference:'/models/railgun/reference.png'},
+ {id:'railgun',folder:'instagib',name:'Railgun · AI draft',type:'Weapon',file:'railgun.glb',note:'Long accelerator rails and cyan accents. First-pass geometry with visible texture artifacts.',front:Math.PI},
+ {id:'bumper',folder:'pinball',name:'Pinball bumper',type:'Table component',file:'bumper.glb',note:'Red cap, impact ring and metal pedestal. Generated textures still need cleanup.',front:Math.PI},
+ {id:'woman',folder:'instagib',name:'Woman character',type:'Character study',file:'woman.glb',note:'Static, unrigged character. Face, hands and clothing show significant reconstruction artifacts.',front:Math.PI}
 ];
-document.querySelector('.eyebrow').textContent='COLLECTION / '+String(models.length).padStart(2,'0');
+document.querySelector('.eyebrow').textContent='ASSET LIBRARY / '+String(models.length).padStart(2,'0');
 let scene,camera,renderer,controls,model,grid,envRT,key,fill,hemi,inspector;
 let ticket=0,active,meshes=[],fitDistance=4,radius=1,frame=0;
 const viewport=$('viewport'), status=$('status');
@@ -173,6 +173,8 @@ async function load(entry){
   document.querySelector('.pill').textContent=entry.cad?'CAD PROTOTYPE':entry.local?'LOCAL STL':entry.id.startsWith('pixal3d-')?'PIXAL3D OUTPUT':entry.id.startsWith('trellis-')?'TRELLIS.2 OUTPUT':entry.id==='railgun-built'?'MODELED REBUILD':'FIRST-PASS ASSET';
   $('reference-link').href=$('reference-image').src;
   for(const button of document.querySelectorAll('.model'))button.setAttribute('aria-pressed',String(button.dataset.model===entry.id));
+  folderNodes.get(entry.folder||'other')?.setAttribute('data-active','true');
+  for(const [folderId,folderNode] of folderNodes)if(folderId!==(entry.folder||'other'))folderNode.removeAttribute('data-active');
   if(!entry.local)history.replaceState(null,'','#'+entry.id);
   surface();fit();status.hidden=true;viewport.dataset.state='ready';viewport.dataset.model=entry.id;
  }catch(error){
@@ -210,13 +212,57 @@ function applyAssembly(){
  $('explode-value').textContent=amount===0?'Assembled':Math.round(amount*100)+'% separated';
  requestRender();
 }
-for(const entry of models){
- const button=document.createElement('button');button.className='model';button.dataset.model=entry.id;button.setAttribute('aria-pressed','false');
- const img=document.createElement('img');img.src=entry.thumbnail||(entry.id==='railgun-built'?'/models/railgun-built/preview.png':('/models/'+entry.id+'/reference.png'));img.alt='';
- const text=document.createElement('span'),strong=document.createElement('strong'),small=document.createElement('small');
- strong.textContent=entry.name;small.textContent=entry.type;text.append(strong,small);button.append(img,text);
- button.onclick=()=>load(entry);$('models').append(button);
+// Folder membership is UI metadata only. Keep model IDs, GLB paths, and note keys stable.
+const assetFolders=[
+ {id:'instagib',name:'Instagib',subtitle:'Weapons & characters'},
+ {id:'pinball',name:'Pinball',subtitle:'Cabinet & playfield'},
+ {id:'other',name:'Other',subtitle:'Unsorted models'}
+];
+const initialModel=models.find(m=>m.id===location.hash.slice(1))||models[0];
+const folderNodes=new Map();
+for(const folder of assetFolders){
+ const entries=models.filter(entry=>(entry.folder||'other')===folder.id);
+ if(!entries.length)continue;
+ const details=document.createElement('details');details.className='model-folder';details.dataset.folder=folder.id;
+ details.open=folder.id===(initialModel.folder||'other');
+ const summary=document.createElement('summary');
+ const folderIcon=document.createElement('span');folderIcon.className='folder-icon';folderIcon.textContent='▸';folderIcon.setAttribute('aria-hidden','true');
+ const label=document.createElement('span');label.className='folder-label';
+ const name=document.createElement('strong');name.textContent=folder.name;
+ const subtitle=document.createElement('small');subtitle.textContent=folder.subtitle;label.append(name,subtitle);
+ const count=document.createElement('span');count.className='folder-count';count.textContent=String(entries.length);count.setAttribute('aria-label',entries.length+' models');
+ summary.append(folderIcon,label,count);details.append(summary);
+ const contents=document.createElement('div');contents.className='folder-items';
+ for(const entry of entries){
+  const button=document.createElement('button');button.className='model';button.dataset.model=entry.id;button.setAttribute('aria-pressed','false');
+  const img=document.createElement('img');img.src=entry.thumbnail||(entry.id==='railgun-built'?'/models/railgun-built/preview.png':('/models/'+entry.id+'/reference.png'));img.alt='';img.loading='lazy';
+  const text=document.createElement('span'),strong=document.createElement('strong'),small=document.createElement('small');
+  strong.textContent=entry.name;small.textContent=entry.type;text.append(strong,small);button.append(img,text);
+  button.onclick=()=>load(entry);contents.append(button);
+ }
+ details.append(contents);$('models').append(details);folderNodes.set(folder.id,details);
 }
+// Searching temporarily expands only matching folders; clearing restores the prior view.
+let openBeforeSearch=null;
+$('model-search').addEventListener('input',()=>{
+ const query=$('model-search').value.trim().toLocaleLowerCase();
+ if(query&&!openBeforeSearch)openBeforeSearch=new Map([...folderNodes].map(([id,node])=>[id,node.open]));
+ if(!query&&openBeforeSearch){for(const [id,wasOpen] of openBeforeSearch)folderNodes.get(id).open=wasOpen;openBeforeSearch=null;}
+ let found=0;
+ for(const folder of assetFolders){
+  const node=folderNodes.get(folder.id);if(!node)continue;
+  let matches=0;
+  for(const entry of models.filter(e=>(e.folder||'other')===folder.id)){
+   const match=!query||[entry.name,entry.type,entry.id,folder.name].some(v=>v.toLocaleLowerCase().includes(query));
+   node.querySelector('[data-model="'+entry.id+'"]').hidden=!match;
+   if(match)matches++;
+  }
+  node.hidden=!!query&&!matches;
+  if(query&&matches)node.open=true;
+  found+=matches;
+ }
+ $('model-empty').hidden=found>0;
+});
 try {
  renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
  renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1;
@@ -247,7 +293,15 @@ try {
  viewport.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='r')fit();});
  renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();status.hidden=false;status.textContent='Graphics context lost. Reload this page to resume.';});
  inspector=createPartInspector({context:()=>({entry:active,model,meshes,scene,camera,controls,renderer}),render:requestRender,appearance:surface,restoreAssembly:mesh=>{if(!active?.cad)return;$('cad-part').value='all';$('cad-panels').checked=true;if(mesh?.userData.cadReference)$('cad-'+mesh.userData.cadReference).checked=true;applyAssembly();}});
- load(models.find(m=>m.id===location.hash.slice(1))||models[0]);
+ // Hash-only navigation in the same tab does not reload the page; follow those deep links too.
+ window.addEventListener('hashchange',()=>{
+  const next=models.find(entry=>entry.id===location.hash.slice(1));
+  if(!next||next.id===active?.id)return;
+  if($('model-search').value){$('model-search').value='';$('model-search').dispatchEvent(new Event('input'));}
+  folderNodes.get(next.folder||'other')?.setAttribute('open','');
+  load(next);
+ });
+ load(initialModel);
 }catch(error){
  console.error(error);status.hidden=false;status.textContent='3D rendering could not start. Enable hardware acceleration or try another browser.';
 }
