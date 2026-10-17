@@ -1,0 +1,45 @@
+{
+  "input": "/work/assets/railgun-pipeline/railgun-hard-surface-v2/railgun.glb",
+  "input_sha256": "fd18dc8cff75b574ab9af9b5244a3ba9d1a1390762d2fd8a490925e65d83b0f9",
+  "output": "/work/assets/railgun-pipeline/railgun-hard-surface-v2-1/railgun.glb",
+  "output_sha256": "f4abf9490aab0bce83081bd4fb04aa804b5bebb0698ee2c23670b69f54296249",
+  "output_bytes": 2014664,
+  "blender": "3.4.1",
+  "source": {
+    "triangles": 47680,
+    "meshes": 123,
+    "materials": 14,
+    "textures": {},
+    "dimensions": [
+      1.3121484518051147,
+      0.1732500046491623,
+      0.47727590799331665
+    ]
+  },
+  "processed": {
+    "triangles": 47680,
+    "meshes": 123,
+    "materials": 14,
+    "textures": {},
+    "dimensions": [
+      1.3121484518051147,
+      0.1732500046491623,
+      0.47727590799331665
+    ]
+  },
+  "reimport": {
+    "triangles": 47680,
+    "meshes": 123,
+    "materials": 14,
+    "textures": {},
+    "dimensions": [
+      1.3121484518051147,
+      0.1732500046491623,
+      0.47727590799331665
+    ]
+  },
+  "ratio": 1.0,
+  "texture_limit": 2048,
+  "seconds": 3.5,
+  "renders": "real output GLB (not concept image)"
+}
