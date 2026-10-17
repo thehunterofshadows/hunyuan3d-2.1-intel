@@ -1,0 +1,3 @@
+# Ultra Railgun · Pixal3D
+
+Actual, independently inspectable image-to-3D GLB output from Skynet using Pixal3D on Intel Arc Pro B70/Vulkan, rather than a generated illustration. Uses exactly the detailed concept reference supplied to the TRELLIS.2 Ultra Railgun. Resolution 1536, 24 sampling steps, seed 42, 4096px PBR atlas and 49.13° input horizontal FOV. Source GLB and hashes are preserved unchanged. `preview.png` is a screenshot of the real GLB rendered by WebGL in Intel 3D Studio, not an AI illustration. Experimental unrigged, high-poly source, not optimized for Instagib. See `manifest.json` for provenance, hash, GPU peak and timing.
