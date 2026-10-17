@@ -11,7 +11,7 @@ const models=[
  {id:'trellis-railgun-ultra',folder:'instagib',name:'Ultra Railgun · TRELLIS.2',type:'B70 Vulkan · 1536 generation',file:'railgun-ultra.glb',front:Math.PI,reference:'/models/trellis-railgun-ultra/reference.png',thumbnail:'/models/trellis-railgun-ultra/preview.png',textureLabel:'4096px textures',note:'Actual TRELLIS.2 model generated on Skynet: 1536 geometry resolution, 24 sampling steps and 4K PBR atlas. New concept with exposed copper heat pipes, layered cooling fins and twin accelerator rails. Reconstructed details and materials may differ from the concept. High-detail source for Instagib; game optimization and integration are pending.'},
  {id:'pixal3d-railgun-ultra',folder:'instagib',name:'Ultra Railgun · Pixal3D',type:'B70 Vulkan · 1536 / 24 steps',file:'railgun-ultra.glb',front:Math.PI,reference:'/models/pixal3d-railgun-ultra/reference.png',thumbnail:'/models/pixal3d-railgun-ultra/preview.png',textureLabel:'4096px PBR atlas',note:'Actual Pixal3D image-to-3D reconstruction from the SAME detailed railgun reference as TRELLIS.2 Ultra (heat pipes, cooling fins and accelerator rails). 1536 geometry, 24 diffusion steps, 4096-pixel PBR atlas, Intel Arc Pro B70 Vulkan. Generated details may not perfectly match the concept; experimental high-poly mesh, not optimized or integrated into Instagib.'},
  {id:'pixal3d-railgun',folder:'instagib',name:'Railgun · Pixal3D (1536)',type:'Intel B70 Vulkan · 1536 geometry',file:'railgun.glb',front:Math.PI,reference:'/models/pixal3d-railgun/reference.png',thumbnail:'/models/pixal3d-railgun/preview.png',textureLabel:'2048px PBR atlas',note:'Actual Pixal3D image-to-3D export generated on Skynet at 1536 geometry resolution, 12 steps, seed 42. Uses the same original railgun reference as the TRELLIS.2 comparison. Generated materials and hidden geometry are approximate. Experimental high-poly model; not optimized for Instagib.'},
- {id:'portable-pinball',folder:'pinball',name:'Portable Pinball · CAD V1.1',type:'Printable cabinet assembly',file:'cabinet-v1_1.glb',cad:true,front:0,reference:'/models/portable-pinball/preview-v1_1.png',thumbnail:'/models/portable-pinball/preview-v1_1.png',note:'V1.1: all four monitor supports have 6 mm locator lips, reinforced roots and 4 mm thicker shelves underneath. Monitor contact heights and clearances are unchanged. Support STLs print on their end faces. Actual cabinet CAD: 47 printed parts, a monitor envelope, Dell 3050 allowance and folded-cover reserve. HDMI/USB-C front-left; monitor controls rear-left. Front game buttons are shifted right for cable clearance. Physical fit tests are pending. Use the assembly controls to look inside; download STEP/STLs to edit or print.'},
+ {id:'portable-pinball',folder:'pinball',name:'Portable Pinball · CAD V1.1',type:'Printable cabinet assembly',file:'cabinet-v1_1.glb',modifiedFallback:'2026-10-16T20:42:03Z',cad:true,front:0,reference:'/models/portable-pinball/preview-v1_1.png',thumbnail:'/models/portable-pinball/preview-v1_1.png',note:'V1.1: all four monitor supports have 6 mm locator lips, reinforced roots and 4 mm thicker shelves underneath. Monitor contact heights and clearances are unchanged. Support STLs print on their end faces. Actual cabinet CAD: 47 printed parts, a monitor envelope, Dell 3050 allowance and folded-cover reserve. HDMI/USB-C front-left; monitor controls rear-left. Front game buttons are shifted right for cable clearance. Physical fit tests are pending. Use the assembly controls to look inside; download STEP/STLs to edit or print.'},
  {id:'trellis-pinball-flipper',folder:'pinball',name:'Flipper bat · TRELLIS.2',type:'Pinball component · Arc B70 Vulkan',file:'flipper.glb',front:0,reference:'/models/trellis-pinball-flipper/reference.png',thumbnail:'/models/trellis-pinball-flipper/preview.png',textureLabel:'2048px textures',note:'Actual TRELLIS.2 mesh reconstructed from an original illustrated classic white bat with red rebound rubber reference. 512-resolution exploratory output. Geometry and surfaces may differ from the input; not optimized or mechanically functional.'},
  {id:'trellis-pinball-plunger',folder:'pinball',name:'Ball launcher / plunger · TRELLIS.2',type:'Pinball component · Arc B70 Vulkan',file:'plunger.glb',front:0,reference:'/models/trellis-pinball-plunger/reference.png',thumbnail:'/models/trellis-pinball-plunger/preview.png',textureLabel:'2048px textures',note:'Actual TRELLIS.2 mesh reconstructed from an original illustrated steel spring-loaded launcher with red pull knob reference. 512-resolution exploratory output. Geometry and surfaces may differ from the input; not optimized or mechanically functional.'},
  {id:'trellis-pinball-slingshot',folder:'pinball',name:'Slingshot bumper · TRELLIS.2',type:'Pinball component · Arc B70 Vulkan',file:'slingshot.glb',front:0,reference:'/models/trellis-pinball-slingshot/reference.png',thumbnail:'/models/trellis-pinball-slingshot/preview.png',textureLabel:'2048px textures',note:'Actual TRELLIS.2 mesh reconstructed from an original illustrated triangular rebound bumper and metal guide posts reference. 512-resolution exploratory output. Geometry and surfaces may differ from the input; not optimized or mechanically functional.'},
@@ -162,7 +162,7 @@ async function load(entry){
   grid=new THREE.GridHelper(radius*5,20,0x425464,0x293947);grid.position.y=box.min.y-center.y-0.015*radius;grid.visible=$('grid').checked;scene.add(grid);
   $('chrome-control').hidden=!['trellis-bumper','trellis-pinball-pop-bumper','trellis-pinball-target'].includes(entry.id);$('polish-label').textContent=entry.id==='trellis-pinball-target'?'Target color correction':'Chrome polish';
   $('download').textContent=entry.format==='stl'?'Download STL ↓':['trellis-bumper','trellis-pinball-pop-bumper'].includes(entry.id)?'Download original GLB ↓':'Download GLB ↓';
-  $('title').textContent=entry.name;$('description').textContent=entry.note;
+  $('title').textContent=entry.name;$('description').textContent=entry.note;updateActiveModified();
   $('stats').textContent=triangles.toLocaleString()+' triangles · '+(entry.cad?'47 printed parts · 3 reference envelopes':entry.format==='stl'?'STL geometry · '+[box.max.x-box.min.x,box.max.y-box.min.y,box.max.z-box.min.z].map(v=>(v*1000).toFixed(1)).join(' × ')+' mm':(entry.textureLabel||(entry.id==='railgun-built'?'procedural materials':'1024px textures')));
   $('download').href=entry.local?entry.url:'/models/'+entry.id+'/'+entry.file+'?v=build1';
   $('download').download=entry.local?entry.name:entry.file;
@@ -220,7 +220,55 @@ const assetFolders=[
  {id:'other',name:'Other',subtitle:'Unsorted models'}
 ];
 const initialModel=models.find(m=>m.id===location.hash.slice(1))||models[0];
-const folderNodes=new Map();
+const folderNodes=new Map(), modelButtons=new Map();
+const shortDate=new Intl.DateTimeFormat(undefined,{year:'numeric',month:'short',day:'numeric'});
+const longDate=new Intl.DateTimeFormat(undefined,{dateStyle:'full',timeStyle:'short'});
+function showModified(entry){
+ const valid=entry?.modifiedAt&&Number.isFinite(Date.parse(entry.modifiedAt));
+ return valid?'Modified '+shortDate.format(new Date(entry.modifiedAt)):'Modified date unavailable';
+}
+function updateActiveModified(){
+ $('model-modified').textContent=active?.local?'Local STL · modified date unavailable':showModified(active);
+}
+function sortFolderEntries(){
+ const mode=$('model-sort').value;
+ for(const [id,node] of folderNodes){
+  const container=node.querySelector('.folder-items');
+  const entries=models.filter(entry=>(entry.folder||'other')===id);
+  if(mode==='name')entries.sort((a,b)=>a.name.localeCompare(b.name));
+  else if(mode==='newest'||mode==='oldest')entries.sort((a,b)=>{
+   const aDate=a.modifiedAt?Date.parse(a.modifiedAt):NaN;
+   const bDate=b.modifiedAt?Date.parse(b.modifiedAt):NaN;
+   if(!Number.isFinite(aDate))return Number.isFinite(bDate)?1:models.indexOf(a)-models.indexOf(b);
+   if(!Number.isFinite(bDate))return -1;
+   return (mode==='newest'?bDate-aDate:aDate-bDate)||models.indexOf(a)-models.indexOf(b);
+  });
+  for(const entry of entries)container.append(modelButtons.get(entry.id));
+ }
+}
+async function readModifiedDates(){
+ await Promise.all(models.map(async entry=>{
+  // Same-origin HEAD uses the actual GLB file timestamp; no mesh download required.
+  try{
+   const response=await fetch('/models/'+encodeURIComponent(entry.id)+'/'+encodeURIComponent(entry.file),{method:'HEAD',cache:'no-store'});
+   if(response.ok){
+    const date=Date.parse(response.headers.get('Last-Modified')||'');
+    if(Number.isFinite(date)&&date>=Date.UTC(2000,0,1))entry.modifiedAt=new Date(date).toISOString();
+   }
+  }catch{/* Date is optional; the model itself remains usable. */}
+  // Deterministic CAD exports have a 1970 mtime. Use their verified Git revision date.
+  if(!entry.modifiedAt&&entry.modifiedFallback)entry.modifiedAt=entry.modifiedFallback;
+  const date=modelButtons.get(entry.id).querySelector('time');
+  date.textContent=showModified(entry);
+  if(entry.modifiedAt){
+   date.dateTime=entry.modifiedAt;
+   date.title=longDate.format(new Date(entry.modifiedAt));
+  }
+ }));
+ sortFolderEntries();
+ updateActiveModified();
+}
+$('model-sort').addEventListener('change',sortFolderEntries);
 for(const folder of assetFolders){
  const entries=models.filter(entry=>(entry.folder||'other')===folder.id);
  if(!entries.length)continue;
@@ -237,12 +285,14 @@ for(const folder of assetFolders){
  for(const entry of entries){
   const button=document.createElement('button');button.className='model';button.dataset.model=entry.id;button.setAttribute('aria-pressed','false');
   const img=document.createElement('img');img.src=entry.thumbnail||(entry.id==='railgun-built'?'/models/railgun-built/preview.png':('/models/'+entry.id+'/reference.png'));img.alt='';img.loading='lazy';
-  const text=document.createElement('span'),strong=document.createElement('strong'),small=document.createElement('small');
-  strong.textContent=entry.name;small.textContent=entry.type;text.append(strong,small);button.append(img,text);
-  button.onclick=()=>load(entry);contents.append(button);
+  const text=document.createElement('span'),strong=document.createElement('strong'),small=document.createElement('small'),date=document.createElement('time');
+  strong.textContent=entry.name;small.textContent=entry.type;date.className='model-modified';date.textContent='Loading modified date…';
+  text.append(strong,small,date);button.append(img,text);
+  button.onclick=()=>load(entry);contents.append(button);modelButtons.set(entry.id,button);
  }
  details.append(contents);$('models').append(details);folderNodes.set(folder.id,details);
 }
+readModifiedDates();
 // Searching temporarily expands only matching folders; clearing restores the prior view.
 let openBeforeSearch=null;
 $('model-search').addEventListener('input',()=>{

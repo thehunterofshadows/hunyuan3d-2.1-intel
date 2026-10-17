@@ -24,3 +24,11 @@
 .folder-items{display:grid;gap:7px;padding:8px;border-top:1px solid #283b45}
 #model-empty{color:#a7bac7;font-size:12px;margin:8px 0 16px}
 @media(max-width:800px){.folder-items{grid-template-columns:repeat(2,minmax(0,1fr))}.model-folder>summary{padding:10px 12px}.model-search-label{margin-bottom:5px}#model-search{margin-bottom:10px}}
+
+/* Real model file modification dates, with sort controls kept inside the existing folders. */
+.model-sort-row{display:flex;align-items:center;gap:10px;margin:-5px 0 14px}
+.model-sort-row label{flex-shrink:0;font-size:10px;letter-spacing:1px;color:#98abb9}
+#model-sort{flex:1;min-width:0;max-width:none;padding:8px;font-size:12px}
+.model .model-modified{display:block;margin-top:5px;color:#8eebdc;font-size:11px;font-variant-numeric:tabular-nums}
+.modified-detail{margin:8px 0;color:#9ee6da;font-size:12px;font-variant-numeric:tabular-nums}
+@media(max-width:800px){.model-sort-row{margin:0 0 10px}.model-sort-row label{font-size:9px}.model .model-modified{font-size:10px;line-height:1.35}.model strong{overflow-wrap:anywhere}}
