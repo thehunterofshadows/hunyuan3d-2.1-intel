@@ -16,6 +16,7 @@ COPY assets/trellis-railgun /usr/share/nginx/html/models/trellis-railgun
 COPY assets/trellis-railgun-ultra /usr/share/nginx/html/models/trellis-railgun-ultra
 COPY assets/pixal3d-railgun /usr/share/nginx/html/models/pixal3d-railgun
 COPY assets/pixal3d-railgun-ultra /usr/share/nginx/html/models/pixal3d-railgun-ultra
+COPY assets/pixal3d-railgun-multiview /usr/share/nginx/html/models/pixal3d-railgun-multiview
 
 COPY assets/trellis-bumper /usr/share/nginx/html/models/trellis-bumper
 

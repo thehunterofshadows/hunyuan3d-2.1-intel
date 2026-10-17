@@ -32,3 +32,6 @@
 .model .model-modified{display:block;margin-top:5px;color:#8eebdc;font-size:11px;font-variant-numeric:tabular-nums}
 .modified-detail{margin:8px 0;color:#9ee6da;font-size:12px;font-variant-numeric:tabular-nums}
 @media(max-width:800px){.model-sort-row{margin:0 0 10px}.model-sort-row label{font-size:9px}.model .model-modified{font-size:10px;line-height:1.35}.model strong{overflow-wrap:anywhere}}
+
+/* Keep the model visible when the asset catalog is taller than the browser. */
+@media(min-width:801px){.workspace{align-self:start;min-height:calc(100dvh - 120px)}}

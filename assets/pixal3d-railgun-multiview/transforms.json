@@ -1,0 +1,167 @@
+{
+  "camera_angle_x": 0.3490658503988659,
+  "mesh_scale": 1.0,
+  "frames": [
+    {
+      "file_path": "view00_azim000.png",
+      "name": "front",
+      "azimuth_deg": 0,
+      "elevation_deg": 0,
+      "generator_prompt": "<sks> front view eye-level shot medium shot",
+      "transform_matrix": [
+        [
+          1.0,
+          0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0,
+          -1.0,
+          -3.1192050007897403
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "raw_mask_bbox": [
+        33,
+        269,
+        753,
+        482
+      ],
+      "common_pixel_scale": 1.2613944321261394
+    },
+    {
+      "file_path": "view01_azim090.png",
+      "name": "left",
+      "azimuth_deg": 90,
+      "elevation_deg": 0,
+      "generator_prompt": "<sks> right side view eye-level shot medium shot",
+      "transform_matrix": [
+        [
+          6.123233995736766e-17,
+          0,
+          1.0,
+          3.1192050007897403
+        ],
+        [
+          1.0,
+          0,
+          -6.123233995736766e-17,
+          -1.9099622100507864e-16
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "raw_mask_bbox": [
+        75,
+        215,
+        627,
+        565
+      ],
+      "common_pixel_scale": 1.2613944321261394
+    },
+    {
+      "file_path": "view02_azim180.png",
+      "name": "back",
+      "azimuth_deg": 180,
+      "elevation_deg": 0,
+      "generator_prompt": "<sks> back view eye-level shot medium shot",
+      "transform_matrix": [
+        [
+          -1.0,
+          0,
+          1.2246467991473532e-16,
+          3.819924420101573e-16
+        ],
+        [
+          1.2246467991473532e-16,
+          0,
+          1.0,
+          3.1192050007897403
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "raw_mask_bbox": [
+        19,
+        289,
+        757,
+        498
+      ],
+      "common_pixel_scale": 1.2613944321261394
+    },
+    {
+      "file_path": "view03_azim270.png",
+      "name": "right",
+      "azimuth_deg": 270,
+      "elevation_deg": 0,
+      "generator_prompt": "<sks> left side view eye-level shot medium shot",
+      "transform_matrix": [
+        [
+          -1.8369701987210297e-16,
+          0,
+          -1.0,
+          -3.1192050007897403
+        ],
+        [
+          -1.0,
+          0,
+          1.8369701987210297e-16,
+          5.729886630152358e-16
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "raw_mask_bbox": [
+        24,
+        249,
+        747,
+        545
+      ],
+      "common_pixel_scale": 1.2613944321261394
+    }
+  ],
+  "calibration_status": "Nominal camera-conditioned diffusion rig; generated poses and optics are not photogrammetrically measured."
+}

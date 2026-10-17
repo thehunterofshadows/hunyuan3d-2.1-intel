@@ -1,0 +1,42 @@
+{
+  "bytes": 180709028,
+  "sha256": "a1a3be73f4b3bf63a3a392989d644401b0e14b1c192d857fab20f39688037c3e",
+  "triangles": 6463700,
+  "materials": 1,
+  "images": 2,
+  "finite_vertices": true,
+  "finite_uvs": true,
+  "valid_indices": true,
+  "bounds": [
+    {
+      "min": [
+        -0.4892120361328125,
+        -0.119384765625,
+        -0.31197357177734375
+      ],
+      "max": [
+        0.49475860595703125,
+        0.135589599609375,
+        0.2969207763671875
+      ]
+    }
+  ],
+  "embedded_textures": [
+    {
+      "mime_type": "image/png",
+      "dimensions": [
+        2048,
+        2048
+      ],
+      "mode": "RGB"
+    },
+    {
+      "mime_type": "image/png",
+      "dimensions": [
+        2048,
+        2048
+      ],
+      "mode": "RGB"
+    }
+  ]
+}

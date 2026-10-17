@@ -1,0 +1,98 @@
+{
+  "run_id": "railgun-mv-20261017-v2",
+  "geometry_source": "Native ComfyUI Pixal3D multiview inference",
+  "image_source": "Existing ultra-detailed railgun reference PNG; original file preserved",
+  "view_generator": "Qwen-Image-Edit-2511 + fal Multiple-Angles LoRA + Lightning 4-step LoRA",
+  "backend": "PyTorch XPU on Intel Arc Pro B70, Skynet",
+  "comfyui_commit": "7f7fd918ed0815c5d5ef2ccfe44bfc8e72cfd217",
+  "pixal3d_checkpoint": "pixal3d_multiview_bf16.safetensors",
+  "checkpoint_revision": "f37641be376725d324c56626007cc477f1249a69",
+  "views": [
+    "view00_azim000.png",
+    "view01_azim090.png",
+    "view02_azim180.png",
+    "view03_azim270.png"
+  ],
+  "camera_ports": [
+    "front",
+    "left",
+    "back",
+    "right"
+  ],
+  "requested_azimuths": [
+    0,
+    90,
+    180,
+    270
+  ],
+  "fov_degrees": 20,
+  "camera_note": "Diffusion-controlled nominal camera poses, not measured photographic calibration; generated fine details may vary.",
+  "resolution": 1024,
+  "steps": {
+    "structure": 12,
+    "shape_512": 20,
+    "shape_1024": 12,
+    "texture": 12
+  },
+  "reconstruction_seconds": 271.42,
+  "compatibility": [
+    "Existing per-model FP32 chunked Intel attention",
+    "Lossless BF16 texture-attribute to FP32 export bridge"
+  ],
+  "no_manual_geometry": true,
+  "no_game_optimization": true,
+  "input_sha256": "d558b8053c637ec5a2a16fd4df7fa570a23d93b29546605511f9a76e09e9420d",
+  "output": {
+    "bytes": 180709028,
+    "sha256": "a1a3be73f4b3bf63a3a392989d644401b0e14b1c192d857fab20f39688037c3e",
+    "triangles": 6463700,
+    "materials": 1,
+    "images": 2,
+    "finite_vertices": true,
+    "finite_uvs": true,
+    "valid_indices": true,
+    "bounds": [
+      {
+        "min": [
+          -0.4892120361328125,
+          -0.119384765625,
+          -0.31197357177734375
+        ],
+        "max": [
+          0.49475860595703125,
+          0.135589599609375,
+          0.2969207763671875
+        ]
+      }
+    ],
+    "embedded_textures": [
+      {
+        "mime_type": "image/png",
+        "dimensions": [
+          2048,
+          2048
+        ],
+        "mode": "RGB"
+      },
+      {
+        "mime_type": "image/png",
+        "dimensions": [
+          2048,
+          2048
+        ],
+        "mode": "RGB"
+      }
+    ]
+  },
+  "pipeline_commit": "88eb450d709f352a5182ce90a194a972acfd25b6",
+  "viewer_verification": {
+    "scope": "isolated same-code Intel 3D Studio image",
+    "exit_code": 0,
+    "model_loaded": true,
+    "webgl_console_errors": 0,
+    "original_and_four_generated_images": true,
+    "actual_model_screenshots": true,
+    "fps_benchmark": false
+  },
+  "visual_assessment": "Recognizable raw railgun reconstruction. Surface detail and colors are imperfect; exact geometric/camera consistency is not claimed."
+}

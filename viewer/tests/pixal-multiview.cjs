@@ -1,0 +1,41 @@
+const {chromium}=require('/opt/checks/node_modules/playwright');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+(async()=>{
+ const base=process.env.VIEWER_URL||'http://intel3d-pixal-mv-test';
+ const browser=await chromium.launch({headless:true,args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+ const page=await browser.newPage({viewport:{width:1400,height:900}});
+ const errors=[];page.on('pageerror',e=>errors.push(String(e)));page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});
+ const began=Date.now();
+ await page.goto(base+'/#pixal3d-railgun-multiview',{waitUntil:'domcontentloaded',timeout:60000});
+ await page.waitForSelector('#viewport[data-state=ready][data-model="pixal3d-railgun-multiview"]',{timeout:180000});
+ const stats=await page.locator('#stats').innerText();assert.match(stats,/6,463,700/);
+ const visibleCanvas=await page.locator('#viewport').boundingBox();
+ assert.ok(visibleCanvas.y+visibleCanvas.height/2<900,'model center should be visible without scrolling');
+ const download=new URL(await page.locator('#download').getAttribute('href'),base).href;
+ const header=await page.request.get(download,{headers:{Range:'bytes=0-19'},timeout:30000});
+ assert.equal(header.status(),206);assert.equal((await header.body()).subarray(0,4).toString(),'glTF');
+ assert.equal(await page.locator('#reference-image').getAttribute('src'),'/models/pixal3d-railgun-multiview/original.png');
+ assert.equal(await page.locator('#view-comparison').isVisible(),true);
+ const comparison=new URL(await page.locator('#view-comparison').getAttribute('href'),base).href;
+ // The expanded model list can make the ordinary desktop workspace taller
+ // than the viewport. Use the existing fullscreen control, not a cropped page.
+ await page.click('#fullscreen');
+ await page.waitForFunction(()=>!!document.fullscreenElement,null,{timeout:20000});
+ await page.waitForTimeout(3000);
+ await page.locator('#viewport canvas').screenshot({path:'/evidence/pixal-multiview-actual-model.png',timeout:120000});
+ await page.click('[data-view=back]');await page.waitForTimeout(3000);
+ await page.locator('#viewport canvas').screenshot({path:'/evidence/pixal-multiview-actual-model-back.png',timeout:120000});
+ const gallery=await browser.newPage({viewport:{width:1100,height:900}});
+ await gallery.goto(comparison,{waitUntil:'load',timeout:30000});
+ assert.equal(await gallery.locator('.views.generated figure').count(),4);
+ assert.equal(await gallery.locator('figure.original img').count(),1);
+ for(const image of await gallery.locator('figure img').all())assert.equal(await image.evaluate(x=>x.complete&&x.naturalWidth>0),true);
+ const manifest=await page.request.get(base+'/models/pixal3d-railgun-multiview/manifest.json');
+ const data=await manifest.json();assert.equal(data.geometry_source,'Native ComfyUI Pixal3D multiview inference');
+ assert.equal(data.output.sha256,'a1a3be73f4b3bf63a3a392989d644401b0e14b1c192d857fab20f39688037c3e');
+ assert.deepEqual(errors,[]);
+ const result={passed:true,model:'pixal3d-railgun-multiview',stats,glb_header:'glTF',original_and_four_views:true,errors,seconds:(Date.now()-began)/1000,renderer:'software WebGL verification; not a hardware performance benchmark'};
+ fs.writeFileSync('/evidence/pixal-multiview-browser-result.json',JSON.stringify(result,null,2));
+ console.log('PASS',JSON.stringify(result));await browser.close();
+})().catch(e=>{console.error(e);process.exit(1)});
