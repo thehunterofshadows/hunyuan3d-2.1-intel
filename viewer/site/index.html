@@ -14,10 +14,11 @@
 <details id="reference"><summary>Original reference image <span>↗</span></summary><p class="caption">AI-generated input, not the reconstructed mesh.</p><a id="reference-link" target="_blank" rel="noopener"><img id="reference-image" alt="Original reference" loading="lazy"></a></details>
 </aside>
 <section class="workspace" aria-label="Interactive 3D model viewer">
-<div class="viewbar"><span><i></i> LIVE MODEL</span><span><button id="hidden-parts">Hidden parts (0)</button> <button id="export-notes">Export notes</button> <button id="open-stl">Open STL file</button><input id="stl-file" type="file" accept=".stl" hidden> <button id="fullscreen" title="Expand viewer">Fullscreen ⛶</button></span></div>
+<div class="viewbar"><span><i></i> LIVE MODEL</span><span><button id="hidden-parts">Unhide Objects (0)</button> <button id="reset-camera">Reset Camera</button> <button id="export-notes">Export notes</button> <button id="open-stl">Open STL file</button><input id="stl-file" type="file" accept=".stl" hidden> <button id="fullscreen" title="Expand viewer">Fullscreen ⛶</button></span></div>
 <div id="viewport" tabindex="0" aria-label="Drag to rotate. Scroll or pinch to zoom. Right drag or two fingers to pan."><div id="status" role="status">Loading model…</div></div>
 <section id="part-popup" class="part-popup" role="dialog" aria-labelledby="part-title" hidden>
  <button id="part-close" class="popup-close" aria-label="Close part inspector">×</button><small id="part-model"></small><h3 id="part-title"></h3>
+ <button id="center-object">Center on Object</button>
  <label>Visibility<select id="part-opacity"><option value="1">Opaque</option><option value="0.5">50% transparent</option><option value="0">Fully transparent / hidden</option></select></label>
  <label>Notes for this part<textarea id="part-note" rows="4" maxlength="12000" placeholder="What should change here?"></textarea></label>
  <div class="note-actions"><button id="save-note">Save note</button><button id="reload-note" hidden>Reload saved note</button></div><p id="note-status" role="status"></p>
@@ -25,7 +26,7 @@
 </section>
 <section id="parts-menu" class="part-popup" role="dialog" aria-label="Restore hidden parts" hidden><button id="menu-close" class="popup-close" aria-label="Close hidden parts">×</button><h3>Hidden parts</h3><p id="restore-empty">No hidden parts.</p><div id="restore-list"></div><button id="restore-all">Unhide all parts</button></section>
 <div class="view-controls"><button data-view="front">Front</button><button data-view="back">Back</button><button data-view="left">Left</button><button data-view="right">Right</button><button data-view="top">Top</button><button id="reset">Reset view</button></div>
-<p class="hint">Click a piece to add notes or see through it · Right-click empty space to unhide · Drag to rotate · Scroll / pinch to zoom · Right-drag / two fingers to pan</p>
+<p class="hint">Click a piece to add notes or see through it · Right-click a selected piece for notes and Center on Object · Unhide Objects restores hidden pieces · Drag to rotate · Scroll / pinch to zoom · Right-drag / two fingers to pan</p>
 <div id="cad-controls" class="cad-controls" hidden>
  <div class="cad-row"><label>Separate parts <input id="explode" type="range" min="0" max="1" step="0.05" value="0" aria-label="Separate cabinet parts"></label><output id="explode-value" for="explode">Assembled</output><label>Inspect part<select id="cad-part"><option value="all">All printed parts</option></select></label></div>
  <div class="cad-row"><label><input id="cad-monitor" type="checkbox" checked> Monitor</label><label><input id="cad-pc" type="checkbox" checked> PC allowance</label><label><input id="cad-cover" type="checkbox"> Cover allowance</label><label><input id="cad-panels" type="checkbox" checked> Top panels</label></div>

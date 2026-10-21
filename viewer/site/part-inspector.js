@@ -33,7 +33,7 @@ export function createPartInspector({context,render,appearance,restoreAssembly})
    const base=material.userData.partBaseline;material.opacity=alpha===undefined?base.opacity:alpha===0?base.opacity:alpha;material.transparent=alpha===undefined?base.transparent:alpha===.5;material.depthWrite=alpha===undefined?base.depthWrite:alpha!==.5;material.needsUpdate=true;
   }
  }
- function updateCount(){const n=context().meshes.filter(m=>overrides.get(id(m))===0).length;$('hidden-parts').textContent='Hidden parts ('+n+')';}
+ function updateCount(){const n=context().meshes.filter(m=>overrides.get(id(m))===0).length;$('hidden-parts').textContent='Unhide Objects ('+n+')';}
  function close(){panel.hidden=true;menu.hidden=true;if(helper){context().scene.remove(helper);helper.dispose();helper=null;}render();}
  function position(element,x,y){element.hidden=false;element.style.left=Math.max(8,Math.min(x+12,innerWidth-element.offsetWidth-8))+'px';element.style.top=Math.max(8,Math.min(y+12,innerHeight-element.offsetHeight-8))+'px';}
  function pick(e){const c=context(),r=c.renderer.domElement.getBoundingClientRect();ndc.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);c.model?.updateMatrixWorld(true);ray.setFromCamera(ndc,c.camera);return ray.intersectObjects(c.meshes.filter(m=>m.visible),false)[0]||null;}
@@ -87,6 +87,20 @@ export function createPartInspector({context,render,appearance,restoreAssembly})
   for(const mesh of hidden){const button=document.createElement('button');button.type='button';button.textContent='Show '+(mesh.name||'Mesh').replaceAll('_',' ');button.onclick=()=>{overrides.delete(id(mesh));remember();restoreAssembly(mesh);applyVisibility();looks();menuAt(x,y);};list.append(button);}
   position(menu,x,y);
  }
+ $('center-object').onclick=()=>{
+  if(!selected?.mesh.visible)return;
+  const c=context();c.model.updateMatrixWorld(true);
+  const bounds=new THREE.Box3().setFromObject(selected.mesh);
+  if(bounds.isEmpty())return;
+  const target=bounds.getCenter(new THREE.Vector3());
+  // Move camera and pivot together, preserving the current angle and zoom.
+  const offset=c.camera.position.clone().sub(c.controls.target);
+  const damping=c.controls.enableDamping,rotating=c.controls.autoRotate;
+  c.controls.enableDamping=false;c.controls.autoRotate=false;c.controls.update();
+  c.controls.target.copy(target);c.camera.position.copy(target).add(offset);
+  c.controls.update();c.controls.enableDamping=damping;c.controls.autoRotate=rotating;
+  flush();close();render();
+ };
  $('part-close').onclick=()=>{flush();close();};$('menu-close').onclick=()=>menu.hidden=true;
  $('part-note').oninput=()=>{if(!selected)return;const r=selected.record;r.text=$('part-note').value;r.dirty=true;safeStore.set(draftKey(r.payload.model.id,r.payload.part.id),r.text);status(r,'Unsaved browser draft…');clearTimeout(timer);timer=setTimeout(()=>{r.payload.view=snapshot();queue(r).catch(()=>{});},700);};
  $('save-note').onclick=()=>{clearTimeout(timer);if(selected){selected.record.payload.view=snapshot();queue(selected.record).catch(()=>{});}};
@@ -97,10 +111,10 @@ export function createPartInspector({context,render,appearance,restoreAssembly})
  $('export-notes').onclick=async()=>{await flush();try{const response=await fetch(API+'/export');if(!response.ok)throw Error('Export unavailable');const data=await response.json(),url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='intel3d-part-notes.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch{if(selected)status(selected.record,'Could not export; browser drafts are retained.');}};
  const canvas=context().renderer.domElement;
  canvas.addEventListener('pointerdown',e=>{pointers.add(e.pointerId);if(pointers.size===1)pointer={x:e.clientX,y:e.clientY,id:e.pointerId,button:e.button,moved:false};else if(pointer)pointer.moved=true;menu.hidden=true;});
- canvas.addEventListener('pointermove',e=>{if(pointer&&Math.hypot(e.clientX-pointer.x,e.clientY-pointer.y)>6)pointer.moved=true;});
- canvas.addEventListener('pointerup',e=>{pointers.delete(e.pointerId);if(pointer?.id===e.pointerId&&!pointer.moved&&pointer.button===0){const hit=pick(e);if(hit)select(hit,e);else{flush();close();}}if(!pointers.size)pointer=null;});
+ canvas.addEventListener('pointermove',e=>{if(pointer&&Math.hypot(e.clientX-pointer.x,e.clientY-pointer.y)>6){pointer.moved=true;if(pointer.button===2)panel.hidden=true;}});
+ canvas.addEventListener('pointerup',e=>{pointers.delete(e.pointerId);if(pointer?.id===e.pointerId&&!pointer.moved&&pointer.button===0){const hit=pick(e);if(hit)select(hit,e);else{flush();close();selected=null;}}if(!pointers.size)pointer=null;});
  canvas.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);pointer=null;});
- canvas.addEventListener('contextmenu',e=>{e.preventDefault();if(!pick(e)&&!pointer?.moved){flush();close();menuAt(e.clientX,e.clientY);}});
+ canvas.addEventListener('contextmenu',e=>{e.preventDefault();menu.hidden=true;const hit=pick(e);if(hit&&hit.object===selected?.mesh&&!pointer?.moved)select(hit,e);});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){flush();close();}});
  document.addEventListener('pointerdown',e=>{if(!menu.hidden&&!menu.contains(e.target)&&e.target!==$('hidden-parts')&&e.target!==canvas)menu.hidden=true;});
  return {setModel,beforeModelChange:flush,applyVisibility,applyAppearance,getOpacity:mesh=>overrides.get(id(mesh)),close};

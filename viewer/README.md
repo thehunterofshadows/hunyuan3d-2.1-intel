@@ -61,7 +61,7 @@ The sidebar `preview.png` images are **screenshots of the actual GLBs** from Pla
 
 
 ## Part annotations
-Click a mesh to edit notes or set its opacity. Right-click empty canvas space (or use Hidden parts) to restore manually hidden meshes. Notes autosave after typing, with a browser draft if the service is unavailable. Each browser has a private cookie workspace; export JSON to share notes across devices or with an agent. Clearing cookies loses browser access to that workspace.
+Click a mesh to edit notes or set its opacity. Right-click the already selected mesh to reopen its notes/visibility panel. Center on Object moves the orbit pivot to that mesh while preserving angle and zoom. Use Unhide Objects in the top toolbar to restore manually hidden meshes; Reset Camera returns to the default fitted view. Empty-space right-click no longer opens a menu. Notes autosave after typing, with a browser draft if the service is unavailable. Each browser has a private cookie workspace; export JSON to share notes across devices or with an agent. Clearing cookies loses browser access to that workspace.
 
 The notes service persists JSON plus readable Markdown in `/home/justin/.local/state/intel3d/part-notes`. Agents on Mini can read `README.md` and `workspace-*.json` there. Records identify model ID/asset path, CAD part name or mesh node path, geometry SHA-256, clicked coordinates, camera and visibility state, revision and timestamp. Use JSON as authoritative data. Local STL files stay in the browser; metadata alone does not supply their geometry.
 

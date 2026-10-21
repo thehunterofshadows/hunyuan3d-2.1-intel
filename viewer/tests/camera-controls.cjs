@@ -1,0 +1,34 @@
+const {chromium}=require('/opt/checks/node_modules/playwright');
+const assert=require('node:assert/strict');
+(async()=>{
+ const browser=await chromium.launch({args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+ const p=await browser.newPage({viewport:{width:1440,height:1100}}),errors=[];
+ p.setDefaultTimeout(60000);p.on('pageerror',e=>errors.push(e.message));
+ // Inspect real camera state only in this test's intercepted module response.
+ await p.route('**/app*.js',async route=>{const response=await route.fetch();await route.fulfill({response,body:(await response.text())+'\nwindow.cameraCheck=()=>({camera,controls,meshes,THREE});'});});
+ await p.route('**/*',route=>route.request().resourceType()==='image'?route.abort():route.fallback());
+ await p.goto((process.env.VIEWER_URL||'http://intel-3d-studio-prod-web/')+'#portable-pinball');
+ await p.waitForSelector('#viewport[data-state=ready]');
+ await p.selectOption('#cad-part','front_button_panel');
+ const canvas=p.locator('#viewport canvas');await canvas.scrollIntoViewIfNeeded();await p.waitForTimeout(500);
+ const r=await canvas.boundingBox(),x=r.x+r.width/2,y=r.y+r.height/2;
+ await p.mouse.click(x,y,{button:'right'});assert.equal(await p.locator('#part-popup').isVisible(),false,'unselected right click does not open panel');
+ await p.mouse.click(x,y);await p.waitForSelector('#part-popup:not([hidden])');await p.click('#part-close');
+ await p.mouse.click(x,y,{button:'right'});await p.waitForSelector('#part-popup:not([hidden])');
+ assert.equal(await p.locator('#part-popup').getAttribute('data-part-id'),'cad:front_button_panel');
+ await p.click('#part-close');
+ await p.mouse.move(x,y);await p.mouse.down({button:'right'});await p.mouse.move(x+45,y+20,{steps:8});await p.mouse.up({button:'right'});await p.waitForTimeout(600);
+ const point=await p.evaluate(()=>{const {camera,meshes,THREE}=cameraCheck(),m=meshes.find(m=>m.name==='front_button_panel');const v=new THREE.Box3().setFromObject(m).getCenter(new THREE.Vector3()).project(camera);return [v.x,v.y];});
+ await p.mouse.click(r.x+(point[0]+1)*r.width/2,r.y+(1-point[1])*r.height/2,{button:'right'});await p.waitForSelector('#part-popup:not([hidden])');
+ await p.click('#center-object');await p.waitForTimeout(300);
+ assert.ok(await p.evaluate(()=>{const {controls,meshes,THREE}=cameraCheck();const center=new THREE.Box3().setFromObject(meshes.find(m=>m.name==='front_button_panel')).getCenter(new THREE.Vector3());return center.distanceTo(controls.target)<1e-6;}),'orbit pivot matches selected mesh center');
+ await p.selectOption('#cad-part','all');await p.click('#reset-camera');await p.waitForTimeout(500);
+ const home=await p.evaluate(()=>{const {camera,controls}=cameraCheck();return [...camera.position.toArray(),...controls.target.toArray()];});
+ await p.mouse.move(x,y);await p.mouse.down();await p.mouse.move(x+90,y+35,{steps:10});await p.mouse.up();await p.waitForTimeout(500);await p.click('#reset-camera');await p.waitForTimeout(500);
+ const reset=await p.evaluate(()=>{const {camera,controls}=cameraCheck();return [...camera.position.toArray(),...controls.target.toArray()];});assert.ok(home.every((v,i)=>Math.abs(v-reset[i])<1e-6),'reset restores default position and focus');
+ await p.selectOption('#cad-part','front_button_panel');await p.waitForTimeout(500);await p.mouse.click(x,y);await p.waitForSelector('#part-popup:not([hidden])');await p.selectOption('#part-opacity','0');await p.click('#part-close');
+ await p.mouse.click(r.x+5,r.y+5,{button:'right'});assert.equal(await p.locator('#parts-menu').isVisible(),false);
+ await p.click('#hidden-parts');await p.click('#restore-all');assert.match(await p.locator('#hidden-parts').textContent(),/\(0\)/);
+ await p.setViewportSize({width:390,height:844});assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'mobile toolbar does not overflow');
+ assert.deepEqual(errors,[]);console.log('PASS: selected-object right-click; camera pivot; reset position/focus; empty-space menu removed; toolbar unhide; mobile width; no JS errors or note writes');await browser.close();
+})().catch(e=>{console.error(e);process.exit(1)});

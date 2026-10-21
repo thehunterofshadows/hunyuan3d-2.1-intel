@@ -47,6 +47,9 @@ function resize(){
 }
 function fit(view='home'){
  if(!model)return;
+ // Clear residual orbit/pan damping before applying an exact camera preset.
+ const damping=controls.enableDamping,rotating=controls.autoRotate;
+ controls.enableDamping=false;controls.autoRotate=false;controls.update();
  const vfov=THREE.MathUtils.degToRad(camera.fov);
  const hfov=2*Math.atan(Math.tan(vfov/2)*camera.aspect);
  fitDistance=radius/Math.sin(Math.min(vfov,hfov)/2)*1.12;
@@ -67,7 +70,7 @@ function fit(view='home'){
  }
  controls.target.copy(target);camera.position.copy(direction.multiplyScalar(fitDistance).add(target));
  camera.near=radius/1000;camera.far=radius*100;camera.updateProjectionMatrix();
- controls.minDistance=radius*0.04;controls.maxDistance=radius*20;controls.update();requestRender();
+ controls.minDistance=radius*0.04;controls.maxDistance=radius*20;controls.update();controls.enableDamping=damping;controls.autoRotate=rotating;requestRender();
 }
 // Viewer-only material polish: infer silver/red/rubber from the generated base color.
 // Keep the source GLB untouched; expose the original for comparison and download.
@@ -330,7 +333,7 @@ try {
  const pmrem=new THREE.PMREMGenerator(renderer),room=new RoomEnvironment();
  envRT=pmrem.fromScene(room,0.04);room.dispose();pmrem.dispose();lights();
  new ResizeObserver(resize).observe(viewport);resize();
- $('reset').onclick=()=>fit();
+ $('reset').onclick=$('reset-camera').onclick=()=>{inspector?.close();fit();};
  $('explode').oninput=applyAssembly;$('explode').onchange=()=>fit();
  for(const id of ['cad-monitor','cad-pc','cad-cover','cad-panels','cad-part'])$(id).onchange=()=>{applyAssembly();fit();};
  $('open-stl').onclick=()=>$('stl-file').click();
