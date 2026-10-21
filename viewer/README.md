@@ -92,3 +92,12 @@ Folder membership is lightweight `folder` metadata in `viewer/site/app.js`; **do
 Each model card and the details pane show the GLB file's HTTP `Last-Modified` timestamp (in the viewer's local timezone). Lightweight same-origin HEAD requests read timestamps without downloading the meshes again. The default sort is **Modified: newest first**, inside each project folder; users can select oldest first, name A–Z, or the original catalog order. Search, collapsed folder state, model IDs, downloads and notes remain unchanged.
 
 The portable-pinball V1.1 CAD GLB intentionally has a reproducible UNIX-epoch file mtime, so its known Git release revision timestamp (`2026-10-16T20:42:03Z`) is used instead of misleadingly displaying 1970. Future reproducible/epoch-dated assets should specify a `modifiedFallback` based on their asset revision. If an asset supplies no usable date, the UI displays "Modified date unavailable" and sorts it last for date sorting. Verify using `viewer/tests/modified-date-sort.cjs`.
+
+## Reviewing object notes
+`reviewed` defaults to false (including legacy notes without the field). The editor shows only the pending text. Reviewed text and the agent's response appear in the history table below. Saving a new note archives the previous reviewed record with its object metadata; existing history is retained. Open inspectors refresh review status every five seconds while no local edits are pending.
+
+Agents read `/home/justin/.local/state/intel3d/part-notes/workspace-*.json`, identify the exact model/part and revision, review the note, then run on Mini:
+```sh
+python3 viewer/notes/review_note.py --file /absolute/path/to/workspace-FULL_ID.json --model MODEL_ID --part PART_ID --expected-revision REVISION --response 'What was checked, changed, answered, or remains unresolved.'
+```
+Run from the repository root. Use the observed file and IDs; never guess. The script shares a file lock with browser saves, checks the revision, sets `reviewed: true`, records `reviewedAt`/`reviewResponse`, increments the revision, and updates JSON plus Markdown. A conflict requires re-reading and reviewing the new text. Do not manually overwrite live workspace files. Reviewed means examined, not necessarily fixed. Existing notes are not marked reviewed by deployment. Browser drafts and revision conflicts remain protected; use Reload saved note only when ready to discard the local draft.

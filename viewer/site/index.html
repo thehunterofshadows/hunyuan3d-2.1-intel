@@ -20,8 +20,9 @@
  <button id="part-close" class="popup-close" aria-label="Close part inspector">×</button><small id="part-model"></small><h3 id="part-title"></h3>
  <button id="center-object">Center on Object</button>
  <label>Visibility<select id="part-opacity"><option value="1">Opaque</option><option value="0.5">50% transparent</option><option value="0">Fully transparent / hidden</option></select></label>
- <label>Notes for this part<textarea id="part-note" rows="4" maxlength="12000" placeholder="What should change here?"></textarea></label>
+ <label>Not reviewed<textarea id="part-note" rows="4" maxlength="12000" placeholder="What should change here?"></textarea></label>
  <div class="note-actions"><button id="save-note">Save note</button><button id="reload-note" hidden>Reload saved note</button></div><p id="note-status" role="status"></p>
+ <section id="review-history"><h4>Reviewed comments</h4><p id="review-empty">No reviewed comments yet.</p><table id="review-table" hidden><thead><tr><th>Comment</th><th>Agent response</th><th>Reviewed</th></tr></thead><tbody id="review-rows"></tbody></table></section>
  <small>Notes save on Mini for this browser. Export JSON to share with an agent.</small>
 </section>
 <section id="parts-menu" class="part-popup" role="dialog" aria-label="Restore hidden parts" hidden><button id="menu-close" class="popup-close" aria-label="Close hidden parts">×</button><h3>Hidden parts</h3><p id="restore-empty">No hidden parts.</p><div id="restore-list"></div><button id="restore-all">Unhide all parts</button></section>

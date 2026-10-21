@@ -1,3 +1,5 @@
 # Viewer
 Production-only deployment is explicitly authorized by the owner. Do not add a Dev hostname or inference endpoint. Keep static viewer changes under viewer/; reuse assets/ without modifying generated outputs. Build/test through Docker. See README.md for commands.
 No source bind mounts in production. No credentials in source or images. Preserve the Intel inference work on Skynet. Publishing the viewer does not authorize running AI inference, scheduling agents or exposing Gradio.
+
+When asked to review object notes: read the exact workspace JSON in `/home/justin/.local/state/intel3d/part-notes/`, match model and part IDs, and treat missing `reviewed` as false. After reviewing a note, use `viewer/notes/review_note.py` with its observed revision and a meaningful response (see README). Do not directly overwrite live JSON or delete comments. On revision conflict, read and review the newer text. Reviewed does not imply fixed; state the outcome accurately. Never mark all notes reviewed just because they were loaded.

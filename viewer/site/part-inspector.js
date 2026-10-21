@@ -47,6 +47,32 @@ export function createPartInspector({context,render,appearance,restoreAssembly})
   return {model:{id:c.entry.id,name:c.entry.name,assetPath:c.entry.local?null:'/models/'+c.entry.id+'/'+c.entry.file,localFile:!!c.entry.local,localFilename:c.entry.local?c.entry.name:null},part,anchor,view:snapshot()};
  }
  function status(record,message){if(selected?.record===record)$('note-status').textContent=message;}
+ const pendingText=note=>note?.reviewed?'':note?.text||'';
+ function showHistory(record){
+  if(selected?.record!==record)return;
+  const note=record.saved,history=[...(note?.history||[])];if(note?.reviewed)history.push(note);
+  const rows=$('review-rows');rows.replaceChildren();
+  for(const entry of history.reverse()){
+   const row=document.createElement('tr');
+   for(const value of [entry.text,entry.reviewResponse||'—',entry.reviewedAt?new Date(entry.reviewedAt).toLocaleString():'Reviewed']){const cell=document.createElement('td');cell.textContent=value;row.append(cell);}
+   rows.append(row);
+  }
+  $('review-empty').hidden=history.length>0;$('review-table').hidden=!history.length;
+ }
+ async function refreshSelected(){
+  const record=selected?.record,version=generation;if(!record||record.dirty||record.conflict)return;
+  try{
+   const response=await fetch(API+'?model='+encodeURIComponent(record.payload.model.id));if(!response.ok)return;
+   const data=await response.json();if(version!==generation||selected?.record!==record||record.dirty||record.conflict)return;
+   const note=data.notes.find(n=>n.part.id===record.payload.part.id);
+   // An older GET must never roll back a just-completed save.
+   if(!note||note.revision<record.revision)return;
+   record.saved=note;record.revision=note.revision;record.text=pendingText(note);$('part-note').value=record.text;showHistory(record);
+   status(record,note.reviewed?'Reviewed · add a new note above.':'Not reviewed · saved on Mini');
+  }catch{/* Keep local edits and the last loaded history available offline. */}
+ }
+ setInterval(()=>{if(!document.hidden&&!panel.hidden)refreshSelected();},5000);
+ window.addEventListener('focus',()=>{if(!panel.hidden)refreshSelected();});
  async function persist(record){
   await ready;if(!record.dirty)return;
   const text=record.text,version=record.revision;
@@ -54,7 +80,7 @@ export function createPartInspector({context,render,appearance,restoreAssembly})
   try{
    const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...record.payload,text,expectedRevision:version})});const body=await r.json();
    if(!r.ok){if(r.status===409){record.conflict=true;if(selected?.record===record)$('reload-note').hidden=false;}throw new Error(body.error||'Save failed');}
-   record.revision=body.note.revision;record.saved=body.note;if(record.text===text){record.dirty=false;safeStore.remove(draftKey(record.payload.model.id,record.payload.part.id));status(record,'Saved on Mini · '+new Date(body.note.updatedAt).toLocaleTimeString());}
+   record.revision=body.note.revision;record.saved=body.note;showHistory(record);if(record.text===text){record.dirty=false;safeStore.remove(draftKey(record.payload.model.id,record.payload.part.id));status(record,'Saved on Mini · '+new Date(body.note.updatedAt).toLocaleTimeString());}
   }catch(error){status(record,error.message+' — browser draft retained.');throw error;}
  }
  function queue(record){if(!record||record.conflict)return Promise.resolve();record.queue=(record.queue||Promise.resolve()).catch(()=>{}).then(()=>persist(record));return record.queue;}
@@ -63,7 +89,7 @@ export function createPartInspector({context,render,appearance,restoreAssembly})
   generation++;close();selected=null;records=new Map();const c=context(),version=generation;
   try{overrides=new Map(JSON.parse(safeStore.get(storageKey())||'[]').filter(([k,v])=>typeof k==='string'&&[0,.5,1].includes(v)));}catch{overrides=new Map();}
   for(const mesh of c.meshes){mesh.userData.partNoteId=c.entry.local?'local:'+sha256(new Uint8Array(mesh.geometry.attributes.position.array.buffer)):(mesh.userData.cadPart?'cad:'+mesh.name:'mesh:'+path(mesh));if(mesh.userData.baseVisible===undefined)mesh.userData.baseVisible=mesh.visible;}
-  ready=fetch(API+'?model='+encodeURIComponent(c.entry.id)).then(r=>{if(!r.ok)throw Error('Notes service unavailable');return r.json();}).then(data=>{if(version!==generation)return;for(const note of data.notes||[]){const record=records.get(note.part.id);if(record){record.saved=note;record.revision=note.revision;}else records.set(note.part.id,{saved:note,revision:note.revision,text:note.text,dirty:false});}}).catch(error=>{if(version===generation&&selected)$('note-status').textContent=error.message+'; drafts stay in this browser.';});
+  ready=fetch(API+'?model='+encodeURIComponent(c.entry.id)).then(r=>{if(!r.ok)throw Error('Notes service unavailable');return r.json();}).then(data=>{if(version!==generation)return;for(const note of data.notes||[]){const record=records.get(note.part.id);if(record){record.saved=note;record.revision=note.revision;}else records.set(note.part.id,{saved:note,revision:note.revision,text:pendingText(note),dirty:false});}}).catch(error=>{if(version===generation&&selected)$('note-status').textContent=error.message+'; drafts stay in this browser.';});
   applyVisibility();looks();
  }
  async function select(hit,e,openPanel=true){
@@ -77,9 +103,10 @@ export function createPartInspector({context,render,appearance,restoreAssembly})
   $('part-opacity').value=String(overrides.get(key)??1);$('note-status').textContent='Loading saved note…';
   helper=new THREE.BoxHelper(mesh,0x72e3d0);helper.raycast=()=>{};c.scene.add(helper);if(openPanel)position(panel,e.clientX,e.clientY);render();
   await ready;if(version!==generation||selected?.record!==record)return;
-  if(!record.dirty){record.text=record.saved?.text||'';$('part-note').value=record.text;}
+  if(!record.dirty){record.text=pendingText(record.saved);$('part-note').value=record.text;}
   const changed=record.saved&&record.saved.part.geometryFingerprint!==record.payload.part.geometryFingerprint;
-  status(record,changed?'Geometry changed since this note; review its location.':record.dirty?'Browser draft recovered — press Save.':record.saved?'Saved on Mini':'Add a note; it saves automatically.');
+  status(record,changed?'Geometry changed since this note; review its location.':record.dirty?'Browser draft recovered — press Save.':record.saved?.reviewed?'Reviewed · add a new note above.':record.saved?'Not reviewed · saved on Mini':'Add a note; it saves automatically.');
+  showHistory(record);await refreshSelected();
  }
  function menuAt(x,y){
   const hidden=context().meshes.filter(m=>overrides.get(id(m))===0),list=$('restore-list');list.replaceChildren();
@@ -104,7 +131,7 @@ export function createPartInspector({context,render,appearance,restoreAssembly})
  $('part-close').onclick=()=>{flush();close();};$('menu-close').onclick=()=>menu.hidden=true;
  $('part-note').oninput=()=>{if(!selected)return;const r=selected.record;r.text=$('part-note').value;r.dirty=true;safeStore.set(draftKey(r.payload.model.id,r.payload.part.id),r.text);status(r,'Unsaved browser draft…');clearTimeout(timer);timer=setTimeout(()=>{r.payload.view=snapshot();queue(r).catch(()=>{});},700);};
  $('save-note').onclick=()=>{clearTimeout(timer);if(selected){selected.record.payload.view=snapshot();queue(selected.record).catch(()=>{});}};
- $('reload-note').onclick=async()=>{const r=selected?.record;if(!r)return;try{const data=await fetch(API+'?model='+encodeURIComponent(r.payload.model.id)).then(x=>x.json());const n=data.notes.find(n=>n.part.id===r.payload.part.id);r.saved=n;r.revision=n?.revision||0;r.text=n?.text||'';r.dirty=false;r.conflict=false;safeStore.remove(draftKey(r.payload.model.id,r.payload.part.id));$('part-note').value=r.text;$('reload-note').hidden=true;status(r,'Loaded saved note.');}catch{status(r,'Could not reload note; browser draft retained.');}};
+ $('reload-note').onclick=async()=>{const r=selected?.record;if(!r)return;try{const data=await fetch(API+'?model='+encodeURIComponent(r.payload.model.id)).then(x=>x.json());const n=data.notes.find(n=>n.part.id===r.payload.part.id);r.saved=n;r.revision=n?.revision||0;r.text=pendingText(n);r.dirty=false;r.conflict=false;safeStore.remove(draftKey(r.payload.model.id,r.payload.part.id));$('part-note').value=r.text;$('reload-note').hidden=true;showHistory(r);status(r,'Loaded saved note.');}catch{status(r,'Could not reload note; browser draft retained.');}};
  $('part-opacity').onchange=()=>{if(!selected)return;const mesh=selected.mesh;overrides.set(id(mesh),Number($('part-opacity').value));remember();applyVisibility();looks();};
  $('restore-all').onclick=()=>{for(const mesh of context().meshes)if(overrides.get(id(mesh))===0)overrides.delete(id(mesh));remember();restoreAssembly();applyVisibility();looks();menu.hidden=true;};
  $('hidden-parts').onclick=e=>menuAt(e.clientX||e.target.getBoundingClientRect().left,e.clientY||e.target.getBoundingClientRect().bottom);

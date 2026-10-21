@@ -35,3 +35,5 @@
 
 /* Keep the model visible when the asset catalog is taller than the browser. */
 @media(min-width:801px){.workspace{align-self:start;min-height:calc(100dvh - 120px)}}
+
+#review-history{border-top:1px solid #42566b;margin-top:16px;padding-top:8px}#review-history h4{margin:8px 0}#review-empty{font-size:12px;color:#b3c5d7}#review-table{width:100%;table-layout:fixed;border-collapse:collapse;font-size:11px}#review-table th,#review-table td{text-align:left;vertical-align:top;border-bottom:1px solid #42566b;padding:6px 4px;overflow-wrap:anywhere;white-space:pre-wrap}#review-table th:last-child{width:25%}
