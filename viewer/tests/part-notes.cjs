@@ -10,7 +10,7 @@ const assert=require('node:assert/strict');
  const canvas=p.locator('#viewport canvas');
  async function pickPart(name){
   await p.selectOption('#cad-part',name);await canvas.scrollIntoViewIfNeeded();await p.waitForTimeout(500);
-  const r=await canvas.boundingBox();await p.mouse.click(r.x+r.width/2,r.y+r.height/2);
+  const r=await canvas.boundingBox();await p.mouse.click(r.x+r.width/2,r.y+r.height/2);assert.equal(await p.locator('#part-popup').isVisible(),false);await p.mouse.click(r.x+r.width/2,r.y+r.height/2,{button:'right'});
   await p.waitForSelector('#part-popup:not([hidden])');assert.equal(await p.locator('#part-popup').getAttribute('data-part-id'),'cad:'+name);
  }
  await pickPart('front_button_panel');
@@ -38,7 +38,7 @@ const assert=require('node:assert/strict');
  assert.equal((await q.evaluate(()=>fetch('/api/part-notes').then(r=>r.json()))).notes.length,0,'browser workspace is private');
  const cross=await p.request.post(base+'api/part-notes',{headers:{Origin:'https://different.example'},data:note});assert.equal(cross.status(),403);
  await p.click('[data-model=trellis-bumper]');await p.waitForSelector('#viewport[data-state=ready][data-model=trellis-bumper]');
- await canvas.scrollIntoViewIfNeeded();const a=await canvas.boundingBox();await p.mouse.click(a.x+a.width/2,a.y+a.height/2);await p.waitForSelector('#part-popup:not([hidden])');
+ await canvas.scrollIntoViewIfNeeded();const a=await canvas.boundingBox();await p.mouse.click(a.x+a.width/2,a.y+a.height/2);assert.equal(await p.locator('#part-popup').isVisible(),false);await p.mouse.click(a.x+a.width/2,a.y+a.height/2,{button:'right'});await p.waitForSelector('#part-popup:not([hidden])');
  assert.match(await p.locator('#part-popup').getAttribute('data-part-id'),/^mesh:/);
  await p.click('#part-close');await p.mouse.move(a.x+a.width/2,a.y+a.height/2);await p.mouse.down();await p.mouse.move(a.x+a.width*.65,a.y+a.height*.6,{steps:8});await p.mouse.up();assert.equal(await p.locator('#part-popup').isVisible(),false,'orbit drag does not select');
  await p.close();
