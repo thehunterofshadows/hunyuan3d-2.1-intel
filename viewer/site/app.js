@@ -7,6 +7,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const $=id=>document.getElementById(id);
 const models=[
+ {id:'vx110-wood-dolly',folder:'jetski',name:'Yamaha VX110 · wooden rolling dolly',type:'DIY workshop cart · dimensional layout',file:'vx110-wood-dolly.glb',front:0,reference:'/models/vx110-wood-dolly/preview.png',thumbnail:'/models/vx110-wood-dolly/preview.png',textureLabel:'93 labeled parts · wood, carpet, 5-inch casters',note:'Custom 72 × 36 inch base, 80-inch carpeted support bunks, six braced risers, caster backing pads and four 5-inch plate casters for a 2005 Yamaha VX110 Sport. The 21-inch modeled bunk top and 22-inch nominal spacing are PLACEHOLDERS: measure actual trailer bunk height, separation and slope; cut uprights to match. Estimated rolling cart $397.92; complete transfer setup $477.91 before tax/shipping. Structural prototype, NOT load-rated or verified with your hull. Secure the cart against movement, use an independently engineered transfer anchor, maintain at least three caster ratings covering full combined load, and never stand in the ski transfer path.'},
  {id:'railgun-detail-v2',folder:'instagib',name:'Railgun · hard-surface V2 (pipes + fins)',type:'Game candidate · authored Blender mesh',file:'railgun.glb',front:0,reference:'/models/railgun/reference.png',thumbnail:'/models/railgun-detail-v2/preview.png',textureLabel:'Procedural PBR · 47,680 tris',note:'Actual GLB exported and reimported in Blender. Hand-modeled and enhanced mechanical railgun with continuous copper heat pipes, cooling fins, clamps and cyan energy conduits. 47,680 triangles and ~2 MB, rather than a reconstructed high-poly scan. Candidate for the Instagib first-person game: gameplay and final M1 FPS validation are separate checks.'},
  {id:'trellis-railgun-ultra',folder:'instagib',name:'Ultra Railgun · TRELLIS.2',type:'B70 Vulkan · 1536 generation',file:'railgun-ultra.glb',front:Math.PI,reference:'/models/trellis-railgun-ultra/reference.png',thumbnail:'/models/trellis-railgun-ultra/preview.png',textureLabel:'4096px textures',note:'Actual TRELLIS.2 model generated on Skynet: 1536 geometry resolution, 24 sampling steps and 4K PBR atlas. New concept with exposed copper heat pipes, layered cooling fins and twin accelerator rails. Reconstructed details and materials may differ from the concept. High-detail source for Instagib; game optimization and integration are pending.'},
  {id:'pixal3d-railgun-ultra',folder:'instagib',name:'Ultra Railgun · Pixal3D',type:'B70 Vulkan · 1536 / 24 steps',file:'railgun-ultra.glb',front:Math.PI,reference:'/models/pixal3d-railgun-ultra/reference.png',thumbnail:'/models/pixal3d-railgun-ultra/preview.png',textureLabel:'4096px PBR atlas',note:'Actual Pixal3D image-to-3D reconstruction from the SAME detailed railgun reference as TRELLIS.2 Ultra (heat pipes, cooling fins and accelerator rails). 1536 geometry, 24 diffusion steps, 4096-pixel PBR atlas, Intel Arc Pro B70 Vulkan. Generated details may not perfectly match the concept; experimental high-poly mesh, not optimized or integrated into Instagib.'},
@@ -171,11 +172,12 @@ async function load(entry){
   $('download').href=entry.local?entry.url:'/models/'+entry.id+'/'+entry.file+'?v=build1';
   $('download').download=entry.local?entry.name:entry.file;
   $('cad-downloads').hidden=!entry.cad;
+  $('dolly-plan').hidden=entry.id!=='vx110-wood-dolly';
   $('reference').hidden=!!entry.local;
-  $('reference').querySelector('summary').textContent=entry.cad?'Actual CAD preview ↗':'Original reference image ↗';
-  $('reference').querySelector('.caption').textContent=entry.cad?'Rendered from the CAD assembly. Physical fit tests are pending.':entry.id.startsWith('trellis-pinball-')?'Illustrated source reference, not the reconstructed model.':'AI-generated input, not the reconstructed mesh.';
+  $('reference').querySelector('summary').textContent=entry.cad?'Actual CAD preview ↗':entry.id==='vx110-wood-dolly'?'Cart model preview ↗':'Original reference image ↗';
+  $('reference').querySelector('.caption').textContent=entry.cad?'Rendered from the CAD assembly. Physical fit tests are pending.':entry.id==='vx110-wood-dolly'?'Rendered from this authored wooden-cart model; measurements must be checked on the real trailer.':entry.id.startsWith('trellis-pinball-')?'Illustrated source reference, not the reconstructed model.':'AI-generated input, not the reconstructed mesh.';
   if(!entry.local)$('reference-image').src=entry.reference||'/models/'+entry.id+'/reference.png';
-  document.querySelector('.pill').textContent=entry.cad?'CAD PROTOTYPE':entry.local?'LOCAL STL':entry.id.startsWith('pixal3d-')?'PIXAL3D OUTPUT':entry.id.startsWith('trellis-')?'TRELLIS.2 OUTPUT':entry.id==='railgun-built'?'MODELED REBUILD':'FIRST-PASS ASSET';
+  document.querySelector('.pill').textContent=entry.cad?'CAD PROTOTYPE':entry.id==='vx110-wood-dolly'?'DIY BUILD DRAFT':entry.local?'LOCAL STL':entry.id.startsWith('pixal3d-')?'PIXAL3D OUTPUT':entry.id.startsWith('trellis-')?'TRELLIS.2 OUTPUT':entry.id==='railgun-built'?'MODELED REBUILD':'FIRST-PASS ASSET';
   $('reference-link').href=$('reference-image').src;
   $('view-comparison').hidden=!entry.comparison;
   $('view-comparison').href=entry.comparison||'#';
@@ -223,6 +225,7 @@ function applyAssembly(){
 const assetFolders=[
  {id:'instagib',name:'Instagib',subtitle:'Weapons & characters'},
  {id:'pinball',name:'Pinball',subtitle:'Cabinet & playfield'},
+ {id:'jetski',name:'Jet Ski',subtitle:'Garage dolly & workshop builds'},
  {id:'other',name:'Other',subtitle:'Unsorted models'}
 ];
 const initialModel=models.find(m=>m.id===location.hash.slice(1))||models[0];

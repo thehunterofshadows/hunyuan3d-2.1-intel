@@ -23,6 +23,7 @@ COPY assets/trellis-bumper /usr/share/nginx/html/models/trellis-bumper
 COPY assets/trellis-woman /usr/share/nginx/html/models/trellis-woman
 
 COPY assets/portable-pinball /usr/share/nginx/html/models/portable-pinball
+COPY assets/vx110-wood-dolly /usr/share/nginx/html/models/vx110-wood-dolly
 COPY assets/trellis-pinball-flipper /usr/share/nginx/html/models/trellis-pinball-flipper
 COPY assets/trellis-pinball-plunger /usr/share/nginx/html/models/trellis-pinball-plunger
 COPY assets/trellis-pinball-slingshot /usr/share/nginx/html/models/trellis-pinball-slingshot
