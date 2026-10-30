@@ -5,8 +5,8 @@ const assert=require('node:assert/strict'),crypto=require('node:crypto');
  const p=await b.newPage({viewport:{width:1440,height:1100}}),errors=[];p.on('pageerror',e=>errors.push(e.message));
  await p.route('**/api/part-notes?model=portable-pinball',r=>r.fulfill({json:{notes:[{model:{id:'portable-pinball'},part:{id:'cad:monitor_saddle_left_180',geometryFingerprint:'old-geometry'},text:'Check tip thickness',revision:1}]}}));
  const base=process.env.VIEWER_URL;await p.goto(base+'#portable-pinball',{waitUntil:'domcontentloaded'});await p.waitForSelector('#viewport[data-state=ready]',{timeout:60000});
- assert.match(await p.locator('#title').textContent(),/V1.2/);assert.equal(await p.locator('#cad-part option').count(),47);assert.match(await p.locator('#stats').textContent(),/46 printed parts/);
- assert.match(await p.locator('#download').getAttribute('href'),/cabinet-v1_2.glb/);
+ assert.match(await p.locator('#title').textContent(),/V1.3/);assert.equal(await p.locator('#cad-part option').count(),46);assert.match(await p.locator('#stats').textContent(),/45 printed parts/);
+ assert.match(await p.locator('#download').getAttribute('href'),/cabinet-v1_3.glb/);
  async function glb(path){const r=await p.request.get(base+'models/portable-pinball/'+path);assert.equal(r.status(),200);const raw=await r.body(),len=raw.readUInt32LE(12);return {doc:JSON.parse(raw.subarray(20,20+len)),bin:raw.subarray(28+len)};}
  const old=await glb('cabinet.glb'),current=await glb('cabinet-v1_1.glb');assert.equal(current.doc.nodes.filter(n=>n.extras?.cadPart).length,47);
  function meshData(g,node){const primitive=g.doc.meshes[node.mesh].primitives[0];const attrs=[primitive.attributes.POSITION,primitive.indices];const out=attrs.map(i=>{const a=g.doc.accessors[i],v=g.doc.bufferViews[a.bufferView],start=(v.byteOffset||0)+(a.byteOffset||0);return g.bin.subarray(start,start+a.count*(a.type==='VEC3'?3:1)*(a.componentType===5126||a.componentType===5125?4:2))});return crypto.createHash('sha256').update(Buffer.concat(out)).digest('hex');}

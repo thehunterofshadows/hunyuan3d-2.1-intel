@@ -1,0 +1,2 @@
+Portable Mini VPin V1.3 — both retaining bezels are one piece.
+Print bezel_left_one_piece.stl and bezel_right_a1_a2.stl in their supplied diagonal orientation on QIDI X-Max 3. Check clearance/fit physically before printing everything. Do not auto-orient or scale.

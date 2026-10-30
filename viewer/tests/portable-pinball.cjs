@@ -6,15 +6,15 @@ const assert=require('node:assert/strict');
  p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
  const base=process.env.VIEWER_URL||'http://pinball-cad-viewer-check/';
  await p.goto(base+'#portable-pinball');await p.waitForSelector('#viewport[data-state=ready][data-model=portable-pinball]',{timeout:60000});
- assert.equal(await p.locator('#cad-part option').count(),47,'46 printed parts plus All');
- assert.match(await p.locator('#stats').innerText(),/[\d,]+ triangles · 46 printed parts · 3 reference envelopes/);
+ assert.equal(await p.locator('#cad-part option').count(),46,'45 printed parts plus All');
+ assert.match(await p.locator('#stats').innerText(),/[\d,]+ triangles · 45 printed parts · 3 reference envelopes/);
  assert.match(await p.locator('#reference .caption').textContent(),/CAD assembly/);
  assert.equal(await p.locator('#chrome-control').isVisible(),false);
  const response=await p.request.get(new URL(await p.locator('#download').getAttribute('href'),p.url()).href);
  assert.equal(response.status(),200);const glb=await response.body();assert.equal(glb.subarray(0,4).toString(),'glTF');
  const jsonSize=glb.readUInt32LE(12);const doc=JSON.parse(glb.subarray(20,20+jsonSize).toString());
- assert.equal(doc.nodes.filter(n=>n.extras?.cadPart).length,46);assert.equal(doc.nodes.filter(n=>n.extras?.cadReference).length,3);
- for(const path of ['cad-print-pack-v1_2.zip','cabinet-v1_2.step','bezel_right_a1_a2-v1_2.stl']){
+ assert.equal(doc.nodes.filter(n=>n.extras?.cadPart).length,45);assert.equal(doc.nodes.filter(n=>n.extras?.cadReference).length,3);
+ for(const path of ['cad-print-pack-v1_3.zip','cabinet-v1_3.step','bezel_left_one_piece-v1_3.stl','bezel_right_a1_a2-v1_3.stl']){
   const r=await p.request.get(new URL('/models/portable-pinball/'+path,p.url()).href);assert.equal(r.status(),200);
   const content=await r.body();assert.ok(path.endsWith('zip')?content.subarray(0,2).toString()==='PK':path.endsWith('stl')?content.length>84:content.subarray(0,30).toString().includes('ISO-10303-21'));
  }
@@ -45,5 +45,5 @@ const assert=require('node:assert/strict');
  await p.click('[data-model=portable-pinball]');await p.waitForSelector('#viewport[data-state=ready][data-model=portable-pinball]');assert.equal(await p.locator('#explode').inputValue(),'0');assert.equal(await p.locator('#cad-panels').isChecked(),true);
  const mobile=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});await mobile.goto(base+'#portable-pinball');await mobile.waitForSelector('#viewport[data-state=ready]',{timeout:60000});
  assert.ok(await mobile.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'mobile no horizontal overflow');await mobile.locator('#cad-panels').uncheck();await mobile.selectOption('#cad-part','front_button_panel');await mobile.locator('#viewport canvas').screenshot({path:'/evidence/pinball-mobile.png'});
- assert.deepEqual(errors,[]);console.log('PASS: exact 46-part assembly; 3 references; explode, hide and isolate; 5 views; rotation/zoom; materials; GLB/STEP/ZIP; binary + ASCII local STL; bumper regression; mobile.');await b.close();
+ assert.deepEqual(errors,[]);console.log('PASS: exact 45-part assembly; 3 references; explode, hide and isolate; 5 views; rotation/zoom; materials; GLB/STEP/ZIP; binary + ASCII local STL; bumper regression; mobile.');await b.close();
 })().catch(e=>{console.error(e);process.exit(1)});

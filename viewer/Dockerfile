@@ -23,7 +23,8 @@ COPY assets/trellis-bumper /usr/share/nginx/html/models/trellis-bumper
 COPY assets/trellis-woman /usr/share/nginx/html/models/trellis-woman
 
 COPY assets/portable-pinball /usr/share/nginx/html/models/portable-pinball
-COPY viewer/cad/portable-pinball-v1_2/exports/enclosure_stl /usr/share/nginx/html/models/portable-pinball/stl-v1_2
+COPY assets/portable-pinball/stl-v1_2 /usr/share/nginx/html/models/portable-pinball/stl-v1_2
+COPY assets/portable-pinball/stl-v1_3 /usr/share/nginx/html/models/portable-pinball/stl-v1_3
 COPY assets/vx110-wood-dolly /usr/share/nginx/html/models/vx110-wood-dolly
 COPY assets/trellis-pinball-flipper /usr/share/nginx/html/models/trellis-pinball-flipper
 COPY assets/trellis-pinball-plunger /usr/share/nginx/html/models/trellis-pinball-plunger
