@@ -1,0 +1,2 @@
+Portable Mini VPin V1.5 — thicker corner brackets with captive M3 nuts.
+Eight corner brackets now have 8 mm arms and two top-loading nut slots each. Slide standard M3 hex nuts into slots before fitting brackets; screw through original wall holes. Original M3 x12 screws retain nominal reach (check washers and actual screws). Print one bracket first to check fit. All V1.4 saddle changes retained. Print at 100% in supplied orientation.

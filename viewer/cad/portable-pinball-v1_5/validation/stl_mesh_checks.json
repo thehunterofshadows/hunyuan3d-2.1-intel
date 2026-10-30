@@ -1,0 +1,332 @@
+[
+  {
+    "file": "enclosure_stl/bezel_left_one_piece.stl",
+    "triangles": 860,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/bezel_right_a1_a2.stl",
+    "triangles": 860,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/bottom_front.stl",
+    "triangles": 1708,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/bottom_rear.stl",
+    "triangles": 1788,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/control_hatch.stl",
+    "triangles": 1156,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/corner_left_front_24.stl",
+    "triangles": 1804,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/corner_left_front_56.stl",
+    "triangles": 1804,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/corner_left_rear_128.stl",
+    "triangles": 1804,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/corner_left_rear_24.stl",
+    "triangles": 1804,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/corner_right_front_24.stl",
+    "triangles": 1804,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/corner_right_front_56.stl",
+    "triangles": 1804,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/corner_right_rear_128.stl",
+    "triangles": 1804,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/corner_right_rear_24.stl",
+    "triangles": 1804,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/floor_block_left_218.stl",
+    "triangles": 912,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/floor_block_left_252.stl",
+    "triangles": 912,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/floor_block_left_28.stl",
+    "triangles": 912,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/floor_block_left_442.stl",
+    "triangles": 912,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/floor_block_right_218.stl",
+    "triangles": 912,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/floor_block_right_252.stl",
+    "triangles": 912,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/floor_block_right_28.stl",
+    "triangles": 912,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/floor_block_right_442.stl",
+    "triangles": 912,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/front_button_panel.stl",
+    "triangles": 2980,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/front_cable_lid.stl",
+    "triangles": 1724,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/left_front_wall.stl",
+    "triangles": 4692,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/left_rear_wall.stl",
+    "triangles": 4004,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/monitor_saddle_left_180.stl",
+    "triangles": 456,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/monitor_saddle_left_360.stl",
+    "triangles": 456,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/monitor_saddle_right_180.stl",
+    "triangles": 456,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/monitor_saddle_right_360.stl",
+    "triangles": 456,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/rear_control_deck.stl",
+    "triangles": 1792,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/rear_vent_panel.stl",
+    "triangles": 1908,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/right_front_wall.stl",
+    "triangles": 4692,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/right_rear_wall.stl",
+    "triangles": 4004,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/splice_left.stl",
+    "triangles": 1708,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/splice_right.stl",
+    "triangles": 1708,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/top_block_left_140.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/top_block_left_25.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/top_block_left_330.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/top_block_left_450.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/top_block_left_50.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/top_block_right_140.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/top_block_right_25.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/top_block_right_330.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/top_block_right_450.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "enclosure_stl/top_block_right_50.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "print_first_tests/button_hole_28.stl",
+    "triangles": 520,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "print_first_tests/button_hole_28p2.stl",
+    "triangles": 520,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "print_first_tests/button_hole_28p4.stl",
+    "triangles": 520,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "print_first_tests/joint_front_wall.stl",
+    "triangles": 1044,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "print_first_tests/joint_rear_wall.stl",
+    "triangles": 1044,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "print_first_tests/joint_splice_plate.stl",
+    "triangles": 2044,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "print_first_tests/monitor_5mm_shim_for_7mm_housing.stl",
+    "triangles": 12,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "print_first_tests/monitor_edge_cradle_12mm.stl",
+    "triangles": 1044,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "print_first_tests/monitor_retaining_bar.stl",
+    "triangles": 1036,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  },
+  {
+    "file": "print_first_tests/optional_saddle_shim_5mm.stl",
+    "triangles": 12,
+    "nonmanifold_edges": 0,
+    "degenerate_facets": 0
+  }
+]

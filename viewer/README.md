@@ -129,3 +129,6 @@ Assets include GLB, print STL, editable STEP and validation.json.
 
 ## Portable pinball CAD V1.4 — right saddle height correction
 Both right saddle bearing planes rise 5 mm for user-measured 7 mm right-side housing, keeping 2 mm pads. Left saddles retain 12 mm housing height; no extra shim on revised right saddles. Only these two printable solids change. Bolt bores, locator faces, original part IDs and all other parts remain. Versioned GLB/STEP/ZIP and all 45 STLs are served; original versions remain archived. Uniform monitor reference is an envelope, not actual stepped geometry. Physical fit pending. Source: viewer/cad/portable-pinball-v1_4/.
+
+## Portable pinball CAD V1.5 — captive nuts in corner brackets
+All eight corner brackets use 8 mm arms, two top-loading M3 nut slots each (2.8 mm deep, 5.85 mm wide, 6.7 mm hex corner diameter), 3.2 mm bearing walls and 2 mm back walls. Original wall faces and screw axes unchanged; M3 x12 reach nominally retained. Load nuts before mounting. Other 37 printable solids unchanged from V1.4. Original part IDs and note history retained. Versioned GLB, STEP, ZIP and 45 STLs served; physical fit/strength pending. Source and exact nut-path checks: viewer/cad/portable-pinball-v1_5/. Browser checks: viewer/tests/pinball-v1_5.cjs.

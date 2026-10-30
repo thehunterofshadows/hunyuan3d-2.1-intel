@@ -1,0 +1,79 @@
+{
+  "changed_parts": [
+    "corner_left_front_24",
+    "corner_left_front_56",
+    "corner_left_rear_128",
+    "corner_left_rear_24",
+    "corner_right_front_24",
+    "corner_right_front_56",
+    "corner_right_rear_128",
+    "corner_right_rear_24"
+  ],
+  "other_37_printable_meshes_identical": true,
+  "arm_mm": 8,
+  "bearing_wall_mm": 3.2,
+  "back_wall_mm": 2,
+  "nut_depth_mm": 2.8,
+  "nut_slot_width_mm": 5.85,
+  "nominal_nut_flats_mm": 5.5,
+  "nominal_nut_thickness_mm": 2.4,
+  "physical_fit_tested": false,
+  "checks": [
+    {
+      "part": "corner_left_front_24",
+      "valid_single_solid": true,
+      "both_nut_entry_paths_clear": true,
+      "both_nuts_resist_rotation": true,
+      "original_screw_axes_clear": true
+    },
+    {
+      "part": "corner_left_front_56",
+      "valid_single_solid": true,
+      "both_nut_entry_paths_clear": true,
+      "both_nuts_resist_rotation": true,
+      "original_screw_axes_clear": true
+    },
+    {
+      "part": "corner_left_rear_24",
+      "valid_single_solid": true,
+      "both_nut_entry_paths_clear": true,
+      "both_nuts_resist_rotation": true,
+      "original_screw_axes_clear": true
+    },
+    {
+      "part": "corner_left_rear_128",
+      "valid_single_solid": true,
+      "both_nut_entry_paths_clear": true,
+      "both_nuts_resist_rotation": true,
+      "original_screw_axes_clear": true
+    },
+    {
+      "part": "corner_right_front_24",
+      "valid_single_solid": true,
+      "both_nut_entry_paths_clear": true,
+      "both_nuts_resist_rotation": true,
+      "original_screw_axes_clear": true
+    },
+    {
+      "part": "corner_right_front_56",
+      "valid_single_solid": true,
+      "both_nut_entry_paths_clear": true,
+      "both_nuts_resist_rotation": true,
+      "original_screw_axes_clear": true
+    },
+    {
+      "part": "corner_right_rear_24",
+      "valid_single_solid": true,
+      "both_nut_entry_paths_clear": true,
+      "both_nuts_resist_rotation": true,
+      "original_screw_axes_clear": true
+    },
+    {
+      "part": "corner_right_rear_128",
+      "valid_single_solid": true,
+      "both_nut_entry_paths_clear": true,
+      "both_nuts_resist_rotation": true,
+      "original_screw_axes_clear": true
+    }
+  ]
+}
