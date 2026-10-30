@@ -22,6 +22,7 @@ COPY assets/trellis-bumper /usr/share/nginx/html/models/trellis-bumper
 
 COPY assets/trellis-woman /usr/share/nginx/html/models/trellis-woman
 
+COPY assets/pinball-nut-slot-test /usr/share/nginx/html/models/pinball-nut-slot-test
 COPY assets/portable-pinball /usr/share/nginx/html/models/portable-pinball
 COPY assets/portable-pinball/stl-v1_2 /usr/share/nginx/html/models/portable-pinball/stl-v1_2
 COPY assets/portable-pinball/stl-v1_3 /usr/share/nginx/html/models/portable-pinball/stl-v1_3

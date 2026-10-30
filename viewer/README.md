@@ -114,3 +114,15 @@ Select a mesh and use **Export selected STL** in the toolbar, or **Export this p
 
 ## Portable pinball CAD V1.3 — both bezels single piece
 The current `portable-pinball` model is `cabinet-v1_3.glb`. V1.3 also merges the `bezel_left_front` and `bezel_left_rear` into `bezel_left_one_piece`; V1.2's `bezel_right_a1_a2` is unchanged. Each ~351 mm bezel rail is printed diagonally in a 265.78×265.78 mm footprint with 8 mm per-side brim allowance on QIDI X-Max 3. All original screw positions and monitor housing overlap remain; the other 43 parts are unmodified. Total 45 printed parts + 3 reference envelopes. Both bezels have direct download STLs and all 45 individual files are served from the tracked `assets/portable-pinball/stl-v1_3/`, so reproducible Docker builds do not require untracked CAD exports. Old V1.2 individual STLs continue to be served from tracked assets. Previous GLBs, print packs, STEP files remain. The existing note history is not deleted. Source: `viewer/cad/portable-pinball-v1_3/`; fit tests pending.
+
+## Side-entry nut block test V1
+Separate model: #pinball-nut-slot-test. One exact-CAD replacement for V1.3 top_block_left_140;
+the complete cabinet remains V1.3. Flared +X side entry, 6.7 mm corner-diameter hex pocket,
+5.85 mm slot width, 2.8 mm pocket height and 3.2 mm roof. Original exterior and mounting
+axes preserved. Roof supports screw load; optional hot glue retains the loose nut.
+Nut is lower by 3.2 mm, so screw engagement must be checked. Nominal 5.5 mm AF × 2.4 mm nut
+has a checked collision-free insertion path. Solid validity, exact source match, separate
+mounting bore, manifold STL and printer volume checks passed. Physical fit/strength pending.
+Primary and selected-part downloads use the original top-face-down print STL.
+Source: viewer/cad/pinball-nut-slot-test/build.py (Python 3.12, CadQuery 2.7, NumPy).
+Assets include GLB, print STL, editable STEP and validation.json.

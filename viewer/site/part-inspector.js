@@ -36,6 +36,10 @@ export function createPartInspector({context,render,appearance,restoreAssembly})
   const name=(mesh.name||'part').replace(/[^a-zA-Z0-9._-]/g,'_');
   let geometry,url;
   try{
+   if(c.entry.printStl){
+    const a=document.createElement('a');a.href=c.entry.printStl;a.download=c.entry.printStl.split('/').pop();a.click();
+    message.textContent='Original oriented print STL: '+name;return;
+   }
    if(c.entry.cad){
     if(!mesh.userData.cadPart||!c.entry.stlDirectory)throw Error('Print STL unavailable for this part.');
     const a=document.createElement('a');a.href=c.entry.stlDirectory+encodeURIComponent(mesh.name)+'.stl';a.download=name+'.stl';a.click();

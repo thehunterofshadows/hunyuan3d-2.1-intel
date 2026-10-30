@@ -1,0 +1,20 @@
+{
+  "source": "V1.3 top_block_left_140",
+  "original_exact_match": true,
+  "solid_valid": true,
+  "single_solid": true,
+  "stl_closed_manifold": true,
+  "nominal_nut_insertion_clear": true,
+  "wall_mount_bore_clear_of_pocket": true,
+  "roof_normal_mm": 3.2,
+  "pocket_height_mm": 2.8,
+  "tunnel_width_mm": 5.85,
+  "hex_corner_diameter_mm": 6.7,
+  "print_bounds_mm": [
+    12.000672278781781,
+    22.433418336316603,
+    15.524126558231158
+  ],
+  "triangles": 2002,
+  "physical_fit_tested": false
+}
