@@ -1,0 +1,3 @@
+Portable Mini VPin V1.2 — right bezel A1+A2 combined.
+Print enclosure_stl/bezel_right_a1_a2.stl as a single part diagonally across QIDI X-Max 3 bed. Do not scale or auto-orient.
+Check actual monitor fit before full printing.

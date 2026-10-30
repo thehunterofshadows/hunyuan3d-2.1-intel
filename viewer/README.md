@@ -42,7 +42,7 @@ rendered pixels with polish on/off and captures all views.
 
 
 ### Portable pinball CAD
-The Portable Pinball card uses exact tessellations of the supplied cabinet CAD: 47 named printable parts and three explicitly marked reference envelopes. Assembly controls separate parts, hide top panels, toggle monitor/PC/cover references and isolate a named part. Download links preserve the original STEP assembly and CAD/STL print pack. No inference is used for the cabinet. It is a prototype; physical fit checks remain pending.
+The Portable Pinball card uses exact tessellations of the supplied cabinet CAD: 46 named printable parts (V1.2; the right bezel is merged) and three explicitly marked reference envelopes. Assembly controls separate parts, hide top panels, toggle monitor/PC/cover references and isolate a named part. Download links preserve the original STEP assembly and CAD/STL print pack. No inference is used for the cabinet. It is a prototype; physical fit checks remain pending.
 
 Open STL file parses ASCII or binary STL locally using the bundled Three.js STLLoader, converts millimeters Z-up to the viewer's meter Y-up convention, and leaves the file in the browser. No upload endpoint is added. STEP is supplied as an editable download; the browser displays its preconverted GLB geometry.
 
@@ -105,3 +105,6 @@ Run from the repository root. Use the observed file and IDs; never guess. The sc
 
 ### Yamaha VX110 wooden garage dolly (2026-10-26)
 The `#vx110-wood-dolly` deep link is a manually modeled 93-part wooden rolling dolly (80 in padded bunk rails, 72×36 in 2x6 frame, 5 in casters, bracing and captive caster support bays). Built for preliminary transfer design for the 2005 Yamaha VX110 Sport. The nominal 21 in bunk height and 22 in bunk centers are placeholders pending exact trailer measurements and hull loading fit. It is not engineered or load certified. The viewer includes a source GLB and a downloadable/readable `BUILD_PLAN.md` with measured-cut instructions, line-item costs and winching precautions. Geometry is generated reproducibly with Python stdlib via `python3 viewer/tools/create_vx110_dolly.py`. Verify with `viewer/tests/vx110-dolly.cjs`.
+
+## Portable pinball CAD V1.2 — A1 and A2 joined
+The current `portable-pinball` model uses `cabinet-v1_2.glb` and the **same model ID**. The two right bezel parts `bezel_right_front` (A1) and `bezel_right_rear` (A2) are replaced by `bezel_right_a1_a2`, a single continuous printed rail. All other solids are inherited unchanged from V1.1; left bezel remains split. There are now 46 printable solids, plus 3 reference envelopes, and 10 tests/shims. The new right rail has unchanged 1 mm housing overlap and original screw locations (Y=140,330), and it is rotated 45° flat on the print bed to fit the QIDI X-Max 3 with an 8 mm per-side brim budget. The V1.1 files and annotations remain archived; old separate-part annotation IDs stay stored but do not correspond to a visible node in the new mesh. New versioned STEP, GLB, ZIP, preview and an individual merged-rail STL are served. Physical fit and printing remain unverified. Source and regeneration: `viewer/cad/portable-pinball-v1_2/`.

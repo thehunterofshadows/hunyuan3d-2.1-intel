@@ -5,7 +5,7 @@ p=argparse.ArgumentParser();p.add_argument('--cad-dir',required=True,type=Path);
 R=args.cad_dir;dest=args.output;dest.mkdir(parents=True,exist_ok=True)
 m=json.loads((R/'exports/preview_meshes.json').read_text())
 colors={'wall':[.17,.24,.31,1],'floor':[.40,.47,.53,1],'lid':[.36,.48,.57,1],'bezel':[.16,.21,.26,1],'support':[.88,.55,.20,1],'joint':[.25,.66,.55,1]}
-g={'asset':{'version':'2.0','generator':'Exact CAD tessellation from Mini VPin V1','extras':{'sourceUnits':'mm','displayUnits':'m'}},'scene':0,'scenes':[{'nodes':[]}],'nodes':[],'meshes':[],'materials':[],'buffers':[{}],'bufferViews':[],'accessors':[]}
+g={'asset':{'version':'2.0','generator':'Exact CAD tessellation from Mini VPin','extras':{'sourceUnits':'mm','displayUnits':'m'}},'scene':0,'scenes':[{'nodes':[]}],'nodes':[],'meshes':[],'materials':[],'buffers':[{}],'bufferViews':[],'accessors':[]}
 buf=bytearray()
 def acc(array,component,kind,target):
  while len(buf)%4:buf.append(0)
@@ -61,5 +61,5 @@ shutil.copy2(R/'exports/fit_test_preview.png',dest/'fit-tests.png')
 if args.print_pack:shutil.copy2(args.print_pack,dest/'cad-print-pack.zip')
 shutil.copy2(R/'exports/mini_vpin_assembly.step',dest/'cabinet.step')
 shutil.copy2(R/'exports/print_first_tests/button_hole_28.stl',dest/'button_hole_28.stl')
-(dest/'README.md').write_text('Exact Mini VPin V1 CAD tessellation. 47 printable parts + 3 named reference envelopes. World axes converted from mm Z-up to meters Y-up. Source STEP and print pack included; no AI generation was used for this cabinet. Mesh sources were supplied by the user in this conversation. Prototype; physical fit tests pending.\n')
-print(json.dumps({'nodes':len(g['nodes']),'printedParts':47,'triangles':sum(len(p['f']) for p in m),'glbBytes':len(out)}))
+(dest/'README.md').write_text('Exact Mini VPin CAD tessellation. '+str(len([part for part in m if part['extras'].get('cadPart')]))+' printable parts + 3 named reference envelopes. World axes converted from mm Z-up to meters Y-up. Source STEP and print pack included; no AI generation was used for this cabinet. Mesh sources were supplied by the user in this conversation. Prototype; physical fit tests pending.\n')
+print(json.dumps({'nodes':len(g['nodes']),'printedParts':len([part for part in m if part['extras'].get('cadPart')]),'triangles':sum(len(p['f']) for p in m),'glbBytes':len(out)}))

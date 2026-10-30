@@ -1,0 +1,675 @@
+{
+  "revision": "Prototype V1.2",
+  "units": "mm",
+  "printer_build_mm": [
+    325,
+    325,
+    315
+  ],
+  "brim_margin_each_side_mm": 8,
+  "parameters": {
+    "width": 260,
+    "length": 470,
+    "front_height": 75,
+    "slope_degrees": 10,
+    "wall": 4,
+    "joint_gap": 0.3,
+    "monitor_front_y": 64,
+    "monitor_length": 358.8,
+    "monitor_width": 223.8,
+    "monitor_thin": 7,
+    "monitor_thick": 12,
+    "cover_total_depth_allowance": 35,
+    "button_hole": 28,
+    "button_inward_clearance": 45,
+    "printer": "QIDI X-Max 3",
+    "pc": "Dell OptiPlex 3050 Micro",
+    "status": "Prototype. Confirm monitor housing/cover contact, selected buttons and PC cable routing before full printing."
+  },
+  "parts": [
+    {
+      "name": "left_front_wall",
+      "kind": "wall",
+      "mode": "side",
+      "bounds": [
+        116.41,
+        241.0,
+        4.0
+      ],
+      "volume": 87276.08409851484,
+      "export": true
+    },
+    {
+      "name": "left_rear_wall",
+      "kind": "wall",
+      "mode": "side",
+      "bounds": [
+        157.87,
+        234.85,
+        4.0
+      ],
+      "volume": 124285.66371907644,
+      "export": true
+    },
+    {
+      "name": "right_front_wall",
+      "kind": "wall",
+      "mode": "side",
+      "bounds": [
+        116.41,
+        241.0,
+        4.0
+      ],
+      "volume": 87276.08409851484,
+      "export": true
+    },
+    {
+      "name": "right_rear_wall",
+      "kind": "wall",
+      "mode": "side",
+      "bounds": [
+        157.87,
+        234.85,
+        4.0
+      ],
+      "volume": 124285.66371907644,
+      "export": true
+    },
+    {
+      "name": "front_button_panel",
+      "kind": "wall",
+      "mode": "end",
+      "bounds": [
+        252.0,
+        75.71,
+        4.0
+      ],
+      "volume": 68421.18202756306,
+      "export": true
+    },
+    {
+      "name": "rear_vent_panel",
+      "kind": "wall",
+      "mode": "end",
+      "bounds": [
+        252.0,
+        157.87,
+        4.0
+      ],
+      "volume": 143563.92794303212,
+      "export": true
+    },
+    {
+      "name": "corner_left_front_24",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        20.0,
+        20.0,
+        16.0
+      ],
+      "volume": 2231.366377849004,
+      "export": true
+    },
+    {
+      "name": "corner_left_front_56",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        20.0,
+        20.0,
+        16.0
+      ],
+      "volume": 2231.3663778490036,
+      "export": true
+    },
+    {
+      "name": "corner_left_rear_24",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        20.0,
+        20.0,
+        16.0
+      ],
+      "volume": 2231.366377849004,
+      "export": true
+    },
+    {
+      "name": "corner_left_rear_128",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        20.0,
+        20.0,
+        16.0
+      ],
+      "volume": 2231.3663778490045,
+      "export": true
+    },
+    {
+      "name": "corner_right_front_24",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        20.0,
+        20.0,
+        16.0
+      ],
+      "volume": 2231.366377849004,
+      "export": true
+    },
+    {
+      "name": "corner_right_front_56",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        20.0,
+        20.0,
+        16.0
+      ],
+      "volume": 2231.3663778490036,
+      "export": true
+    },
+    {
+      "name": "corner_right_rear_24",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        20.0,
+        20.0,
+        16.0
+      ],
+      "volume": 2231.366377849004,
+      "export": true
+    },
+    {
+      "name": "corner_right_rear_128",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        20.0,
+        20.0,
+        16.0
+      ],
+      "volume": 2231.3663778490045,
+      "export": true
+    },
+    {
+      "name": "splice_left",
+      "kind": "joint",
+      "mode": "side",
+      "bounds": [
+        48.0,
+        64.0,
+        4.0
+      ],
+      "volume": 12142.732755698009,
+      "export": true
+    },
+    {
+      "name": "splice_right",
+      "kind": "joint",
+      "mode": "side",
+      "bounds": [
+        48.0,
+        64.0,
+        4.0
+      ],
+      "volume": 12142.732755698009,
+      "export": true
+    },
+    {
+      "name": "floor_block_left_28",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        16.0,
+        16.0,
+        8.0
+      ],
+      "volume": 1770.7378844805423,
+      "export": true
+    },
+    {
+      "name": "floor_block_left_218",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        16.0,
+        16.0,
+        8.0
+      ],
+      "volume": 1770.7378844805348,
+      "export": true
+    },
+    {
+      "name": "floor_block_left_252",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        16.0,
+        16.0,
+        8.0
+      ],
+      "volume": 1770.7378844805,
+      "export": true
+    },
+    {
+      "name": "floor_block_left_442",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        16.0,
+        16.0,
+        8.0
+      ],
+      "volume": 1770.7378844806303,
+      "export": true
+    },
+    {
+      "name": "floor_block_right_28",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        16.0,
+        16.0,
+        8.0
+      ],
+      "volume": 1770.73788448054,
+      "export": true
+    },
+    {
+      "name": "floor_block_right_218",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        16.0,
+        16.0,
+        8.0
+      ],
+      "volume": 1770.7378844805266,
+      "export": true
+    },
+    {
+      "name": "floor_block_right_252",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        16.0,
+        16.0,
+        8.0
+      ],
+      "volume": 1770.7378844805085,
+      "export": true
+    },
+    {
+      "name": "floor_block_right_442",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        16.0,
+        16.0,
+        8.0
+      ],
+      "volume": 1770.7378844806308,
+      "export": true
+    },
+    {
+      "name": "bottom_front",
+      "kind": "floor",
+      "mode": "flat",
+      "bounds": [
+        251.4,
+        230.55,
+        4.0
+      ],
+      "volume": 231695.81275569805,
+      "export": true
+    },
+    {
+      "name": "bottom_rear",
+      "kind": "floor",
+      "mode": "flat",
+      "bounds": [
+        251.4,
+        230.55,
+        4.0
+      ],
+      "volume": 229775.81275569802,
+      "export": true
+    },
+    {
+      "name": "top_block_left_25",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        12.0,
+        20.0,
+        15.76
+      ],
+      "volume": 3064.338327786082,
+      "export": true
+    },
+    {
+      "name": "top_block_left_50",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        12.0,
+        20.0,
+        15.76
+      ],
+      "volume": 3064.3383277860858,
+      "export": true
+    },
+    {
+      "name": "top_block_left_140",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        12.0,
+        20.0,
+        15.76
+      ],
+      "volume": 3064.338327786103,
+      "export": true
+    },
+    {
+      "name": "top_block_left_330",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        12.0,
+        20.0,
+        15.76
+      ],
+      "volume": 3064.3383277861035,
+      "export": true
+    },
+    {
+      "name": "top_block_left_450",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        12.0,
+        20.0,
+        15.76
+      ],
+      "volume": 3064.3383277860567,
+      "export": true
+    },
+    {
+      "name": "top_block_right_25",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        12.0,
+        20.0,
+        15.76
+      ],
+      "volume": 3064.3383277860817,
+      "export": true
+    },
+    {
+      "name": "top_block_right_50",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        12.0,
+        20.0,
+        15.76
+      ],
+      "volume": 3064.3383277860844,
+      "export": true
+    },
+    {
+      "name": "top_block_right_140",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        12.0,
+        20.0,
+        15.76
+      ],
+      "volume": 3064.3383277861076,
+      "export": true
+    },
+    {
+      "name": "top_block_right_330",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        12.0,
+        20.0,
+        15.76
+      ],
+      "volume": 3064.338327786105,
+      "export": true
+    },
+    {
+      "name": "top_block_right_450",
+      "kind": "joint",
+      "mode": "flat",
+      "bounds": [
+        12.0,
+        20.0,
+        15.76
+      ],
+      "volume": 3064.338327786058,
+      "export": true
+    },
+    {
+      "name": "monitor_saddle_left_180",
+      "kind": "support",
+      "mode": "end",
+      "bounds": [
+        19.1,
+        34.26,
+        20.0
+      ],
+      "volume": 8642.253111964903,
+      "export": true
+    },
+    {
+      "name": "monitor_saddle_left_360",
+      "kind": "support",
+      "mode": "end",
+      "bounds": [
+        19.1,
+        34.26,
+        20.0
+      ],
+      "volume": 8642.253111964903,
+      "export": true
+    },
+    {
+      "name": "monitor_saddle_right_180",
+      "kind": "support",
+      "mode": "end",
+      "bounds": [
+        19.1,
+        34.26,
+        20.0
+      ],
+      "volume": 8642.253111964903,
+      "export": true
+    },
+    {
+      "name": "monitor_saddle_right_360",
+      "kind": "support",
+      "mode": "end",
+      "bounds": [
+        19.1,
+        34.26,
+        20.0
+      ],
+      "volume": 8642.253111964907,
+      "export": true
+    },
+    {
+      "name": "bezel_left_front",
+      "kind": "bezel",
+      "mode": "top",
+      "bounds": [
+        19.1,
+        172.47,
+        4.0
+      ],
+      "volume": 13140.40723512436,
+      "export": true
+    },
+    {
+      "name": "bezel_left_rear",
+      "kind": "bezel",
+      "mode": "top",
+      "bounds": [
+        19.1,
+        183.99,
+        4.0
+      ],
+      "volume": 14020.848378484108,
+      "export": true
+    },
+    {
+      "name": "bezel_right_a1_a2",
+      "kind": "bezel",
+      "mode": "top_diagonal",
+      "bounds": [
+        265.78,
+        265.78,
+        4.0
+      ],
+      "volume": 27184.529191552865,
+      "export": true
+    },
+    {
+      "name": "front_cable_lid",
+      "kind": "lid",
+      "mode": "top",
+      "bounds": [
+        260.0,
+        66.0,
+        22.62
+      ],
+      "volume": 69388.41248148947,
+      "export": true
+    },
+    {
+      "name": "rear_control_deck",
+      "kind": "lid",
+      "mode": "top",
+      "bounds": [
+        260.0,
+        56.27,
+        23.49
+      ],
+      "volume": 45972.97821396242,
+      "export": true
+    },
+    {
+      "name": "control_hatch",
+      "kind": "lid",
+      "mode": "top",
+      "bounds": [
+        100.0,
+        49.76,
+        3.0
+      ],
+      "volume": 14774.982500132608,
+      "export": true
+    }
+  ],
+  "tests": [
+    {
+      "name": "button_hole_28",
+      "bounds": [
+        52.0,
+        52.0,
+        4.01
+      ],
+      "note": "28 mm modeled hole, 4 mm panel; fit actual threaded barrel and nut."
+    },
+    {
+      "name": "button_hole_28p2",
+      "bounds": [
+        52.0,
+        52.0,
+        4.01
+      ],
+      "note": "28.2 mm modeled hole, 4 mm panel; fit actual threaded barrel and nut."
+    },
+    {
+      "name": "button_hole_28p4",
+      "bounds": [
+        52.0,
+        52.0,
+        4.01
+      ],
+      "note": "28.4 mm modeled hole, 4 mm panel; fit actual threaded barrel and nut."
+    },
+    {
+      "name": "monitor_edge_cradle_12mm",
+      "bounds": [
+        30.0,
+        50.0,
+        52.0
+      ],
+      "note": "2 mm padding on narrow shelf; 12 mm housing screen top51. Cover gets open space underneath. Retainer underside52."
+    },
+    {
+      "name": "monitor_retaining_bar",
+      "bounds": [
+        14.0,
+        50.0,
+        15.0
+      ],
+      "note": "Install with two M3 \u00d710 screws lightly into the coupon pilot holes. Only ~1 mm housing overlap; no screen pressure."
+    },
+    {
+      "name": "monitor_5mm_shim_for_7mm_housing",
+      "bounds": [
+        6.0,
+        50.0,
+        5.0
+      ],
+      "note": "On narrow shelf only, add under 7 mm housing with 2 mm pad. Same top51 target."
+    },
+    {
+      "name": "optional_saddle_shim_5mm",
+      "bounds": [
+        5.0,
+        20.0,
+        5.0
+      ],
+      "note": "Optional full-cabinet shim; print four if all saddles land on 7 mm housing. Tape to saddle, never monitor."
+    },
+    {
+      "name": "joint_front_wall",
+      "bounds": [
+        92.0,
+        38.0,
+        4.0
+      ],
+      "note": "Print with outer wall face down; slide tongue into slot, attach splice with M3 bolts."
+    },
+    {
+      "name": "joint_rear_wall",
+      "bounds": [
+        92.0,
+        31.85,
+        4.0
+      ],
+      "note": "Print with outer wall face down; slide tongue into slot, attach splice with M3 bolts."
+    },
+    {
+      "name": "joint_splice_plate",
+      "bounds": [
+        48.0,
+        64.0,
+        4.0
+      ],
+      "note": "Use four M3 \u00d7 12 screws and M3 nuts with joint samples."
+    }
+  ]
+}
