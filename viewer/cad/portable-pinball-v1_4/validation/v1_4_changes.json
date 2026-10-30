@@ -1,0 +1,9 @@
+{
+  "changed_printed_parts": [
+    "monitor_saddle_right_180",
+    "monitor_saddle_right_360"
+  ],
+  "right_bearing_plane_raise_mm": 5,
+  "other_43_meshes_identical": true,
+  "physical_fit": "pending"
+}

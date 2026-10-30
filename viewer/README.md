@@ -126,3 +126,6 @@ mounting bore, manifold STL and printer volume checks passed. Physical fit/stren
 Primary and selected-part downloads use the original top-face-down print STL.
 Source: viewer/cad/pinball-nut-slot-test/build.py (Python 3.12, CadQuery 2.7, NumPy).
 Assets include GLB, print STL, editable STEP and validation.json.
+
+## Portable pinball CAD V1.4 — right saddle height correction
+Both right saddle bearing planes rise 5 mm for user-measured 7 mm right-side housing, keeping 2 mm pads. Left saddles retain 12 mm housing height; no extra shim on revised right saddles. Only these two printable solids change. Bolt bores, locator faces, original part IDs and all other parts remain. Versioned GLB/STEP/ZIP and all 45 STLs are served; original versions remain archived. Uniform monitor reference is an envelope, not actual stepped geometry. Physical fit pending. Source: viewer/cad/portable-pinball-v1_4/.

@@ -1,0 +1,20 @@
+{
+  "width": 260,
+  "length": 470,
+  "front_height": 75,
+  "slope_degrees": 10,
+  "wall": 4,
+  "joint_gap": 0.3,
+  "monitor_front_y": 64,
+  "monitor_length": 358.8,
+  "monitor_width": 223.8,
+  "monitor_thin": 7,
+  "monitor_thick": 12,
+  "cover_total_depth_allowance": 35,
+  "button_hole": 28,
+  "button_inward_clearance": 45,
+  "printer": "QIDI X-Max 3",
+  "pc": "Dell OptiPlex 3050 Micro",
+  "status": "Prototype. Confirm monitor housing/cover contact, selected buttons and PC cable routing before full printing.",
+  "right_saddle_raise_mm": 5
+}

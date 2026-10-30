@@ -1,0 +1,2 @@
+Portable Mini VPin V1.4 — right saddle shelves raised 5 mm.
+Reprint monitor_saddle_right_180.stl and monitor_saddle_right_360.stl only. Retain 2 mm pads, with no additional 5 mm shim on these new shelves. Original bolt holes and all other printable parts are unchanged. Print in supplied orientation at 100% scale. Physical fit remains to be checked.
