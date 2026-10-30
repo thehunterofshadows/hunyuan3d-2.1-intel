@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { STLExporter } from 'three/addons/exporters/STLExporter.js';
 const $=id=>document.getElementById(id);
 const API='/api/part-notes';
 const safeStore={get(k){try{return localStorage.getItem(k);}catch{return null;}},set(k,v){try{localStorage.setItem(k,v);}catch{}},remove(k){try{localStorage.removeItem(k);}catch{}}};
@@ -23,6 +24,38 @@ export function createPartInspector({context,render,appearance,restoreAssembly})
  const storageKey=()=> 'intel3d-part-visibility:'+context().entry.id;
  function path(mesh){const names=[];let node=mesh;while(node&&node!==context().model){const i=node.parent?.children.indexOf(node)??0;names.unshift((node.name||node.type)+'['+i+']');node=node.parent;}return names.join('/');}
  function id(mesh){return mesh.userData.partNoteId;}
+ function updateExport(){
+  const mesh=selected?.mesh,button=$('export-selected-stl');
+  button.disabled=!mesh||!!mesh.userData.cadReference;
+  button.title=mesh?.userData.cadReference?'Reference envelope: not a printable part':mesh?'Export '+(mesh.name||'selected mesh')+' as STL':'Select a part first';
+  $('export-part-stl').disabled=button.disabled;
+ }
+ async function exportMesh(mesh){
+  const c=context(),message=$('stl-export-status');
+  if(!mesh||!c.meshes.includes(mesh)||mesh.userData.cadReference)return;
+  const name=(mesh.name||'part').replace(/[^a-zA-Z0-9._-]/g,'_');
+  let geometry,url;
+  try{
+   if(c.entry.cad){
+    if(!mesh.userData.cadPart||!c.entry.stlDirectory)throw Error('Print STL unavailable for this part.');
+    const a=document.createElement('a');a.href=c.entry.stlDirectory+encodeURIComponent(mesh.name)+'.stl';a.download=name+'.stl';a.click();
+    message.textContent='Original print STL: '+name;return;
+   }
+   // Remove viewer centering/front rotation, retain authored node transforms.
+   c.model.updateMatrixWorld(true);
+   const transform=new THREE.Matrix4().copy(c.model.matrixWorld).invert().multiply(mesh.matrixWorld);
+   geometry=mesh.geometry.clone().applyMatrix4(transform);
+   geometry.rotateX(Math.PI/2);geometry.scale(1000,1000,1000);geometry.computeBoundingBox();
+   const box=geometry.boundingBox;if(box.isEmpty())throw Error('No geometry to export.');
+   const center=box.getCenter(new THREE.Vector3());geometry.translate(-center.x,-center.y,-box.min.z);
+   const output=new STLExporter().parse(new THREE.Mesh(geometry),{binary:true});
+   url=URL.createObjectURL(new Blob([output],{type:'model/stl'}));
+   const a=document.createElement('a');a.href=url;a.download=c.entry.id+'-'+name+'.stl';a.click();
+   message.textContent='Exported '+name+' · mm';
+  }catch(error){message.textContent='STL export failed: '+error.message;}
+  finally{geometry?.dispose();if(url)setTimeout(()=>URL.revokeObjectURL(url),1000);}
+ }
+ $('export-selected-stl').onclick=$('export-part-stl').onclick=()=>exportMesh(selected?.mesh);
  function looks(){appearance();render();}
  function remember(){safeStore.set(storageKey(),JSON.stringify([...overrides]));}
  function applyVisibility(){for(const mesh of context().meshes)mesh.visible=mesh.userData.baseVisible!==false&&overrides.get(id(mesh))!==0;updateCount();if(helper&&selected?.mesh.visible)helper.update();if(helper)helper.visible=!!selected?.mesh.visible;}
@@ -86,7 +119,7 @@ export function createPartInspector({context,render,appearance,restoreAssembly})
  function queue(record){if(!record||record.conflict)return Promise.resolve();record.queue=(record.queue||Promise.resolve()).catch(()=>{}).then(()=>persist(record));return record.queue;}
  function flush(){clearTimeout(timer);if(selected?.record?.dirty){selected.record.payload.view=snapshot();return queue(selected.record).catch(()=>{});}return Promise.resolve();}
  function setModel(){
-  generation++;close();selected=null;records=new Map();const c=context(),version=generation;
+  generation++;close();selected=null;updateExport();$('stl-export-status').textContent='';records=new Map();const c=context(),version=generation;
   try{overrides=new Map(JSON.parse(safeStore.get(storageKey())||'[]').filter(([k,v])=>typeof k==='string'&&[0,.5,1].includes(v)));}catch{overrides=new Map();}
   for(const mesh of c.meshes){mesh.userData.partNoteId=c.entry.local?'local:'+sha256(new Uint8Array(mesh.geometry.attributes.position.array.buffer)):(mesh.userData.cadPart?'cad:'+mesh.name:'mesh:'+path(mesh));if(mesh.userData.baseVisible===undefined)mesh.userData.baseVisible=mesh.visible;}
   ready=fetch(API+'?model='+encodeURIComponent(c.entry.id)).then(r=>{if(!r.ok)throw Error('Notes service unavailable');return r.json();}).then(data=>{if(version!==generation)return;for(const note of data.notes||[]){const record=records.get(note.part.id);if(record){record.saved=note;record.revision=note.revision;}else records.set(note.part.id,{saved:note,revision:note.revision,text:pendingText(note),dirty:false});}}).catch(error=>{if(version===generation&&selected)$('note-status').textContent=error.message+'; drafts stay in this browser.';});
@@ -99,7 +132,7 @@ export function createPartInspector({context,render,appearance,restoreAssembly})
   let record=records.get(key);if(!record){record={revision:0,text:'',dirty:false};records.set(key,record);}
   record.payload=metadata(mesh,anchor);
   const draft=safeStore.get(draftKey(c.entry.id,key));if(draft!==null){record.text=draft;record.dirty=true;}
-  selected={mesh,record};panel.dataset.partId=key;$('part-title').textContent=(mesh.name||'Mesh').replaceAll('_',' ');$('part-model').textContent=c.entry.name;$('part-note').value=record.text;$('reload-note').hidden=true;
+  selected={mesh,record};updateExport();$('stl-export-status').textContent='';panel.dataset.partId=key;$('part-title').textContent=(mesh.name||'Mesh').replaceAll('_',' ');$('part-model').textContent=c.entry.name;$('part-note').value=record.text;$('reload-note').hidden=true;
   $('part-opacity').value=String(overrides.get(key)??1);$('note-status').textContent='Loading saved note…';
   helper=new THREE.BoxHelper(mesh,0x72e3d0);helper.raycast=()=>{};c.scene.add(helper);if(openPanel)position(panel,e.clientX,e.clientY);render();
   await ready;if(version!==generation||selected?.record!==record)return;
@@ -139,10 +172,10 @@ export function createPartInspector({context,render,appearance,restoreAssembly})
  const canvas=context().renderer.domElement;
  canvas.addEventListener('pointerdown',e=>{pointers.add(e.pointerId);if(pointers.size===1)pointer={x:e.clientX,y:e.clientY,id:e.pointerId,button:e.button,moved:false};else if(pointer)pointer.moved=true;menu.hidden=true;});
  canvas.addEventListener('pointermove',e=>{if(pointer&&Math.hypot(e.clientX-pointer.x,e.clientY-pointer.y)>6){pointer.moved=true;if(pointer.button===2)panel.hidden=true;}});
- canvas.addEventListener('pointerup',e=>{pointers.delete(e.pointerId);if(pointer?.id===e.pointerId&&!pointer.moved&&pointer.button===0){const hit=pick(e);if(hit)select(hit,e,e.pointerType==='touch');else{flush();close();selected=null;}}if(!pointers.size)pointer=null;});
+ canvas.addEventListener('pointerup',e=>{pointers.delete(e.pointerId);if(pointer?.id===e.pointerId&&!pointer.moved&&pointer.button===0){const hit=pick(e);if(hit)select(hit,e,e.pointerType==='touch');else{flush();close();selected=null;updateExport();}}if(!pointers.size)pointer=null;});
  canvas.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);pointer=null;});
  canvas.addEventListener('contextmenu',e=>{e.preventDefault();menu.hidden=true;const hit=pick(e);if(hit&&hit.object===selected?.mesh&&!pointer?.moved)select(hit,e);});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){flush();close();}});
  document.addEventListener('pointerdown',e=>{if(!menu.hidden&&!menu.contains(e.target)&&e.target!==$('hidden-parts')&&e.target!==canvas)menu.hidden=true;});
- return {setModel,beforeModelChange:flush,applyVisibility,applyAppearance,getOpacity:mesh=>overrides.get(id(mesh)),close};
+ return {setModel,exportMesh,beforeModelChange:flush,applyVisibility,applyAppearance,getOpacity:mesh=>overrides.get(id(mesh)),close};
 }
