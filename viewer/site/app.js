@@ -49,7 +49,11 @@ function draw(){frame=0;controls.update();renderer.render(scene,camera);if(contr
 function resize(){
  if(!renderer)return;
  const w=viewport.clientWidth,h=viewport.clientHeight;
- camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false);requestRender();
+ if(!w||!h)return;
+ const changed=Math.abs(camera.aspect-w/h)>0.001;
+ camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false);
+ if(changed&&model&&viewport.dataset.state==='ready')fit('current');
+ requestRender();
 }
 function fit(view='home'){
  if(!model)return;
@@ -62,7 +66,7 @@ function fit(view='home'){
  const target=new THREE.Vector3();
  if(active?.cad){const b=visibleBounds();if(!b.isEmpty()){b.getCenter(target);radius=b.getBoundingSphere(new THREE.Sphere()).radius;}fitDistance=radius/Math.sin(Math.min(vfov,hfov)/2)*1.12;}
  const directions={home:active?.cad?[-0.7,0.6,1]:[0.6,0.3,1],front:[0,0,1],back:[0,0,-1],left:[-1,0,0],right:[1,0,0],top:[0,1,0.001]};
- const direction=new THREE.Vector3(...directions[view]).normalize();
+ const direction=view==='current'?camera.position.clone().sub(controls.target).normalize():new THREE.Vector3(...directions[view]).normalize();
  if(active?.id==='railgun-built'||active?.id==='trellis-railgun'||active?.id==='trellis-railgun-ultra'||active?.cad){
   const bounds=active?.cad?visibleBounds():new THREE.Box3().setFromObject(model);
   const right=new THREE.Vector3().crossVectors(new THREE.Vector3(0,1,0),direction).normalize();
@@ -143,6 +147,7 @@ function lights(){
  requestRender();
 }
 async function load(entry){
+ showWorkspace(entry);
  const current=++ticket;
  status.hidden=false;status.textContent='Loading '+entry.name+'…';
  viewport.dataset.state='loading';
@@ -214,7 +219,7 @@ async function load(entry){
   for(const button of document.querySelectorAll('.model'))button.setAttribute('aria-pressed',String(button.dataset.model===entry.id));
   folderNodes.get(entry.folder||'other')?.setAttribute('data-active','true');
   for(const [folderId,folderNode] of folderNodes)if(folderId!==(entry.folder||'other'))folderNode.removeAttribute('data-active');
-  if(!entry.local)history.replaceState(null,'','#'+entry.id);
+
   surface();fit();status.hidden=true;viewport.dataset.state='ready';viewport.dataset.model=entry.id;
  }catch(error){
   if(current!==ticket)return;
@@ -313,7 +318,7 @@ for(const folder of assetFolders){
  const entries=models.filter(entry=>(entry.folder||'other')===folder.id);
  if(!entries.length)continue;
  const details=document.createElement('details');details.className='model-folder';details.dataset.folder=folder.id;
- details.open=folder.id===(initialModel.folder||'other');
+ details.open=true;
  const summary=document.createElement('summary');
  const folderIcon=document.createElement('span');folderIcon.className='folder-icon';folderIcon.textContent='▸';folderIcon.setAttribute('aria-hidden','true');
  const label=document.createElement('span');label.className='folder-label';
@@ -328,7 +333,7 @@ for(const folder of assetFolders){
   const text=document.createElement('span'),strong=document.createElement('strong'),small=document.createElement('small'),date=document.createElement('time');
   strong.textContent=entry.name;small.textContent=entry.type;date.className='model-modified';date.textContent='Loading modified date…';
   text.append(strong,small,date);button.append(img,text);
-  button.onclick=()=>load(entry);contents.append(button);modelButtons.set(entry.id,button);
+  button.onclick=()=>openModel(entry);contents.append(button);modelButtons.set(entry.id,button);
  }
  details.append(contents);$('models').append(details);folderNodes.set(folder.id,details);
 }
@@ -344,7 +349,7 @@ $('model-search').addEventListener('input',()=>{
   const node=folderNodes.get(folder.id);if(!node)continue;
   let matches=0;
   for(const entry of models.filter(e=>(e.folder||'other')===folder.id)){
-   const match=!query||[entry.name,entry.type,entry.id,folder.name].some(v=>v.toLocaleLowerCase().includes(query));
+   const match=!archivedVersion(entry)&&(!query||[entry.name,entry.type,entry.id,folder.name].some(v=>v.toLocaleLowerCase().includes(query)));
    node.querySelector('[data-model="'+entry.id+'"]').hidden=!match;
    if(match)matches++;
   }
@@ -354,6 +359,60 @@ $('model-search').addEventListener('input',()=>{
  }
  $('model-empty').hidden=found>0;
 });
+
+const cabinetVersions=models.filter(m=>m.id==='portable-pinball'||m.id.startsWith('portable-pinball-v'));
+function archivedVersion(entry){return cabinetVersions.includes(entry)&&entry!==cabinetVersions[0];}
+for(const entry of models){
+ if(archivedVersion(entry))modelButtons.get(entry.id).hidden=true;
+}
+const cabinetCard=modelButtons.get(cabinetVersions[0].id);
+cabinetCard.querySelector('strong').textContent='Portable Pinball';
+cabinetCard.querySelector('small').textContent='CAD '+cabinetVersions[0].name.split('CAD ')[1]+' · '+cabinetVersions.length+' versions';
+for(const [id,node] of folderNodes){
+ const count=models.filter(m=>(m.folder||'other')===id&&!archivedVersion(m)).length;
+ node.querySelector('.folder-count').textContent=count;
+ node.querySelector('.folder-count').setAttribute('aria-label',count+' models');
+}
+document.querySelector('.eyebrow').textContent='MODEL LIBRARY';
+const panelButtons=[...document.querySelectorAll('[data-panel]')];
+function closePanels(){
+ for(const panel of document.querySelectorAll('.tool-panel'))panel.hidden=true;
+ for(const button of panelButtons)button.setAttribute('aria-expanded','false');
+}
+for(const button of panelButtons){
+ button.setAttribute('aria-controls',button.dataset.panel);button.setAttribute('aria-expanded','false');
+ button.onclick=()=>{const panel=$(button.dataset.panel),opening=panel.hidden;closePanels();inspector?.close();panel.hidden=!opening;button.setAttribute('aria-expanded',String(opening));};
+}
+for(const button of document.querySelectorAll('.panel-close'))button.onclick=()=>{const id=button.parentElement.id;closePanels();panelButtons.find(b=>b.dataset.panel===id)?.focus();};
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){closePanels();inspector?.close();}
+ if(e.key.toLowerCase()==='f'&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)&&!document.body.classList.contains('library-mode')){e.preventDefault();fit();}
+});
+function showWorkspace(entry){
+ document.body.classList.remove('library-mode');closePanels();
+ $('workspace-title').textContent=entry.name;
+ $('model-version').hidden=!cabinetVersions.includes(entry);
+ $('model-version').replaceChildren(...cabinetVersions.map(m=>new Option(m.name.split('CAD ')[1],m.id,false,m.id===entry.id)));
+ resize();
+}
+function showLibrary(){
+ ++ticket;inspector?.beforeModelChange();inspector?.close();closePanels();
+ document.body.classList.add('library-mode');
+ if(controls)controls.autoRotate=false;
+ $('back-library').blur();
+ $('model-search').focus({preventScroll:true});
+}
+function openModel(entry){
+ if(entry.local){history.pushState(null,'','#local-stl');load(entry);return;}
+ if(location.hash==='#'+entry.id){load(entry);return;}
+ location.hash=entry.id;
+}
+function navigate(){
+ const entry=models.find(m=>m.id===location.hash.slice(1));
+ if(entry)load(entry);else if(location.hash==='#local-stl'&&active?.local){showWorkspace(active);fit();}else showLibrary();
+}
+$('back-library').onclick=()=>{location.hash='';};
+$('model-version').onchange=()=>openModel(models.find(m=>m.id===$('model-version').value));
 try {
  renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
  renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1;
@@ -372,7 +431,7 @@ try {
  for(const id of ['cad-monitor','cad-pc','cad-cover','cad-panels','cad-part'])$(id).onchange=()=>{applyAssembly();fit();};
  $('export-cad-stl').onclick=()=>inspector.exportMesh(meshes.find(m=>m.userData.cadPart&&m.name===$('cad-part').value));
  $('open-stl').onclick=()=>$('stl-file').click();
- $('stl-file').onchange=()=>{const file=$('stl-file').files[0];if(!file)return;load({id:'local-stl',name:file.name,type:'Local STL',format:'stl',url:URL.createObjectURL(file),local:true,front:0,note:'Local STL geometry, displayed in millimeters. This file stays in your browser and is not uploaded. Use mouse or touch to rotate, zoom and inspect.'});$('stl-file').value='';};
+ $('stl-file').onchange=()=>{const file=$('stl-file').files[0];if(!file)return;openModel({id:'local-stl',name:file.name,type:'Local STL',format:'stl',url:URL.createObjectURL(file),local:true,front:0,note:'Local STL geometry, displayed in millimeters. This file stays in your browser and is not uploaded. Use mouse or touch to rotate, zoom and inspect.'});$('stl-file').value='';};
  for(const b of document.querySelectorAll('[data-view]'))b.onclick=()=>fit(b.dataset.view);
  $('chrome').onchange=()=>{chromeEnabled.value=$('chrome').checked?1:0;requestRender();};
  $('surface').onchange=surface;$('wireframe').onchange=surface;$('lighting').onchange=lights;
@@ -382,18 +441,12 @@ try {
  $('grid').onchange=()=>{if(grid)grid.visible=$('grid').checked;requestRender();};
  $('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.querySelector('.workspace').requestFullscreen)await document.querySelector('.workspace').requestFullscreen();else statusMessage('Fullscreen is unavailable in this browser.');}catch{statusMessage('Fullscreen is unavailable in this browser.');}};
  document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(frame);frame=0;}else requestRender();});
- viewport.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='r')fit();});
+ viewport.addEventListener('keydown',e=>{if(['r','f'].includes(e.key.toLowerCase())){e.preventDefault();fit();}});
  renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();status.hidden=false;status.textContent='Graphics context lost. Reload this page to resume.';});
  inspector=createPartInspector({context:()=>({entry:active,model,meshes,scene,camera,controls,renderer}),render:requestRender,appearance:surface,restoreAssembly:mesh=>{if(!active?.cad)return;$('cad-part').value='all';$('cad-panels').checked=true;if(mesh?.userData.cadReference)$('cad-'+mesh.userData.cadReference).checked=true;applyAssembly();}});
  // Hash-only navigation in the same tab does not reload the page; follow those deep links too.
- window.addEventListener('hashchange',()=>{
-  const next=models.find(entry=>entry.id===location.hash.slice(1));
-  if(!next||next.id===active?.id)return;
-  if($('model-search').value){$('model-search').value='';$('model-search').dispatchEvent(new Event('input'));}
-  folderNodes.get(next.folder||'other')?.setAttribute('open','');
-  load(next);
- });
- load(initialModel);
+ window.addEventListener('hashchange',navigate);
+ navigate();
 }catch(error){
  console.error(error);status.hidden=false;status.textContent='3D rendering could not start. Enable hardware acceleration or try another browser.';
 }

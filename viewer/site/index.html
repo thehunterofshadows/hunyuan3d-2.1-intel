@@ -1,20 +1,20 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101419"><title>Intel 3D Studio</title><link rel="stylesheet" href="/style.css?v=20261016-bumper">
 <script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js","three/addons/":"/vendor/three/examples/jsm/"}}</script>
-</head><body>
+</head><body class="library-mode">
 <header><a class="brand" href="/">◈ <span>Intel <b>3D Studio</b></span></a><span class="sub">THE ASSET LAB</span><a class="back" href="https://projects.fireorbooty.com/">Projects ↗</a></header>
-<main><aside>
-<div class="eyebrow">COLLECTION / 07</div><h1>Asset library.</h1><p class="intro">Browse models by project. Open a folder to explore.</p>
+<main><aside id="library">
+<div class="eyebrow">COLLECTION / 07</div><h1>Asset library.</h1><p class="intro">Choose a model to open its workspace.</p>
 <label class="model-search-label" for="model-search">FIND MODEL</label><input id="model-search" type="search" placeholder="Search models…" autocomplete="off" aria-label="Search models">
 <div class="model-sort-row"><label for="model-sort">SORT MODELS</label><select id="model-sort" aria-label="Sort models within folders"><option value="newest">Modified: newest first</option><option value="oldest">Modified: oldest first</option><option value="name">Name: A–Z</option><option value="original">Original order</option></select></div>
 <nav id="models" aria-label="Choose model by folder"></nav><p id="model-empty" role="status" hidden>No matching models.</p>
-<section class="details"><span class="pill">FIRST-PASS ASSET</span><h2 id="title">Railgun</h2><p id="description"></p><p id="model-modified" class="modified-detail">Loading modified date…</p><div id="stats" class="stats"></div><a id="download" class="download" download>Download GLB ↓</a><a id="dolly-plan" class="download" href="/models/vx110-wood-dolly/BUILD_PLAN.md" target="_blank" rel="noopener" hidden>Build plan + $477.91 budget ↗</a></section>
-<div id="cad-downloads" hidden><a class="download" href="/models/portable-pinball/stl-v1_5/corner_right_front_56.stl" download>Print corner bracket with nut slots ↓</a><a class="download" href="/models/portable-pinball/cad-print-pack-v1_5.zip" download>Download CAD + STL pack ↓</a><a class="download" href="/models/portable-pinball/cabinet-v1_5.step" download>Download STEP assembly ↓</a><a class="download" href="/models/portable-pinball/bezel_left_one_piece-v1_3.stl" download>Print one-piece LEFT bezel ↓</a><a class="download" href="/models/portable-pinball/bezel_right_a1_a2-v1_3.stl" download>Print one-piece RIGHT bezel (A1 + A2) ↓</a><a class="download" href="/models/portable-pinball/stl-v1_5/monitor_saddle_right_180.stl" download>Print RIGHT front saddle (+5 mm) ↓</a><a class="download" href="/models/portable-pinball/stl-v1_5/monitor_saddle_right_360.stl" download>Print RIGHT rear saddle (+5 mm) ↓</a></div>
-<a id="view-comparison" hidden target="_blank" rel="noopener">Compare original + four generated input views ↗</a>
-<details id="reference"><summary>Original reference image <span>↗</span></summary><p class="caption">AI-generated input, not the reconstructed mesh.</p><a id="reference-link" target="_blank" rel="noopener"><img id="reference-image" alt="Original reference" loading="lazy"></a></details>
 </aside>
 <section class="workspace" aria-label="Interactive 3D model viewer">
-<div class="viewbar"><span><i></i> LIVE MODEL</span><span><button id="export-selected-stl" disabled title="Select a part first">Export selected STL ↓</button> <span id="stl-export-status" role="status"></span> <button id="hidden-parts">Unhide Objects (0)</button> <button id="reset-camera">Reset Camera</button> <button id="export-notes">Export notes</button> <button id="open-stl">Open STL file</button><input id="stl-file" type="file" accept=".stl" hidden> <button id="fullscreen" title="Expand viewer">Fullscreen ⛶</button></span></div>
+<div class="workspace-heading"><button id="back-library">← Models</button><strong id="workspace-title">Model workspace</strong><select id="model-version" aria-label="Model version" hidden></select></div>
+<div class="viewbar">
+<button data-panel="view-panel">View</button><button data-panel="parts-panel">Parts</button><button data-panel="info-panel">Info &amp; downloads</button>
+<button id="hidden-parts" hidden>Hidden parts (0)</button><button id="reset-camera">Fit model</button><button id="fullscreen" title="Expand viewer">Fullscreen ⛶</button><button data-panel="help-panel" aria-label="Help">?</button>
+</div>
 <div id="viewport" tabindex="0" aria-label="Drag to rotate. Scroll or pinch to zoom. Right drag or two fingers to pan."><div id="status" role="status">Loading model…</div></div>
 <section id="part-popup" class="part-popup" role="dialog" aria-labelledby="part-title" hidden>
  <button id="part-close" class="popup-close" aria-label="Close part inspector">×</button><small id="part-model"></small><h3 id="part-title"></h3>
@@ -23,22 +23,29 @@
  <label>Not reviewed<textarea id="part-note" rows="4" maxlength="12000" placeholder="What should change here?"></textarea></label>
  <div class="note-actions"><button id="save-note">Save note</button><button id="reload-note" hidden>Reload saved note</button></div><p id="note-status" role="status"></p>
  <section id="review-history"><h4>Reviewed comments</h4><p id="review-empty">No reviewed comments yet.</p><table id="review-table" hidden><thead><tr><th>Comment</th><th>Agent response</th><th>Reviewed</th></tr></thead><tbody id="review-rows"></tbody></table></section>
- <small>Notes save on Mini for this browser. Export JSON to share with an agent.</small>
+ <small>Notes save on Skynet for this browser. Export JSON to share with an agent.</small>
 </section>
 <section id="parts-menu" class="part-popup" role="dialog" aria-label="Restore hidden parts" hidden><button id="menu-close" class="popup-close" aria-label="Close hidden parts">×</button><h3>Hidden parts</h3><p id="restore-empty">No hidden parts.</p><div id="restore-list"></div><button id="restore-all">Unhide all parts</button></section>
 <div class="view-controls"><button data-view="front">Front</button><button data-view="back">Back</button><button data-view="left">Left</button><button data-view="right">Right</button><button data-view="top">Top</button><button id="reset">Reset view</button></div>
-<p class="hint">Left-click to select a piece, then Export selected STL · Right-click a selected piece for notes and Center on Object · Unhide Objects restores hidden pieces · Drag to rotate · Scroll / pinch to zoom · Right-drag / two fingers to pan</p>
-<div id="cad-controls" class="cad-controls" hidden>
- <div class="cad-row"><label>Separate parts <input id="explode" type="range" min="0" max="1" step="0.05" value="0" aria-label="Separate cabinet parts"></label><output id="explode-value" for="explode">Assembled</output><label>Inspect part<select id="cad-part"><option value="all">All printed parts</option></select></label><button id="export-cad-stl" disabled>Export inspected part STL ↓</button></div>
- <div class="cad-row"><label><input id="cad-monitor" type="checkbox" checked> Monitor</label><label><input id="cad-pc" type="checkbox" checked> PC allowance</label><label><input id="cad-cover" type="checkbox"> Cover allowance</label><label><input id="cad-panels" type="checkbox" checked> Top panels</label></div>
-</div>
-<div class="settings">
+<section id="view-panel" class="tool-panel" aria-label="View settings" hidden><button class="panel-close" aria-label="Close view settings">×</button><h2>View</h2><div class="settings">
 <label>Surface<select id="surface"><option value="pbr">Materials</option><option value="clay">Clay / geometry</option><option value="normals">Surface normals</option></select></label>
 <label>Lighting<select id="lighting"><option value="studio">Studio</option><option value="soft">Soft fill</option><option value="dramatic">Side light</option></select></label>
 <label>Background<select id="background"><option value="#161d25">Slate</option><option value="#07090c">Dark</option><option value="#dce1e7">Light</option></select></label>
 <label>Exposure <input id="exposure" aria-label="Exposure" type="range" min="0.3" max="2.5" step="0.05" value="1"></label>
 <label class="check" id="chrome-control" hidden><input id="chrome" type="checkbox" checked> <span id="polish-label">Chrome polish</span></label>
 <label class="check"><input id="wireframe" type="checkbox"> Wireframe</label><label class="check"><input id="rotate" type="checkbox"> Auto-rotate</label><label class="check"><input id="grid" type="checkbox" checked> Ground grid</label>
-</div></section></main>
+</div></section>
+<section id="parts-panel" class="tool-panel" aria-label="Parts controls" hidden><button class="panel-close" aria-label="Close parts controls">×</button><h2>Parts</h2><p>Select a piece to inspect it, add notes, or export its STL.</p><button id="export-selected-stl" disabled>Export selected STL ↓</button><span id="stl-export-status" role="status"></span><div id="cad-controls" class="cad-controls" hidden>
+ <div class="cad-row"><label>Separate parts <input id="explode" type="range" min="0" max="1" step="0.05" value="0" aria-label="Separate cabinet parts"></label><output id="explode-value" for="explode">Assembled</output><label>Inspect part<select id="cad-part"><option value="all">All printed parts</option></select></label><button id="export-cad-stl" disabled>Export inspected part STL ↓</button></div>
+ <div class="cad-row"><label><input id="cad-monitor" type="checkbox" checked> Monitor</label><label><input id="cad-pc" type="checkbox" checked> PC allowance</label><label><input id="cad-cover" type="checkbox"> Cover allowance</label><label><input id="cad-panels" type="checkbox" checked> Top panels</label></div>
+</div>
+<button id="export-notes">Export notes</button></section>
+<section id="info-panel" class="tool-panel" aria-label="Model information and downloads" hidden><button class="panel-close" aria-label="Close model information">×</button><section class="details"><span class="pill">FIRST-PASS ASSET</span><h2 id="title">Railgun</h2><p id="description"></p><p id="model-modified" class="modified-detail">Loading modified date…</p><div id="stats" class="stats"></div><a id="download" class="download" download>Download GLB ↓</a><a id="dolly-plan" class="download" href="/models/vx110-wood-dolly/BUILD_PLAN.md" target="_blank" rel="noopener" hidden>Build plan + $477.91 budget ↗</a></section>
+<div id="cad-downloads" hidden><a class="download" href="/models/portable-pinball/stl-v1_5/corner_right_front_56.stl" download>Print corner bracket with nut slots ↓</a><a class="download" href="/models/portable-pinball/cad-print-pack-v1_5.zip" download>Download CAD + STL pack ↓</a><a class="download" href="/models/portable-pinball/cabinet-v1_5.step" download>Download STEP assembly ↓</a><a class="download" href="/models/portable-pinball/bezel_left_one_piece-v1_3.stl" download>Print one-piece LEFT bezel ↓</a><a class="download" href="/models/portable-pinball/bezel_right_a1_a2-v1_3.stl" download>Print one-piece RIGHT bezel (A1 + A2) ↓</a><a class="download" href="/models/portable-pinball/stl-v1_5/monitor_saddle_right_180.stl" download>Print RIGHT front saddle (+5 mm) ↓</a><a class="download" href="/models/portable-pinball/stl-v1_5/monitor_saddle_right_360.stl" download>Print RIGHT rear saddle (+5 mm) ↓</a></div>
+<a id="view-comparison" hidden target="_blank" rel="noopener">Compare original + four generated input views ↗</a>
+<details id="reference"><summary>Original reference image <span>↗</span></summary><p class="caption">AI-generated input, not the reconstructed mesh.</p><a id="reference-link" target="_blank" rel="noopener"><img id="reference-image" alt="Original reference" loading="lazy"></a></details>
+</section>
+<section id="help-panel" class="tool-panel" aria-label="Viewer help" hidden><button class="panel-close" aria-label="Close help">×</button><h2>Using the viewer</h2><p>Click or tap a piece for notes, visibility and STL export. Click empty space to clear it.</p><p>Drag to rotate · Scroll / pinch to zoom · Right-drag / two fingers to pan</p><p>F: fit model · Escape: close panels</p><button id="open-stl">Open local STL file</button><input id="stl-file" type="file" accept=".stl" hidden></section>
+</section></main>
 <footer>Modeled rebuilds &amp; Intel B70 experiments · Rendered on your device <span>No AI model required to view</span></footer>
 <script type="module" src="/app.js?v=20261016-bumper"></script></body></html>

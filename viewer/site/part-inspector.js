@@ -70,7 +70,7 @@ export function createPartInspector({context,render,appearance,restoreAssembly})
    const base=material.userData.partBaseline;material.opacity=alpha===undefined?base.opacity:alpha===0?base.opacity:alpha;material.transparent=alpha===undefined?base.transparent:alpha===.5;material.depthWrite=alpha===undefined?base.depthWrite:alpha!==.5;material.needsUpdate=true;
   }
  }
- function updateCount(){const n=context().meshes.filter(m=>overrides.get(id(m))===0).length;$('hidden-parts').textContent='Unhide Objects ('+n+')';}
+ function updateCount(){const n=context().meshes.filter(m=>overrides.get(id(m))===0).length;$('hidden-parts').textContent='Hidden parts ('+n+')';$('hidden-parts').hidden=n===0;}
  function close(){panel.hidden=true;menu.hidden=true;if(helper){context().scene.remove(helper);helper.dispose();helper=null;}render();}
  function position(element,x,y){element.hidden=false;element.style.left=Math.max(8,Math.min(x+12,innerWidth-element.offsetWidth-8))+'px';element.style.top=Math.max(8,Math.min(y+12,innerHeight-element.offsetHeight-8))+'px';}
  function pick(e){const c=context(),r=c.renderer.domElement.getBoundingClientRect();ndc.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);c.model?.updateMatrixWorld(true);ray.setFromCamera(ndc,c.camera);return ray.intersectObjects(c.meshes.filter(m=>m.visible),false)[0]||null;}
@@ -105,7 +105,7 @@ export function createPartInspector({context,render,appearance,restoreAssembly})
    // An older GET must never roll back a just-completed save.
    if(!note||note.revision<record.revision)return;
    record.saved=note;record.revision=note.revision;record.text=pendingText(note);$('part-note').value=record.text;showHistory(record);
-   status(record,note.reviewed?'Reviewed · add a new note above.':'Not reviewed · saved on Mini');
+   status(record,note.reviewed?'Reviewed · add a new note above.':'Not reviewed · saved on Skynet');
   }catch{/* Keep local edits and the last loaded history available offline. */}
  }
  setInterval(()=>{if(!document.hidden&&!panel.hidden)refreshSelected();},5000);
@@ -142,7 +142,7 @@ export function createPartInspector({context,render,appearance,restoreAssembly})
   await ready;if(version!==generation||selected?.record!==record)return;
   if(!record.dirty){record.text=pendingText(record.saved);$('part-note').value=record.text;}
   const changed=record.saved&&record.saved.part.geometryFingerprint!==record.payload.part.geometryFingerprint;
-  status(record,changed?'Geometry changed since this note; review its location.':record.dirty?'Browser draft recovered — press Save.':record.saved?.reviewed?'Reviewed · add a new note above.':record.saved?'Not reviewed · saved on Mini':'Add a note; it saves automatically.');
+  status(record,changed?'Geometry changed since this note; review its location.':record.dirty?'Browser draft recovered — press Save.':record.saved?.reviewed?'Reviewed · add a new note above.':record.saved?'Not reviewed · saved on Skynet':'Add a note; it saves automatically.');
   showHistory(record);await refreshSelected();
  }
  function menuAt(x,y){
@@ -176,7 +176,7 @@ export function createPartInspector({context,render,appearance,restoreAssembly})
  const canvas=context().renderer.domElement;
  canvas.addEventListener('pointerdown',e=>{pointers.add(e.pointerId);if(pointers.size===1)pointer={x:e.clientX,y:e.clientY,id:e.pointerId,button:e.button,moved:false};else if(pointer)pointer.moved=true;menu.hidden=true;});
  canvas.addEventListener('pointermove',e=>{if(pointer&&Math.hypot(e.clientX-pointer.x,e.clientY-pointer.y)>6){pointer.moved=true;if(pointer.button===2)panel.hidden=true;}});
- canvas.addEventListener('pointerup',e=>{pointers.delete(e.pointerId);if(pointer?.id===e.pointerId&&!pointer.moved&&pointer.button===0){const hit=pick(e);if(hit)select(hit,e,e.pointerType==='touch');else{flush();close();selected=null;updateExport();}}if(!pointers.size)pointer=null;});
+ canvas.addEventListener('pointerup',e=>{pointers.delete(e.pointerId);if(pointer?.id===e.pointerId&&!pointer.moved&&pointer.button===0){const hit=pick(e);if(hit)select(hit,e,true);else{flush();close();selected=null;updateExport();}}if(!pointers.size)pointer=null;});
  canvas.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);pointer=null;});
  canvas.addEventListener('contextmenu',e=>{e.preventDefault();menu.hidden=true;const hit=pick(e);if(hit&&hit.object===selected?.mesh&&!pointer?.moved)select(hit,e);});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){flush();close();}});

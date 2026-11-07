@@ -1,6 +1,6 @@
 # Intel 3D Studio viewer
 
-Production only: https://3d.fireorbooty.com/ on Mini. The owner explicitly requested no Dev site.
+Production only: https://3d.fireorbooty.com/ on Skynet. The owner explicitly requested no Dev site.
 Source stays on the existing fork's dev branch. A built Docker image is deployed; there is no source bind mount and no inference service exposed.
 This does not promote or change the upstream main branch.
 
@@ -154,3 +154,25 @@ Build and render from the new CAD directory:
 The print pack includes all 45 enclosure STLs, 16 fit samples, editable STEP, source, and geometric checks. Start with `flipper_nudge_wall_sample.stl`; the three `nudge_mx_14p*` samples test printed switch fit. The other 42 enclosure STLs match V1.7 byte-for-byte. The exact CAD previews supersede the illustrative concept images for fabrication.
 
 `viewer/tests/pinball-v1_8.cjs` verifies the model, every enclosure STL hash, version-specific downloads, three changed-part UI exports, preserved V1.7/V1.6 models, and mobile loading. It accepts `VIEWER_URL`, `PINBALL_ASSET_DIR`, `PINBALL_EVIDENCE_DIR`, `PLAYWRIGHT_MODULE`, and `PINBALL_BROWSER_EXECUTABLE` so the existing browser runtime can be reused.
+
+
+## Workspace interface V2 (2026-11-07)
+The root URL opens a full-screen model library. Selecting a card opens a dedicated
+canvas workspace; Models returns to the library and browser Back/Forward follows
+model navigation. Existing #model-id bookmarks still open their exact models.
+Portable Pinball V1.5–V1.8 share one card, opening V1.8, with a version selector
+in the workspace. Model IDs, CAD assets, downloads and annotation keys are unchanged.
+
+View, Parts, Info & downloads and Help open compact overlay panels. Camera presets
+float over the canvas. Clicking a mesh opens the part inspector on desktop and
+touch; empty space clears selection. Hidden parts appears only when parts have
+been hidden. F fits the model and Escape closes panels. Resizing fits the model
+while preserving the viewing direction. Local STL loading is under Help.
+
+Regression: viewer/tests/workspace.cjs covers library/search, version grouping,
+history/deep links, desktop/mobile layout, real STL export, selection and restoration.
+Use the existing Playwright Docker runtime, mount its modules at /pw and set
+NODE_PATH=/pw, mount tests at /tests and an evidence directory at /evidence.
+VIEWER_URL selects the candidate or public site. Notes API is intercepted in this
+test, so it never writes live annotations. Older sidebar-specific UI tests need
+their navigation updated for the two-screen interface.

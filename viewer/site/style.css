@@ -37,3 +37,58 @@
 @media(min-width:801px){.workspace{align-self:start;min-height:calc(100dvh - 120px)}}
 
 #review-history{border-top:1px solid #42566b;margin-top:16px;padding-top:8px}#review-history h4{margin:8px 0}#review-empty{font-size:12px;color:#b3c5d7}#review-table{width:100%;table-layout:fixed;border-collapse:collapse;font-size:11px}#review-table th,#review-table td{text-align:left;vertical-align:top;border-bottom:1px solid #42566b;padding:6px 4px;overflow-wrap:anywhere;white-space:pre-wrap}#review-table th:last-child{width:25%}
+
+/* Two-screen studio: catalog first, canvas-focused workspace after selection. */
+body{height:100dvh;overflow:hidden}
+header{height:52px;padding:0 20px;gap:20px}.brand{font-size:20px}.brand span{font-size:16px}
+main{display:block;height:calc(100dvh - 52px);min-height:0}
+footer{display:none}
+#library{display:none}
+.library-mode #library{display:block;height:100%;overflow:auto;border:0;padding:28px clamp(16px,4vw,64px)}
+.library-mode .workspace{display:none}
+.library-mode h1{font-size:32px}
+#model-search{max-width:580px;margin-bottom:16px}
+.model-sort-row{max-width:580px;margin:0 0 24px}
+.model-folder{margin-bottom:24px;border:0;background:transparent;overflow:visible}
+.model-folder>summary{padding:10px 0}
+.folder-label strong{font-size:18px}.folder-label small{font-size:12px}
+.folder-items{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;border:0;padding:10px 0}
+.model{display:flex;flex-direction:column;align-items:stretch;text-align:left;padding:12px;gap:12px;min-width:0;height:100%}
+.model img{width:100%;height:160px;background:#202a35;border-radius:7px;object-fit:contain}
+.model strong{font-size:15px}.model small{font-size:12px}
+.workspace{position:relative;display:grid;grid-template-rows:48px 42px minmax(0,1fr);height:100%;min-height:0!important;padding:0;background:#161d25;overflow:hidden}
+.workspace-heading{display:flex;align-items:center;gap:12px;padding:6px 16px;background:#11171e;border-bottom:1px solid #28323d;min-width:0}
+#workspace-title{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+#model-version{margin-left:auto;flex-shrink:0;max-width:110px;padding:5px}
+.viewbar{display:flex;justify-content:flex-start;gap:6px;letter-spacing:0;margin:0;padding:4px 16px;background:#11171e;overflow-x:auto;min-height:0}
+.viewbar button,.workspace-heading button{font-size:12px;padding:6px 10px;white-space:nowrap;flex-shrink:0}
+.viewbar button[aria-expanded=true]{border-color:#72e3d0;color:#72e3d0}
+#viewport{height:100%;width:100%;min-height:0;flex:initial;border:0;border-radius:0;grid-row:3}
+.view-controls{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);margin:0;padding:6px;border:1px solid #34414f;border-radius:10px;background:#11171ee8;flex-wrap:nowrap;max-width:calc(100% - 20px);z-index:3}
+.view-controls button{padding:6px 10px;white-space:nowrap}
+.tool-panel{position:absolute;right:12px;top:100px;width:360px;max-width:calc(100% - 24px);max-height:calc(100% - 120px);overflow:auto;z-index:20;padding:20px;border:1px solid #465d70;border-radius:12px;background:#17212bf5;box-shadow:0 12px 40px #0007}
+.panel-close{float:right;font-size:20px;padding:2px 9px}
+.tool-panel h2{margin-top:0}
+.tool-panel .details{margin:0;padding:0;border:0}
+.tool-panel .settings{border:0;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tool-panel select{width:100%;max-width:100%}
+.tool-panel .cad-controls{margin-top:16px;padding:12px}
+.tool-panel .cad-row{display:grid;gap:12px}.tool-panel .cad-row label{flex-wrap:wrap}
+.tool-panel .download{display:block;margin-top:8px}
+#stl-export-status{display:block;font-size:12px}
+#part-popup{left:auto!important;top:152px!important;right:12px;max-height:calc(100dvh - 172px);width:340px}
+.workspace:fullscreen{padding:0;height:100dvh}.workspace:fullscreen #viewport{height:100%}
+@media(max-width:600px){
+ header{height:44px;padding:0 12px}.brand span{font-size:14px}
+ main{height:calc(100dvh - 44px)}
+ .library-mode #library{padding:20px 14px}
+ .folder-items{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .model{padding:8px}.model img{height:120px}.model strong{font-size:13px}.model small{font-size:11px}
+ .workspace-heading{padding:5px 8px;gap:8px}.workspace-heading button{padding:6px 8px}
+ #workspace-title{font-size:12px}
+ .viewbar{padding:4px 8px;gap:4px}.viewbar button{padding:6px 8px}
+ .view-controls{bottom:10px;gap:3px;padding:4px}
+ .view-controls button{padding:6px 7px;font-size:10px}
+ #part-popup{top:142px!important;max-height:calc(100dvh - 160px);right:8px}
+ .tool-panel{right:8px;max-width:calc(100% - 16px)}
+}
