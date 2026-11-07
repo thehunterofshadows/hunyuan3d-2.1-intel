@@ -4,7 +4,7 @@ import argparse
 p=argparse.ArgumentParser();p.add_argument('--cad-dir',required=True,type=Path);p.add_argument('--output',required=True,type=Path);p.add_argument('--print-pack',type=Path);args=p.parse_args()
 R=args.cad_dir;dest=args.output;dest.mkdir(parents=True,exist_ok=True)
 m=json.loads((R/'exports/preview_meshes.json').read_text())
-colors={'wall':[.17,.24,.31,1],'floor':[.40,.47,.53,1],'lid':[.36,.48,.57,1],'bezel':[.16,.21,.26,1],'support':[.88,.55,.20,1],'joint':[.25,.66,.55,1]}
+colors={'wall':[.17,.24,.31,1],'floor':[.40,.47,.53,1],'lid':[.36,.48,.57,1],'bezel':[.16,.21,.26,1],'support':[.88,.55,.20,1],'joint':[.25,.66,.55,1],'feet':[.28,.32,.37,1],'mount':[.35,.43,.47,1],'rubber':[.09,.095,.10,1]}
 g={'asset':{'version':'2.0','generator':'Exact CAD tessellation from Mini VPin','extras':{'sourceUnits':'mm','displayUnits':'m'}},'scene':0,'scenes':[{'nodes':[]}],'nodes':[],'meshes':[],'materials':[],'buffers':[{}],'bufferViews':[],'accessors':[]}
 buf=bytearray()
 def acc(array,component,kind,target):
@@ -29,7 +29,7 @@ for p in m:
  if p['kind']=='floor':off[2]=-60
  if p['kind']=='bezel':off[2]=65
  if p['kind']=='lid':off[2]=110 if name!='control_hatch' else 165
- p['extras']={'cadPart':True,'kind':p['kind'],'explode':[off[0]/1000,off[2]/1000,-off[1]/1000]}
+ p['extras']=({'cadReference':'feet','kind':p['kind'],'explode':[0,0,0]} if p['name'].startswith('REFERENCE_swivel_rubber_pad_') else {'cadPart':True,'kind':p['kind'],'explode':[off[0]/1000,off[2]/1000,-off[1]/1000]})
  p['color']=colors[p['kind']]
 def box(name,x,y,z,w,l,h,kind,color):
  v=[[x,y,z],[x+w,y,z],[x+w,y+l,z],[x,y+l,z],[x,y,z+h],[x+w,y,z+h],[x+w,y+l,z+h],[x,y+l,z+h]]
