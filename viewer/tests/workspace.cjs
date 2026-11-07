@@ -1,5 +1,6 @@
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE || '/pw/playwright');
-const assert=require('node:assert/strict');
+const assert=require('node:assert/strict'),path=require('node:path'),fs=require('node:fs');
+const evidence=process.env.WORKSPACE_EVIDENCE_DIR||'/evidence';fs.mkdirSync(evidence,{recursive:true});
 (async()=>{
 const browser=await chromium.launch({executablePath:process.env.PINBALL_BROWSER_EXECUTABLE || '/ms-playwright/chromium-1254/chrome-linux64/chrome',args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
 const p=await browser.newPage({viewport:{width:1440,height:900},acceptDownloads:true});
@@ -10,11 +11,12 @@ await p.goto(base);await p.waitForSelector('.model');
 assert(await p.locator('#library').isVisible());assert(!await p.locator('.workspace').isVisible());
 assert.equal(await p.locator('.model[data-model^="portable-pinball"]:visible').count(),1);
 await p.locator('#model-search').fill('portable');assert.equal(await p.locator('.model:visible').count(),1);
-await p.locator('.model[data-model="portable-pinball-v1_8"]').click();
-await p.waitForSelector('#viewport[data-state=ready][data-model="portable-pinball-v1_8"]',{timeout:120000});
+const latestCabinet=await p.locator('.model[data-model^="portable-pinball"]:visible').getAttribute('data-model');
+await p.locator('.model[data-model="'+latestCabinet+'"]').click();
+await p.waitForSelector('#viewport[data-state=ready][data-model="'+latestCabinet+'"]',{timeout:120000});
 assert(!await p.locator('#library').isVisible());
 let rect=await p.locator('#viewport').boundingBox();assert(rect.width===1440 && rect.height>=750,JSON.stringify(rect));
-await p.screenshot({path:'/evidence/workspace-desktop.png'});
+await p.screenshot({path:path.join(evidence,'workspace-desktop.png')});
 await p.locator('[data-panel="parts-panel"]').click();
 await p.selectOption('#cad-part','left_front_wall');
 const downloadPromise=p.waitForEvent('download');await p.click('#export-cad-stl');const download=await downloadPromise;
@@ -22,7 +24,7 @@ assert.equal(download.suggestedFilename(),'left_front_wall.stl');
 await p.locator('#parts-panel .panel-close').click();
 await p.click('[data-view="left"]');
 rect=await p.locator('#viewport').boundingBox();
-await p.screenshot({path:'/evidence/isolated-wall.png'});
+await p.screenshot({path:path.join(evidence,'isolated-wall.png')});
 for(const y of [.35,.45,.55,.65]){for(const x of [.35,.45,.55,.65]){await p.mouse.click(rect.x+rect.width*x,rect.y+rect.height*y);if(await p.locator('#part-popup').isVisible())break;}if(await p.locator('#part-popup').isVisible())break;}
 await p.waitForSelector('#part-popup:not([hidden])');
 assert.match(await p.locator('#part-title').textContent(),/left front wall/);
@@ -38,11 +40,11 @@ await p.goBack();await p.waitForSelector('#viewport[data-model="portable-pinball
 await p.setViewportSize({width:390,height:844});
 assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
 rect=await p.locator('#viewport').boundingBox();assert(rect.width===390&&rect.height>650,JSON.stringify(rect));
-await p.screenshot({path:'/evidence/workspace-mobile.png'});
+await p.screenshot({path:path.join(evidence,'workspace-mobile.png')});
 await p.click('[data-panel="view-panel"]');await p.selectOption('#surface','clay');await p.keyboard.press('Escape');
 await p.click('#back-library');await p.waitForSelector('body.library-mode');
-await p.locator('#model-search').fill('');await p.screenshot({path:'/evidence/library-mobile.png'});
-await p.setViewportSize({width:1440,height:900});await p.screenshot({path:'/evidence/library-desktop.png'});
+await p.locator('#model-search').fill('');await p.screenshot({path:path.join(evidence,'library-mobile.png')});
+await p.setViewportSize({width:1440,height:900});await p.screenshot({path:path.join(evidence,'library-desktop.png')});
 await p.goto(base+'#railgun');await p.waitForSelector('#viewport[data-model=railgun][data-state=ready]',{timeout:120000});
 assert(await p.locator('#model-version').isHidden());assert(await p.locator('#cad-controls').isHidden());
 await p.click('[data-panel="help-panel"]');

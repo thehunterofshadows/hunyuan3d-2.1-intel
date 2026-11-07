@@ -67,3 +67,7 @@ viewer/node_modules
 # CAD runtime is not part of the static viewer image.
 viewer/cad/.venv
 viewer/cad/**/__pycache__
+
+
+!assets/portable-pinball-v1_9/
+!assets/portable-pinball-v1_9/**

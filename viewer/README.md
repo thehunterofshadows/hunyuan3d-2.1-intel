@@ -176,3 +176,15 @@ NODE_PATH=/pw, mount tests at /tests and an evidence directory at /evidence.
 VIEWER_URL selects the candidate or public site. Notes API is intercepted in this
 test, so it never writes live annotations. Older sidebar-specific UI tests need
 their navigation updated for the two-screen interface.
+
+## Portable pinball CAD V1.9 — flipper reinforcement to the bottom edge
+
+Separate model: `#portable-pinball-v1_9`. CAD source is `viewer/cad/portable-pinball-v1_9/`; served assets are `assets/portable-pinball-v1_9/`. V1.8 remains available.
+
+The two front side walls keep their original exterior, button and nudge openings, and fastener axes. The internal flipper collar now has a tapered, full-height lower pad: 46 mm root width, 44 mm inner face width and 8 mm total wall thickness down to Z=0. This removes the thin lower section beneath the collar and is intended to reduce local wall flex. Actual stiffness remains a physical check.
+
+The front floor has two local edge notches, 4 mm deep into its existing edges and 46.6 mm long, to clear the new pads by at least 0.3 mm. All floor screw locations remain. Only `left_front_wall`, `right_front_wall`, and `bottom_front` change; the other 42 enclosure STLs match V1.8. There are no additional fasteners or enclosure parts.
+
+The combined `flipper_nudge_wall_sample.stl` now includes the bottom edge, and `flipper_floor_notch_sample.stl` supplies the matching floor edge. The full print pack contains 45 enclosure parts and 17 fit samples. Print the two mating samples first to check the floor relief and hardware fit. Walls print exterior-face-down.
+
+Use the CAD directory's `build_cabinet.py`, `validate_meshes.py`, and `render_v1_9_details.py` with CadQuery 2.7 and the supplied requirements. The comparison renderer includes its exact V1.8 reference mesh. Feature checks cover the full-height pad, floor clearances, preserved openings, printer bounds, solid validity and assembly interference. `viewer/tests/pinball-v1_9.cjs` checks viewer loading, downloads and earlier versions using the same environment variables as V1.8.
