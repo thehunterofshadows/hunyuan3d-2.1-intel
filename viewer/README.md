@@ -188,3 +188,8 @@ The front floor has two local edge notches, 4 mm deep into its existing edges an
 The combined `flipper_nudge_wall_sample.stl` now includes the bottom edge, and `flipper_floor_notch_sample.stl` supplies the matching floor edge. The full print pack contains 45 enclosure parts and 17 fit samples. Print the two mating samples first to check the floor relief and hardware fit. Walls print exterior-face-down.
 
 Use the CAD directory's `build_cabinet.py`, `validate_meshes.py`, and `render_v1_9_details.py` with CadQuery 2.7 and the supplied requirements. The comparison renderer includes its exact V1.8 reference mesh. Feature checks cover the full-height pad, floor clearances, preserved openings, printer bounds, solid validity and assembly interference. `viewer/tests/pinball-v1_9.cjs` checks viewer loading, downloads and earlier versions using the same environment variables as V1.8.
+
+### Compact workspace toolbar (2026-11-07)
+The branding header appears only in the library. Model workspaces use one 48px row
+for navigation, title, version and tools above 1000px wide; smaller screens use
+two compact 44px rows. Panels start immediately below the toolbar.
