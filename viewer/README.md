@@ -205,3 +205,15 @@ The nudge switch mounting face moves 2.5 mm inward within the 4 mm wall. A 1.5 m
 Print the coupon outside-face-down to reproduce the wall's print orientation. The tapered recess sides are 45 degrees, but the 1.95 mm mounting ledge around the hole may require bridging adjustments or localized support; the coupon tests that before a full wall print. Check the actual switch clips and the cap through its complete stroke. The mounting setback is 2.5 mm; final protrusion and cap clearance depend on the actual hardware.
 
 The builder checks the finished recess, mounting plate, bore, protected flipper reinforcement and shifted switch allowances against printed parts and the flipper hardware allowances. `viewer/tests/audit_pinball_v1_10.py` independently checks the exported geometry. `viewer/tests/pinball-v1_10.cjs` verifies the current workspace, model versions, all part hashes, small-test downloads and the two changed-part UI exports.
+
+## Portable pinball CAD V1.11 — softened front corners and corner fit test
+
+Separate model: `#portable-pinball-v1_11`. Source is `viewer/cad/portable-pinball-v1_11/`; served assets are `assets/portable-pinball-v1_11/`. The previous releases retain their original model IDs and download paths.
+
+This revision coordinates the exposed front-corner profiles across the two front side walls, front button panel and front lid. The edge treatment has a 1.5 mm maximum depth, a 45-degree bevel and a 1.0 mm blend radius for the existing outside-face-down print orientations. The lid rim uses a smaller 1.0 mm depth, and its side rounding tapers away before the bezel joint. Flat mating faces, mounting axes and the lid's existing clearance are retained. V1.10's recessed nudge-switch mounts, full-height flipper reinforcement and matching notched front floor remain.
+
+The first viewer download is `front-corner-fit-tests-v1_11.zip`: three small test panels reproducing the revised front corner, plus the original mounting pieces needed to hold the sample assembly in position. Follow its assembly instructions and check the edge feel, seam alignment and printed finish before printing full panels. Actual fit and print finish remain physical checks. The original small `nudge_switch_fit.stl` is still available as a separate download.
+
+The viewer offers the corner sample ZIP, complete CAD/STL pack, STEP assembly, each of the four affected enclosure STLs, the switch-fit sample and build notes. Download links are generated from each version's own list so returning to V1.10 or an earlier model restores that version's original links.
+
+`viewer/tests/pinball-v1_11.cjs` checks the library/workspace, 45 served enclosure STL hashes, all fit-sample STL hashes, nine version downloads, actual corner-ZIP and changed-part UI downloads, prior-version links and mobile layout. Use the same runtime and environment variables as the V1.10 test. `viewer/tests/workspace.cjs` remains the shared workspace regression.

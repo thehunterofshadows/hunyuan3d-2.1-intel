@@ -1,0 +1,454 @@
+{
+  "status": "PASS",
+  "evidence": "Independent exported STL topology/normals, immutable V1.10 comparison, re-imported STEP cross-sections, matched seams, exact corner crops and assembled kit.",
+  "printed_parts": 45,
+  "fit_samples": 20,
+  "changed_enclosure_parts": [
+    "front_button_panel",
+    "front_cable_lid",
+    "left_front_wall",
+    "right_front_wall"
+  ],
+  "unchanged_enclosure_part_stl_bytes_preview_meshes_and_manifest_records": 41,
+  "unchanged_inherited_sample_stl_bytes_and_geometries": 17,
+  "all_65_stls_closed_consistently_wound_single_shell_positive_volume_in_printer_volume_and_on_bed": true,
+  "changed_solids_are_subsets_of_prior_solids": true,
+  "changed_part_removed_volume": [
+    {
+      "name": "front_button_panel",
+      "added_mm3": 0,
+      "removed_mm3": 149.327477
+    },
+    {
+      "name": "front_cable_lid",
+      "added_mm3": 0,
+      "removed_mm3": 76.869481
+    },
+    {
+      "name": "left_front_wall",
+      "added_mm3": 0,
+      "removed_mm3": 47.809826
+    },
+    {
+      "name": "right_front_wall",
+      "added_mm3": 0,
+      "removed_mm3": 47.809826
+    }
+  ],
+  "changed_parts_clear_all_other_printed_parts": true,
+  "fasteners_controls_flipper_reinforcement_floor_interface_and_lid_seats_preserved": true,
+  "wall_and_panel_profile_measures": [
+    {
+      "feature": "left_vertical_front_corner",
+      "inward_mm": 0.05,
+      "measured_setback_mm": 1.035786,
+      "expected_setback_mm": 1.035786
+    },
+    {
+      "feature": "left_vertical_front_corner",
+      "inward_mm": 0.4,
+      "measured_setback_mm": 0.685786,
+      "expected_setback_mm": 0.685786
+    },
+    {
+      "feature": "left_vertical_front_corner",
+      "inward_mm": 0.75,
+      "measured_setback_mm": 0.335786,
+      "expected_setback_mm": 0.335786
+    },
+    {
+      "feature": "left_vertical_front_corner",
+      "inward_mm": 0.9,
+      "measured_setback_mm": 0.2,
+      "expected_setback_mm": 0.2
+    },
+    {
+      "feature": "left_vertical_front_corner",
+      "inward_mm": 1.15,
+      "measured_setback_mm": 0.06325,
+      "expected_setback_mm": 0.06325
+    },
+    {
+      "feature": "left_vertical_front_corner",
+      "inward_mm": 1.45,
+      "measured_setback_mm": 0.001251,
+      "expected_setback_mm": 0.001251
+    },
+    {
+      "feature": "left_vertical_front_corner",
+      "inward_mm": 1.6,
+      "measured_setback_mm": 0.0,
+      "expected_setback_mm": -0.0
+    },
+    {
+      "feature": "right_vertical_front_corner",
+      "inward_mm": 0.05,
+      "measured_setback_mm": 1.035786,
+      "expected_setback_mm": 1.035786
+    },
+    {
+      "feature": "right_vertical_front_corner",
+      "inward_mm": 0.4,
+      "measured_setback_mm": 0.685786,
+      "expected_setback_mm": 0.685786
+    },
+    {
+      "feature": "right_vertical_front_corner",
+      "inward_mm": 0.75,
+      "measured_setback_mm": 0.335786,
+      "expected_setback_mm": 0.335786
+    },
+    {
+      "feature": "right_vertical_front_corner",
+      "inward_mm": 0.9,
+      "measured_setback_mm": 0.2,
+      "expected_setback_mm": 0.2
+    },
+    {
+      "feature": "right_vertical_front_corner",
+      "inward_mm": 1.15,
+      "measured_setback_mm": 0.06325,
+      "expected_setback_mm": 0.06325
+    },
+    {
+      "feature": "right_vertical_front_corner",
+      "inward_mm": 1.45,
+      "measured_setback_mm": 0.001251,
+      "expected_setback_mm": 0.001251
+    },
+    {
+      "feature": "right_vertical_front_corner",
+      "inward_mm": 1.6,
+      "measured_setback_mm": 0.0,
+      "expected_setback_mm": -0.0
+    },
+    {
+      "feature": "left_front_wall_shared_upper_front_lip",
+      "depth_y_mm": 0.05,
+      "measured_top_z_mm": 74.070248,
+      "expected_top_z_mm": 74.070248
+    },
+    {
+      "feature": "left_front_wall_shared_upper_front_lip",
+      "depth_y_mm": 0.4,
+      "measured_top_z_mm": 74.420248,
+      "expected_top_z_mm": 74.420248
+    },
+    {
+      "feature": "left_front_wall_shared_upper_front_lip",
+      "depth_y_mm": 0.8,
+      "measured_top_z_mm": 74.820248,
+      "expected_top_z_mm": 74.820248
+    },
+    {
+      "feature": "left_front_wall_shared_upper_front_lip",
+      "depth_y_mm": 1.0,
+      "measured_top_z_mm": 75.018735,
+      "expected_top_z_mm": 75.018735
+    },
+    {
+      "feature": "left_front_wall_shared_upper_front_lip",
+      "depth_y_mm": 1.2,
+      "measured_top_z_mm": 75.160397,
+      "expected_top_z_mm": 75.160397
+    },
+    {
+      "feature": "left_front_wall_shared_upper_front_lip",
+      "depth_y_mm": 1.45,
+      "measured_top_z_mm": 75.254353,
+      "expected_top_z_mm": 75.254353
+    },
+    {
+      "feature": "left_front_wall_shared_upper_front_lip",
+      "depth_y_mm": 1.7,
+      "measured_top_z_mm": 75.299756,
+      "expected_top_z_mm": 75.299756
+    },
+    {
+      "feature": "left_front_wall_shared_upper_front_lip",
+      "depth_y_mm": 3,
+      "measured_top_z_mm": 75.528981,
+      "expected_top_z_mm": 75.528981
+    },
+    {
+      "feature": "front_button_panel_shared_upper_front_lip",
+      "depth_y_mm": 0.05,
+      "measured_top_z_mm": 74.070248,
+      "expected_top_z_mm": 74.070248
+    },
+    {
+      "feature": "front_button_panel_shared_upper_front_lip",
+      "depth_y_mm": 0.4,
+      "measured_top_z_mm": 74.420248,
+      "expected_top_z_mm": 74.420248
+    },
+    {
+      "feature": "front_button_panel_shared_upper_front_lip",
+      "depth_y_mm": 0.8,
+      "measured_top_z_mm": 74.820248,
+      "expected_top_z_mm": 74.820248
+    },
+    {
+      "feature": "front_button_panel_shared_upper_front_lip",
+      "depth_y_mm": 1.0,
+      "measured_top_z_mm": 75.018735,
+      "expected_top_z_mm": 75.018735
+    },
+    {
+      "feature": "front_button_panel_shared_upper_front_lip",
+      "depth_y_mm": 1.2,
+      "measured_top_z_mm": 75.160397,
+      "expected_top_z_mm": 75.160397
+    },
+    {
+      "feature": "front_button_panel_shared_upper_front_lip",
+      "depth_y_mm": 1.45,
+      "measured_top_z_mm": 75.254353,
+      "expected_top_z_mm": 75.254353
+    },
+    {
+      "feature": "front_button_panel_shared_upper_front_lip",
+      "depth_y_mm": 1.7,
+      "measured_top_z_mm": 75.299756,
+      "expected_top_z_mm": 75.299756
+    },
+    {
+      "feature": "front_button_panel_shared_upper_front_lip",
+      "depth_y_mm": 3,
+      "measured_top_z_mm": 75.528981,
+      "expected_top_z_mm": 75.528981
+    },
+    {
+      "feature": "right_front_wall_shared_upper_front_lip",
+      "depth_y_mm": 0.05,
+      "measured_top_z_mm": 74.070248,
+      "expected_top_z_mm": 74.070248
+    },
+    {
+      "feature": "right_front_wall_shared_upper_front_lip",
+      "depth_y_mm": 0.4,
+      "measured_top_z_mm": 74.420248,
+      "expected_top_z_mm": 74.420248
+    },
+    {
+      "feature": "right_front_wall_shared_upper_front_lip",
+      "depth_y_mm": 0.8,
+      "measured_top_z_mm": 74.820248,
+      "expected_top_z_mm": 74.820248
+    },
+    {
+      "feature": "right_front_wall_shared_upper_front_lip",
+      "depth_y_mm": 1.0,
+      "measured_top_z_mm": 75.018735,
+      "expected_top_z_mm": 75.018735
+    },
+    {
+      "feature": "right_front_wall_shared_upper_front_lip",
+      "depth_y_mm": 1.2,
+      "measured_top_z_mm": 75.160397,
+      "expected_top_z_mm": 75.160397
+    },
+    {
+      "feature": "right_front_wall_shared_upper_front_lip",
+      "depth_y_mm": 1.45,
+      "measured_top_z_mm": 75.254353,
+      "expected_top_z_mm": 75.254353
+    },
+    {
+      "feature": "right_front_wall_shared_upper_front_lip",
+      "depth_y_mm": 1.7,
+      "measured_top_z_mm": 75.299756,
+      "expected_top_z_mm": 75.299756
+    },
+    {
+      "feature": "right_front_wall_shared_upper_front_lip",
+      "depth_y_mm": 3,
+      "measured_top_z_mm": 75.528981,
+      "expected_top_z_mm": 75.528981
+    }
+  ],
+  "new_edge_print_angles": [
+    {
+      "name": "front_button_panel",
+      "new_downward_facets_checked": 22,
+      "maximum_new_downward_surface_angle_from_vertical_degrees": 44.999998,
+      "actual_stl_print_origin_z_mm": 0.0
+    },
+    {
+      "name": "front_cable_lid",
+      "new_downward_facets_checked": 488,
+      "maximum_new_downward_surface_angle_from_vertical_degrees": 45.00009,
+      "actual_stl_print_origin_z_mm": 1e-07
+    },
+    {
+      "name": "left_front_wall",
+      "new_downward_facets_checked": 518,
+      "maximum_new_downward_surface_angle_from_vertical_degrees": 45.000429,
+      "actual_stl_print_origin_z_mm": 1e-07
+    },
+    {
+      "name": "right_front_wall",
+      "new_downward_facets_checked": 520,
+      "maximum_new_downward_surface_angle_from_vertical_degrees": 45.00043,
+      "actual_stl_print_origin_z_mm": 1e-07
+    }
+  ],
+  "matched_front_butt_seams": [
+    {
+      "side": "left",
+      "join_x_mm": 4,
+      "wall_and_panel_seam_profiles_equal": true,
+      "comparison_slab_thickness_mm": 0.001,
+      "difference_mm3": 0
+    },
+    {
+      "side": "right",
+      "join_x_mm": 256,
+      "wall_and_panel_seam_profiles_equal": true,
+      "comparison_slab_thickness_mm": 0.001,
+      "difference_mm3": 0
+    }
+  ],
+  "lid_vertical_clearance": [
+    {
+      "part": "left_front_wall",
+      "probe_xy_mm": [
+        3,
+        10
+      ],
+      "vertical_gap_mm": 1.0
+    },
+    {
+      "part": "front_button_panel",
+      "probe_xy_mm": [
+        60,
+        3
+      ],
+      "vertical_gap_mm": 1.0
+    },
+    {
+      "part": "right_front_wall",
+      "probe_xy_mm": [
+        257,
+        10
+      ],
+      "vertical_gap_mm": 1.0
+    }
+  ],
+  "lid_plan_corner_matches_wall_profile": true,
+  "lid_top_rim_depth_mm": 1.0,
+  "wall_and_front_lip_depth_mm": 1.5,
+  "blend_radius_mm": 1.0,
+  "lid_rear_bezel_junction_and_monitor_stop_preserved": true,
+  "corner_samples": [
+    {
+      "name": "front_corner_wall_fit",
+      "source_part": "left_front_wall",
+      "actual_print_size_mm": [
+        42.053078,
+        40.0,
+        4.0
+      ],
+      "exact_cad_crop_mm": {
+        "min": [
+          0,
+          -1,
+          40
+        ],
+        "max": [
+          40,
+          40,
+          100
+        ]
+      },
+      "stl_volume_difference_mm3": 0.007759,
+      "maximum_stl_vertex_distance_from_exact_crop_mm": 1.84e-06,
+      "maximum_sampled_cad_surface_distance_from_stl_mm": 0.00484884,
+      "cad_surface_points_checked": 11514,
+      "outside_face_down": true
+    },
+    {
+      "name": "front_corner_panel_fit",
+      "source_part": "front_button_panel",
+      "actual_print_size_mm": [
+        36.0,
+        35.705307,
+        4.0
+      ],
+      "exact_cad_crop_mm": {
+        "min": [
+          0,
+          -1,
+          40
+        ],
+        "max": [
+          40,
+          40,
+          100
+        ]
+      },
+      "stl_volume_difference_mm3": 0.010871,
+      "maximum_stl_vertex_distance_from_exact_crop_mm": 7.6e-07,
+      "maximum_sampled_cad_surface_distance_from_stl_mm": 0.00033868,
+      "cad_surface_points_checked": 1902,
+      "outside_face_down": true
+    },
+    {
+      "name": "front_corner_lid_fit",
+      "source_part": "front_cable_lid",
+      "actual_print_size_mm": [
+        40.0,
+        41.322372,
+        4.0
+      ],
+      "exact_cad_crop_mm": {
+        "min": [
+          0,
+          -1,
+          40
+        ],
+        "max": [
+          40,
+          40,
+          100
+        ]
+      },
+      "stl_volume_difference_mm3": 0.002971,
+      "maximum_stl_vertex_distance_from_exact_crop_mm": 1.85e-06,
+      "maximum_sampled_cad_surface_distance_from_stl_mm": 0.00511009,
+      "cad_surface_points_checked": 3468,
+      "outside_face_down": true
+    }
+  ],
+  "corner_kit_parts": [
+    "front_corner_wall_fit",
+    "front_corner_panel_fit",
+    "front_corner_lid_fit",
+    "corner_left_front_56",
+    "top_block_left_25"
+  ],
+  "corner_kit_support_contacts": [
+    [
+      "front_corner_wall_fit",
+      "front_corner_panel_fit"
+    ],
+    [
+      "front_corner_wall_fit",
+      "corner_left_front_56"
+    ],
+    [
+      "front_corner_panel_fit",
+      "corner_left_front_56"
+    ],
+    [
+      "front_corner_wall_fit",
+      "top_block_left_25"
+    ],
+    [
+      "front_corner_lid_fit",
+      "top_block_left_25"
+    ]
+  ],
+  "corner_kit_zero_intersections": true,
+  "physical_limit": "Actual printed fit, fastener engagement, surface feel and print quality require the supplied small five-part kit. New easing geometry does not remove inherited print caveats such as the recessed nudge mounting ledge."
+}

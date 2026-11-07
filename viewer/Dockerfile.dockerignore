@@ -74,3 +74,6 @@ viewer/cad/**/__pycache__
 
 !assets/portable-pinball-v1_10/
 !assets/portable-pinball-v1_10/**
+
+!assets/portable-pinball-v1_11/
+!assets/portable-pinball-v1_11/**
