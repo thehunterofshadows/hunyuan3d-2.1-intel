@@ -193,3 +193,15 @@ Use the CAD directory's `build_cabinet.py`, `validate_meshes.py`, and `render_v1
 The branding header appears only in the library. Model workspaces use one 48px row
 for navigation, title, version and tools above 1000px wide; smaller screens use
 two compact 44px rows. Panels start immediately below the toolbar.
+
+## Portable pinball CAD V1.10 — recessed nudge switch and small fit sample
+
+Separate model: `#portable-pinball-v1_10`. Source is `viewer/cad/portable-pinball-v1_10/`; served assets are `assets/portable-pinball-v1_10/`. This release changes only the two front walls. The other 43 enclosure STLs match V1.9, including its notched front floor and all rear fan parts.
+
+The nudge switch mounting face moves 2.5 mm inward within the 4 mm wall. A 1.5 mm snap plate remains around the 14.1 mm square opening. The external tapered well measures 23 mm at the mouth and 18 mm at its floor. The added flipper reinforcement and its nut-bearing region remain intact, and the button centers still have 33 mm spacing. There is no additional switch holder or interior boss.
+
+`nudge_switch_fit.stl` is the separate 30 x 30 x 4 mm default switch-only coupon. The 14.0 and 14.2 mm alternate-hole coupons use the same recess. All three are also available in `nudge-switch-fit-tests-v1_10.zip`. The complete CAD pack retains 45 enclosure parts and 17 samples. The default coupon is the first download in the viewer.
+
+Print the coupon outside-face-down to reproduce the wall's print orientation. The tapered recess sides are 45 degrees, but the 1.95 mm mounting ledge around the hole may require bridging adjustments or localized support; the coupon tests that before a full wall print. Check the actual switch clips and the cap through its complete stroke. The mounting setback is 2.5 mm; final protrusion and cap clearance depend on the actual hardware.
+
+The builder checks the finished recess, mounting plate, bore, protected flipper reinforcement and shifted switch allowances against printed parts and the flipper hardware allowances. `viewer/tests/audit_pinball_v1_10.py` independently checks the exported geometry. `viewer/tests/pinball-v1_10.cjs` verifies the current workspace, model versions, all part hashes, small-test downloads and the two changed-part UI exports.
