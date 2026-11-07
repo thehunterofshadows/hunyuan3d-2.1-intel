@@ -1,0 +1,405 @@
+"""Mini VPin prototype, mm. Requires cadquery 2.7. Run: python build_cabinet.py.
+All STL exports are individually oriented onto their intended print face.
+The STEP assembly retains assembled positions. No hardware or reference envelope is printable.
+"""
+from pathlib import Path
+import json, math, csv, hashlib
+import cadquery as cq
+from cadquery import exporters
+ROOT=Path(__file__).resolve().parent
+P=json.loads((ROOT/'parameters.json').read_text())
+OUT=ROOT/'exports'; OUT.mkdir(exist_ok=True)
+STL=OUT/'enclosure_stl'; STL.mkdir(exist_ok=True)
+TEST=OUT/'print_first_tests'; TEST.mkdir(exist_ok=True)
+W=P['width'];L=P['length'];T=P['wall'];A=P['slope_degrees']; S=math.tan(math.radians(A)); C=math.cos(math.radians(A))
+H=P['front_height'];Y0=P['monitor_front_y'];Y1=Y0+P['monitor_length']*C;ML=(W-P['monitor_width'])/2;MR=W-ML
+G=P['joint_gap']; SPLIT=L/2
+parts=[]; assembly=cq.Assembly(name='Mini_VPin_Prototype_V1_8')
+colors={'wall':(.17,.24,.31),'floor':(.30,.37,.43),'lid':(.36,.48,.57),'bezel':(.16,.21,.26),'support':(.88,.55,.20),'joint':(.25,.66,.55),'test':(.25,.65,.80)}
+def z(y):return H+y*S
+def box(x,y,z0,dx,dy,dz):return cq.Workplane('XY').box(dx,dy,dz,centered=False).translate((x,y,z0))
+def cyl(point,d,length,axis=(0,0,1)):return cq.Workplane(obj=cq.Solid.makeCylinder(d/2,length,cq.Vector(*point),cq.Vector(*axis)))
+def xhole(y,zz):return cyl((-5,y,zz),3.4,W+10,(1,0,0))
+def yhole(x,zz):return cyl((x,-5,zz),3.4,L+10,(0,1,0))
+def wedge(x,y,dx,dy,low,top_offset=0):
+ return cq.Workplane('YZ').polyline([(y,low),(y+dy,low),(y+dy,z(y+dy)+top_offset),(y,z(y)+top_offset)]).close().extrude(dx).translate((x,0,0))
+def topplate(x,y,dx,dy,t=4):
+ return box(x,y/C,0,dx,dy/C,t).rotate((0,0,0),(1,0,0),A).translate((0,0,H+1))
+N=(0,-math.sin(math.radians(A)),C)
+def topbore(x,y,d=3.4):
+ point=(x,y,z(y)+1)
+ return cyl(tuple(point[i]-25*N[i] for i in range(3)),d,50,N)
+def nut_top(x,y,depth=3.0):
+ # Hex pocket along the same normal as the top-cover screws; opens at top.
+ return cq.Workplane('XY').center(x,y/C).polygon(6,6.6).extrude(-depth).rotate((0,0,0),(1,0,0),A).translate((0,0,H+1))
+def orient(shape,mode):
+ if mode=='side':shape=shape.rotate((0,0,0),(0,1,0),90)
+ if mode=='side_outer_left':shape=shape.rotate((0,0,0),(0,1,0),-90)
+ if mode=='end':shape=shape.rotate((0,0,0),(1,0,0),90)
+ if mode in ('top','top_diagonal'):shape=shape.rotate((0,0,0),(1,0,0),180-A)
+ if mode=='top_diagonal':shape=shape.rotate((0,0,0),(0,0,1),45) # Both long bezel rails print diagonally on 325 mm bed
+ bb=shape.val().BoundingBox();return shape.translate((-bb.xmin,-bb.ymin,-bb.zmin))
+def add(name,shape,kind='wall',mode='flat',qty=1,export=True):
+ shape=shape.clean(); assert shape.val().isValid(),name
+ assert len(shape.solids().vals())==1,(name,'disconnected solids')
+ assembly.add(shape,name=name,color=cq.Color(*colors[kind]))
+ printed=orient(shape,mode); bb=printed.val().BoundingBox()
+ fits=bb.xlen+16<=325 and bb.ylen+16<=325 and bb.zlen<=315
+ assert fits,(name,'too large for bed with 8 mm brim',bb.xlen,bb.ylen,bb.zlen)
+ if export:exporters.export(printed,str(STL/(name+'.stl')),tolerance=.08,angularTolerance=.12)
+ parts.append(dict(name=name,shape=shape,print_shape=printed,kind=kind,mode=mode,bounds=[round(bb.xlen,2),round(bb.ylen,2),round(bb.zlen,2)],volume=shape.val().Volume(),export=export))
+# V1.8 controls: outside stays planar; collar and switch relief are wholly inside.
+FY=P['flipper_y_mm']; BZ=P['button_center_z_mm']; NY=FY+P['nudge_center_spacing_mm']
+COLLAR_R=P['flipper_reinforcement_diameter_mm']/2
+LOCAL_T=P['flipper_total_local_thickness_mm']
+def mirror_side(shape,side):
+ return shape if side=='left' else shape.mirror('YZ',(W/2,0,0))
+def collar(side):
+ # A shallow cone provides a continuous tapered root and a flat nut bearing face.
+ co=cq.Workplane(obj=cq.Solid.makeCone(COLLAR_R,P['flipper_reinforcement_flat_diameter_mm']/2,LOCAL_T-T+.02,cq.Vector(T-.02,FY,BZ),cq.Vector(1,0,0)))
+ return mirror_side(co,side)
+def nudge_cuts(side,cutout=None):
+ d=P['nudge_cutout_mm'] if cutout is None else cutout
+ relief=P['nudge_relief_mm']; lip=P['nudge_snap_plate_mm']
+ through=box(-1,NY-d/2,BZ-d/2,LOCAL_T+2,d,d)
+ pocket=box(lip,NY-relief/2,BZ-relief/2,LOCAL_T+1-lip,relief,relief)
+ return mirror_side(through.union(pocket),side)
+# Seam splice and wall holes; no permanent bonding.
+splice_holes=[(215,25),(215,50),(215,85),(255,25),(255,50),(255,85)]
+shelf_ys=[28,218,252,442]
+mount_ys=[25,50,140,330,450]
+saddle_ys=[180,360]
+corner_ys=[14,L-14];corner_zs={14:[24,56],L-14:[24,128]}
+for side in ['left','right']:
+ x=0 if side=='left' else W-T
+ for region in ['front','rear']:
+  ya=0 if region=='front' else SPLIT+G/2
+  yb=SPLIT-G/2 if region=='front' else L
+  sh=wedge(x,ya,T,yb-ya,0)
+  # In-plane tongue, printed flat; 0.3 mm clearance each non-contact edge.
+  if region=='front':sh=sh.union(box(x,SPLIT-G/2,70,T,6+G/2,8))
+  else:sh=sh.cut(box(x-1,SPLIT-G/2,69.7,T+2,6.3+G/2,8.6))
+  for yy,zz in splice_holes:sh=sh.cut(xhole(yy,zz))
+  for yy in shelf_ys:sh=sh.cut(xhole(yy-4,8))
+  for yy in mount_ys:sh=sh.cut(xhole(yy+6,z(yy)-8))
+  for yy in saddle_ys:sh=sh.cut(xhole(yy,z(yy)-20))
+  for yy in corner_ys:
+   for zz in corner_zs[yy]:sh=sh.cut(xhole(yy,zz))
+  # Reinforce both front walls inward only; keep the original flipper bore/axis.
+  if region=='front':sh=sh.union(collar(side)).cut(nudge_cuts(side))
+  sh=sh.cut(cyl((-5,FY,BZ),P['button_hole'],W+10,(1,0,0)))
+  if region=='rear':
+   for yy in range(275,416,20):sh=sh.cut(box(x-1,yy,20,T+2,7,18))
+  mode='side_outer_left' if side=='left' and region=='front' else 'side'
+  add(side+'_'+region+'_wall',sh,'wall',mode)
+# End plates sit between side walls.
+front=wedge(T,0,W-2*T,T,0)
+for xx in [110,160,210]:front=front.cut(cyl((xx,-1,26),P['button_hole'],T+2,(0,1,0)))
+for xx in [14,W-14]:
+ for zz in [24,56]:front=front.cut(yhole(xx,zz))
+add('front_button_panel',front,'wall','end')
+rear=wedge(T,L-T,W-2*T,T,0)
+for xx in [14,W-14]:
+ for zz in [24,128]:rear=rear.cut(yhole(xx,zz))
+# V1.8 integrated spiral grille. Four mounting regions retain the full 4 mm wall.
+# Eight spline-sided openings leave broad curved spokes and a continuous outer rim.
+FX=P['fan_center_x_mm']; FZ=P['fan_center_z_mm']
+R0=P['fan_grille_hub_radius_mm']; R1=P['fan_grille_radius_mm']
+SPOKES=P['fan_grille_spokes']; SW=P['fan_grille_spoke_width_mm']; TW=math.radians(P['fan_grille_twist_degrees'])
+def slot_point(r,i,side):
+ phi=i*2*math.pi/SPOKES+TW*(r-R0)/(R1-R0)
+ a=phi+side*(math.pi/SPOKES-SW/(2*r))
+ return (FX+r*math.cos(a),FZ+r*math.sin(a))
+fan_slots=[]
+for i in range(SPOKES):
+ radii=[R0+(R1-R0)*j/24 for j in range(25)]
+ lo=[slot_point(r,i,-1) for r in radii]; hi=[slot_point(r,i,1) for r in radii]
+ outer_mid=(FX+R1*math.cos(i*2*math.pi/SPOKES+TW),FZ+R1*math.sin(i*2*math.pi/SPOKES+TW))
+ inner_mid=(FX+R0*math.cos(i*2*math.pi/SPOKES),FZ+R0*math.sin(i*2*math.pi/SPOKES))
+ slot=cq.Workplane('XZ').moveTo(*lo[0]).spline(lo[1:],includeCurrent=True).threePointArc(outer_mid,hi[-1]).spline(list(reversed(hi[:-1])),includeCurrent=True).threePointArc(inner_mid,lo[0]).close().extrude(T+2).translate((0,L+1,0))
+ fan_slots.append(slot); rear=rear.cut(slot)
+fan_mount_centers=[]
+for sx in [-1,1]:
+ for sz in [-1,1]:
+  xx=FX+sx*P['fan_mount_spacing_mm']/2; zz=FZ+sz*P['fan_mount_spacing_mm']/2
+  fan_mount_centers.append((xx,zz))
+  rear=rear.cut(cyl((xx,L-T-1,zz),P['fan_mount_hole_mm'],T+2,(0,1,0)))
+cable_cut=box(P['rear_cable_x_mm'],L-T-1,P['rear_cable_z_mm'],P['rear_cable_width_mm'],T+2,P['rear_cable_height_mm'])
+rear=rear.cut(cable_cut)
+add('rear_vent_panel',rear,'wall','end')
+# Internal L brackets: two per corner. Print upright on L-shaped foot.
+for side in ['left','right']:
+ for end,yy in [('front',14),('rear',L-14)]:
+  for zz in corner_zs[yy]:
+   # Thicker inward arms, unchanged wall contact planes and mounting axes.
+   arm=P['corner_arm_mm']; depth=P['corner_nut_depth_mm']
+   bearing=P['corner_nut_bearing_mm']; slot=P['corner_nut_slot_width_mm']
+   a=box(4,4,zz-8,arm,20,16).union(box(4,4,zz-8,20,arm,16))
+   # X-axis screw nut: top-loading YZ hex slot, with flats parallel to entry.
+   radius=P['corner_nut_hex_diameter_mm']/2
+   profile=[(14+radius*math.cos(math.radians(30+60*i)),zz+radius*math.sin(math.radians(30+60*i))) for i in range(6)]
+   pocket=cq.Workplane('YZ').polyline(profile).close().extrude(depth).translate((4+bearing,0,0))
+   pocket=pocket.union(box(4+bearing,14-slot/2,zz,depth,slot,8.5))
+   flare=[(14-slot/2,zz+6.5),(14+slot/2,zz+6.5),(14+3.6,zz+8.5),(14-3.6,zz+8.5)]
+   pocket=pocket.union(cq.Workplane('YZ').polyline(flare).close().extrude(depth).translate((4+bearing,0,0)))
+   # Rotate the second slot about the corner diagonal: x/y swap.
+   pocket_y=pocket.mirror((1,-1,0),(0,0,0))
+   a=a.cut(pocket).cut(pocket_y).cut(xhole(14,zz)).cut(yhole(14,zz))
+   if side=='right':a=a.mirror('YZ',(W/2,0,0))
+   if end=='rear':a=a.mirror('XZ',(0,L/2,0))
+   add(f'corner_{side}_{end}_{zz}',a,'joint')
+# V1.6: both splice plates bridge the seam with 6 mm thickness and 83 mm height.
+# Three fastener rows, each on either side of seam. Outer wall faces and mating seams unchanged.
+for side in ['left','right']:
+ x=T if side=='left' else W-T-P['splice_thickness_mm']
+ sp=box(x,203,12,P['splice_thickness_mm'],64,83)
+ for yy,zz in splice_holes:sp=sp.cut(xhole(yy,zz))
+ add('splice_'+side,sp,'joint','side')
+# Eight floor shelf blocks. Bolt to wall, then screw removable floor upward into top-loaded M3 nuts.
+for side in ['left','right']:
+ for yy in shelf_ys:
+  x=4 if side=='left' else W-20;cx=x+8
+  sh=box(x,yy-8,4,16,16,8).cut(xhole(yy-4,8))
+  sh=sh.cut(cyl((cx,yy,0),3.4,20))
+  sh=sh.cut(cq.Workplane('XY').center(cx,yy).polygon(6,6.6).extrude(3.1).translate((0,0,8.9)))
+  add(f'floor_block_{side}_{yy}',sh,'joint')
+# Two lift-out bottom panels; rear panel also acts as the PC tray.
+for region in ['front','rear']:
+ ya=4.3 if region=='front' else SPLIT+G/2
+ yb=SPLIT-G/2 if region=='front' else L-4.3
+ sh=box(4.3,ya,0,W-8.6,yb-ya,4)
+ for xx in [12,W-12]:
+  for yy in shelf_ys:sh=sh.cut(cyl((xx,yy,-1),3.4,6))
+ if region=='rear':
+  for xx in [25,230]:
+   for yy in [250,400]:sh=sh.cut(box(xx,yy,-1,6,20,6))
+ add('bottom_'+region,sh,'floor')
+# Top fastening blocks. Top-loaded hex nuts are captured by installed covers.
+for side in ['left','right']:
+ for yy in mount_ys:
+  x=4 if side=='left' else W-16;cx=x+6
+  sh=wedge(x,yy-10,12,20,z(yy)-13,1).cut(xhole(yy+6,z(yy)-8))
+  sh=sh.cut(topbore(cx,yy)).cut(nut_top(cx,yy))
+  add(f'top_block_{side}_{yy}',sh,'joint')
+# Four padded edge saddles. Housing contact must be confirmed with the fit coupon.
+for side in ['left','right']:
+ for yy in saddle_ys:
+  x=4 if side=='left' else MR-5
+  width=ML+5-4
+  shelf_raise=P['right_saddle_raise_mm'] if side=='right' else 0
+  sh=wedge(x,yy-10,width,20,z(yy)-32,-14+shelf_raise)
+  stop_x=ML-3.5 if side=='left' else MR+.5
+  # Preserve the monitor-facing stop face; add 3 mm toward the wall.
+  reinforced_x=stop_x-3 if side=='left' else stop_x
+  sh=sh.union(wedge(reinforced_x,yy-10,6,20,z(yy)-28,.5))
+  # External triangular root brace. No new material enters the monitor pocket.
+  if side=='left':profile=[(reinforced_x-4,z(yy-10)-14),(reinforced_x,z(yy-10)-14),(reinforced_x,z(yy-10)-6)]
+  else:profile=[(reinforced_x+6+4,z(yy-10)-14),(reinforced_x+6,z(yy-10)-14),(reinforced_x+6,z(yy-10)-6)]
+  brace=cq.Workplane('XZ').polyline(profile).close().extrude(-20).translate((0,yy-10,0))
+  sh=sh.union(brace).cut(xhole(yy,z(yy)-20))
+  add(f'monitor_saddle_{side}_{yy}',sh,'support','end')
+# Both side bezels are continuous: right A1+A2 retained from V1.2,
+# and left front+rear joined in V1.3. Same monitor overlap, screw holes, clearance.
+# Length ~351.35 mm: print each rail at 45 degrees across QIDI X-Max 3 bed.
+for side in ['left','right']:
+ x=0 if side=='left' else MR-1
+ width=ML+1
+ sh=topplate(x,Y0+1,width,Y1-Y0-2)
+ for yy in [140,330]:sh=sh.cut(topbore(x+10 if side=='left' else W-10,yy))
+ add('bezel_left_one_piece' if side=='left' else 'bezel_right_a1_a2',sh,'bezel','top_diagonal')
+# Full-width front cable lid includes 1 mm housing overlap. No glue or permanent monitor change.
+sh=topplate(0,0,W,Y0+1)
+# Front-right housing stop, clear of the front-left connectors.
+sh=sh.union(wedge(MR-12,Y0-4.5,12,4,z(Y0)-18,2))
+for xx in [10,W-10]:
+ for yy in [25,50]:sh=sh.cut(topbore(xx,yy))
+add('front_cable_lid',sh,'lid','top')
+# Rear access hatch V1.7: lift-off cover, two plain cylindrical locating pegs.
+# Existing screw positions become clearance holes (Ø6.4) instead of M3 bores.
+# Preserve the original B1 outline to clear the left top fastener block.
+hy=Y1+4; hx=18; hw=80; hd=35
+peg_xs=[12,104]; peg_y=hy+8
+peg_d=6.0; hole_d=6.4; peg_depth=4.4
+sh=topplate(0,Y1-1,W,L-Y1+1)
+cut=box(hx,hy/C,-3,hw,hd/C,12).rotate((0,0,0),(1,0,0),A).translate((0,0,H+1))
+sh=sh.cut(cut)
+sh=sh.union(wedge(MR-12,Y1+.5,12,4,z(Y1)-18,2))
+for xx in [10,W-10]:sh=sh.cut(topbore(xx,450))
+for xx in peg_xs:sh=sh.cut(topbore(xx,peg_y,hole_d))
+add('rear_control_deck',sh,'lid','top')
+
+# Hatch lies flat on the 4 mm deck; unlatched pegs simply locate it, not lock it.
+# Exposed front edge has a small semicircular finger notch for tool-free removal.
+sh=topplate(8,hy-7,100,hd+14,3).translate((0,-4*math.sin(math.radians(A)),4*C))
+# Notch cut along the panel normal; center on the forward edge (radius 5 mm).
+front_y=hy-7
+sh=sh.cut(cyl((58,front_y-8*S,z(front_y)+1+8*C),10,16,(0,S,-C)))
+# Leave head clearance for the existing left deck fastener beneath the cover.
+sh=sh.cut(topbore(10,450,7))
+for xx in peg_xs:
+ base=(xx,peg_y-4*S,z(peg_y)+1+4*C)
+ # Short round posts, extending below the deck by only 0.4 mm.
+ sh=sh.union(cyl(base,peg_d,peg_depth,(0,S,-C)))
+add('control_hatch',sh,'lid','top')
+# Dedicated tests. Small samples are supplied separately from full enclosure STLs.
+tests=[]
+def test(name,shape,mode='flat',note=''):
+ shape=orient(shape.clean(),mode);assert shape.val().isValid() and len(shape.solids().vals())==1,name
+ exporters.export(shape,str(TEST/(name+'.stl')),tolerance=.05,angularTolerance=.1)
+ bb=shape.val().BoundingBox();tests.append({'name':name,'bounds':[round(bb.xlen,2),round(bb.ylen,2),round(bb.zlen,2)],'note':note,'shape':shape})
+# 28.0 / 28.2 / 28.4 holes account for real printer dimensional behavior.
+for d in [28,28.2,28.4]:
+ sh=box(0,0,0,52,52,4).cut(cyl((26,26,-1),d,6))
+ test('button_hole_'+str(d).replace('.','p'),sh,note=f'{d} mm modeled hole, 4 mm panel; fit actual threaded barrel and nut.')
+# Monitor edge test leaves open space under the housing for the attached cover.
+# 2 mm pad +12 mm housing => screen top51; retention underside52 gives 1 mm gap.
+base=box(0,0,0,30,50,5).union(box(0,0,0,8,50,52))
+base=base.union(box(8,0,32,6,50,5))
+gusset=cq.Workplane('XZ').polyline([(8,26),(14,32),(8,32)]).close().extrude(-50)
+base=base.union(gusset)
+for yy in [10,40]:base=base.cut(cyl((-1,yy,46),2.8,7,(1,0,0)))
+test('monitor_edge_cradle_12mm',base,note='2 mm padding on narrow shelf; 12 mm housing screen top51. Cover gets open space underneath. Retainer underside52.')
+bar=box(-4,0,52,14,50,3).union(box(-4,0,40,4,50,15))
+for yy in [10,40]:bar=bar.cut(cyl((-5,yy,46),3.4,6,(1,0,0)))
+# Rotate top of cap onto bed; upright skirt prints upward without support.
+test('monitor_retaining_bar',bar.rotate((0,0,0),(1,0,0),180),note='Install with two M3 ×10 screws lightly into the coupon pilot holes. Only ~1 mm housing overlap; no screen pressure.')
+shim=box(0,0,0,6,50,5)
+test('monitor_5mm_shim_for_7mm_housing',shim,note='On narrow shelf only, add under 7 mm housing with 2 mm pad. Same top51 target.')
+test('optional_saddle_shim_5mm',box(0,0,0,5,20,5),note='Optional full-cabinet shim; print four if all saddles land on 7 mm housing. Tape to saddle, never monitor.')
+# Exact wall seam geometry extracted from the design, with assembly holes at same coordinates.
+for region in ['front','rear']:
+ sh=next(p['shape'] for p in parts if p['name']=='left_'+region+'_wall')
+ clip=box(-1,203,12,6,64,92)
+ test('joint_'+region+'_wall',sh.intersect(clip),'side',note='Print with outer wall face down; slide tongue into slot, attach splice with M3 bolts.')
+sh=next(p['shape'] for p in parts if p['name']=='splice_left')
+test('joint_splice_plate',sh,'side',note='Use six M3 × 16 screws and M3 nuts with joint samples; verify washer stack and through-thread engagement.')
+# Small print-first coupons for checking two-peg friction and actual printed tolerances.
+# These match the full panel's extrusion/normal direction without modifying it.
+fit_hole=box(0,0,0,22,22,4).cut(cyl((11,11,-1),hole_d,6))
+test('hatch_hole_6p4mm',fit_hole,note='Ø6.4 mm through-hole. Pair with the Ø6.0 mm peg sample; 0.2 mm radial clearance.')
+fit_peg=box(0,0,0,22,22,3).union(cyl((11,11,3),peg_d,peg_depth))
+test('hatch_peg_6mm',fit_peg.rotate((0,0,0),(1,0,0),180),note='Ø6.0 mm x 4.4 mm straight peg, printed protrusion up. Test repeatedly for easy insertion/removal.')
+# V1.8 exact control coupons. Outside down, recessed inside/raised collar up.
+for d in [14.0,14.1,14.2]:
+ sample=box(0,NY-15,BZ-15,T,30,30).cut(nudge_cuts('left',d))
+ test('nudge_mx_'+format(d,'.1f').replace('.','p'),sample,'side_outer_left',note=f'{d:.1f} mm square through-hole; 16.6 mm inside relief leaves 1.5 mm snap-in plate. Assumes MX-style housing; test your actual switch clips and seating.')
+left_front=next(p['shape'] for p in parts if p['name']=='left_front_wall')
+sample=left_front.intersect(box(-.1,76,3,LOCAL_T+.2,78,54))
+test('flipper_nudge_wall_sample',sample,'side_outer_left',note='Exact left wall sample: 28 mm flipper bore; 46 mm tapered reinforcement, 8 mm total thickness; nudge 33 mm farther back at same height, 14.1 mm square / 16.6 mm inside relief / 1.5 mm lip. Verify barrel thread, retaining nut, switch clips, body and wiring together.')
+# Monitor-reference envelopes, for review only. No active-screen dimensions are assumed.
+reference=wedge(ML,Y0,P['monitor_width'],Y1-Y0,z(Y0)-12,0) # use uniform 12 mm envelope following slope instead below
+reference=cq.Workplane('YZ').polyline([(Y0,z(Y0)-12),(Y1,z(Y1)-12),(Y1,z(Y1)),(Y0,z(Y0))]).close().extrude(P['monitor_width']).translate((ML,0,0))
+assembly.add(reference,name='REFERENCE_monitor_12mm_envelope',color=cq.Color(.2,.65,.85,.22))
+pc=box(35,240,13,190,190,45)
+assembly.add(pc,name='REFERENCE_PC_allowance_ports_face_front',color=cq.Color(.25,.75,.5,.25))
+# Reserved spaces are separate reference solids and are checked against printed geometry.
+keepouts=[('PC allowance',pc)]
+for xx in [110,160,210]:keepouts.append((f'front button {xx}',box(xx-20,4.2,6,40,P['button_inward_clearance'],40)))
+# Replace V1.7's 40x40 box beginning at x4.2: its first 4 mm intentionally
+# becomes reinforcement. Explicit barrel / nut / rear-body allowances are checked.
+# These are assumed hardware dimensions, not measured manufacturer geometry.
+for side in ['left','right']:
+ barrel=cyl((-.1,FY,BZ),27.8,20.1,(1,0,0))
+ nut=cyl((LOCAL_T+.2,FY,BZ),40,5,(1,0,0))
+ body=box(LOCAL_T+5.2,FY-20,BZ-20,4.2+P['button_inward_clearance']-(LOCAL_T+5.2),40,40)
+ keepouts.extend([(side+' flipper barrel D27.8',mirror_side(barrel,side)),(side+' flipper nut D40 x5',mirror_side(nut,side)),(side+' flipper body and wiring 40x40',mirror_side(body,side))])
+ # 0.05 mm perimeter clearance in default 14.1 hole; body occupies relieved inside.
+ nudge_stem=box(-.1,NY-7,BZ-7,1.7,14,14)
+ nudge_body=box(1.6,NY-8.2,BZ-8.2,18.4,16.4,16.4)
+ keepouts.extend([(side+' assumed MX plate stem 14.0',mirror_side(nudge_stem,side)),(side+' assumed MX body clip and wiring allowance',mirror_side(nudge_body,side))])
+fan=box(FX-P['fan_case_mm']/2,L-T-P['fan_depth_mm'],FZ-P['fan_case_mm']/2,P['fan_case_mm'],P['fan_depth_mm'],P['fan_case_mm'])
+fan_padded=box(FX-P['fan_case_mm']/2,L-T-P['fan_padded_depth_mm'],FZ-P['fan_case_mm']/2,P['fan_case_mm'],P['fan_padded_depth_mm'],P['fan_case_mm'])
+keepouts.append(('NONPRINTED fan case 120x120x25',fan))
+keepouts.append(('NONPRINTED fan optional 27mm installed depth',fan_padded))
+cover=cq.Workplane('YZ').polyline([(Y0,z(Y0)-P['cover_total_depth_allowance']),(Y1,z(Y1)-P['cover_total_depth_allowance']),(Y1,z(Y1)-7),(Y0,z(Y0)-7)]).close().extrude(P['monitor_width']-10).translate((ML+5,0,0))
+keepouts.append(('central folded cover reserve',cover))
+keepouts.append(('USB encoder allowance',box(100,140,13,70,50,12)))
+for idx,(label,sh) in enumerate(keepouts[1:]):assembly.add(sh,name='REFERENCE_'+str(idx)+'_'+label.replace(' ','_'),color=cq.Color(.95,.60,.15,.2))
+# Do not export reference objects as STLs.
+print('All printed geometry and coupons built; exporting STEP',flush=True)
+assembly.save(str(OUT/'mini_vpin_assembly.step'))
+# Mesh source retained for exact CAD previews.
+manifest={'revision':'Prototype V1.8','units':'mm','printer_build_mm':[325,325,315],'brim_margin_each_side_mm':8,'parameters':P,'parts':[{k:v for k,v in p.items() if k not in ['shape','print_shape']} for p in parts],'tests':[{k:v for k,v in t.items() if k!='shape'} for t in tests]}
+(OUT/'parts_manifest.json').write_text(json.dumps(manifest,indent=2))
+with (OUT/'print_inventory.csv').open('w') as f:
+ w=csv.writer(f);w.writerow(['part','print_x_mm','print_y_mm','print_z_mm','orientation','status'])
+ for p in parts:w.writerow([p['name'],*p['bounds'],p['mode'],'PROTOTYPE - FIT TEST FIRST'])
+# Save assembly placement and meshes for renderer, plus test geometry.
+mesh=[]
+for p in parts:
+ verts,faces=p['shape'].val().tessellate(.3,.2)
+ mesh.append({'name':p['name'],'kind':p['kind'],'v':[[v.x,v.y,v.z] for v in verts],'f':[list(f) for f in faces]})
+(OUT/'preview_meshes.json').write_text(json.dumps(mesh))
+print('STEP and meshes exported; checking reserved spaces and solid interferences',flush=True)
+# Pairwise solid interference: shared faces excluded. Report before issuing package.
+issues=[]
+keepout_issues=[]
+for label,sh in keepouts:
+ for p in parts:
+  hit=sh.intersect(p['shape'])
+  vol=sum(v.Volume() for v in hit.solids().vals())
+  if vol>.05:keepout_issues.append({'reserve':label,'part':p['name'],'volume_mm3':round(vol,4)})
+for i,p in enumerate(parts):
+ for q in parts[i+1:]:
+  a=p['shape'].val().BoundingBox();b=q['shape'].val().BoundingBox()
+  if min(a.xmax,b.xmax)-max(a.xmin,b.xmin)<.001 or min(a.ymax,b.ymax)-max(a.ymin,b.ymin)<.001 or min(a.zmax,b.zmax)-max(a.zmin,b.zmin)<.001:continue
+  v=p['shape'].intersect(q['shape']).val().Volume() if p['shape'].intersect(q['shape']).vals() else 0
+  if v>.05:issues.append({'a':p['name'],'b':q['name'],'intersection_mm3':round(v,4)})
+(OUT/'geometry_checks.json').write_text(json.dumps({'all_parts_valid':True,'all_parts_single_solid':True,'all_parts_fit_with_8mm_brim':True,'interferences':issues,'reserved_space_interferences':keepout_issues},indent=2))
+# Exact-CAD V1.8 feature checks. Small-volume probes measure the resulting solids;
+# nominal dimensions alone do not establish that a subtract/union succeeded.
+def volume(sh):return sum(v.Volume() for v in sh.solids().vals())
+def intersect_volume(a,b):return volume(a.intersect(b))
+features=[]
+def check(name,measured,expected,tolerance=.001,units='mm'):
+ ok=abs(measured-expected)<=tolerance
+ features.append({'check':name,'measured':round(measured,6),'expected':expected,'tolerance':tolerance,'units':units,'passed':ok})
+ assert ok,(name,measured,expected)
+def wall_thickness(sh,yy,zz):
+ w=.05
+ return intersect_volume(sh,box(-1,yy-w/2,zz-w/2,W+2,w,w))/(w*w)
+for side in ['left','right']:
+ wall=next(p['shape'] for p in parts if p['name']==side+'_front_wall')
+ check(side+' collar total thickness at radius20',wall_thickness(wall,FY+20,BZ),LOCAL_T)
+ check(side+' adjacent original wall thickness',wall_thickness(wall,NY+14,BZ),T)
+ check(side+' switch snap plate thickness',wall_thickness(wall,NY+7.75,BZ),P['nudge_snap_plate_mm'])
+ check(side+' switch through opening clear',wall_thickness(wall,NY,BZ),0)
+ check(side+' flipper D27.999 passage clear',intersect_volume(wall,cyl((-1,FY,BZ),27.999,W+2,(1,0,0))),0,.001,'mm3')
+ relief=box(P['nudge_snap_plate_mm']+.001,NY-P['nudge_relief_mm']/2+.001,BZ-P['nudge_relief_mm']/2+.001,LOCAL_T,P['nudge_relief_mm']-.002,P['nudge_relief_mm']-.002)
+ check(side+' internal switch relief empty',intersect_volume(wall,mirror_side(relief,side)),0,.001,'mm3')
+ exterior=box(-1,76,3,.999,78,54) if side=='left' else box(W+.001,76,3,.999,78,54)
+ check(side+' no added material outside original exterior',intersect_volume(wall,exterior),0,.001,'mm3')
+for xx,zz in fan_mount_centers:
+ check(f'fan mounting bore at {xx},{zz} is clear',intersect_volume(rear,cyl((xx,L-T-1,zz),P['fan_mount_hole_mm']-.001,T+2,(0,1,0))),0,.001,'mm3')
+# OCC's spline BREP bbox is conservative; measure material and actual vertices.
+check('rear hub actual wall thickness',intersect_volume(rear,box(FX-.025,L-T-1,FZ-.025,.05,T+2,.05))/.0025,T)
+check('rear no material behind exterior plane',intersect_volume(rear,box(-1,L+.001,-1,W+2,2,z(L)+2)),0,.001,'mm3')
+check('rear no material ahead of original inner plane',intersect_volume(rear,box(-1,L-T-2,-1,W+2,1.999,z(L)+2)),0,.001,'mm3')
+rear_mesh=next(m for m in mesh if m['name']=='rear_vent_panel')
+check('rear actual mesh inner plane',min(v[1] for v in rear_mesh['v']),L-T,.000001)
+check('rear actual mesh exterior plane',max(v[1] for v in rear_mesh['v']),L,.000001)
+check('cable pass-through full 60x25 remains clear',intersect_volume(rear,cable_cut),0,.001,'mm3')
+check('all45 expected printed parts',len(parts),45,0,'parts')
+check('actual openings center spacing',NY-FY,33)
+check('collar to relief nominal planar web',NY-P['nudge_relief_mm']/2-(FY+COLLAR_R),1.7)
+check('collar to floor nominal clearance',BZ-COLLAR_R-4,3)
+check('actual opening to opening solid wall',NY-P['nudge_cutout_mm']/2-(FY+P['button_hole']/2),11.95)
+# Verify the grille has both open slots and connected material at every spoke.
+for i in range(SPOKES):
+ r=(R0+R1)/2
+ phi=i*2*math.pi/SPOKES+TW*(r-R0)/(R1-R0)+math.pi/SPOKES
+ probe=box(FX+r*math.cos(phi)-.025,L-T+.01,FZ+r*math.sin(phi)-.025,.05,T-.02,.05)
+ check('grille spoke '+str(i+1)+' material present',intersect_volume(rear,probe),.05*(T-.02)*.05,.00001,'mm3')
+ check('grille slot '+str(i+1)+' is open',intersect_volume(rear,fan_slots[i]),0,.001,'mm3')
+# Spline boundaries are checked using their analytic construction samples.
+rs=[R0+(R1-R0)*i/400 for i in range(401)]
+a=[slot_point(r,0,1) for r in rs];b=[slot_point(r,1,-1) for r in rs]
+normal_web=min(math.hypot(x-u,y-v) for x,y in a for u,v in b)
+assert normal_web>3.9,normal_web
+open_area=sum(volume(slot)/(T+2) for slot in fan_slots)
+fan_clearance={'bare_case_depth_mm':P['fan_depth_mm'],'padded_case_depth_mm':P['fan_padded_depth_mm'],'bare_pc_y_gap_mm':L-T-P['fan_depth_mm']-430,'padded_pc_y_gap_mm':L-T-P['fan_padded_depth_mm']-430,'bare_min_deck_vertical_gap_mm':z(L-T-P['fan_depth_mm'])+1-(FZ+60),'padded_min_deck_vertical_gap_mm':z(L-T-P['fan_padded_depth_mm'])+1-(FZ+60),'case_to_cable_x_gap_mm':FX-60-(P['rear_cable_x_mm']+P['rear_cable_width_mm']),'hatch_opening_x_strip_left_of_case_mm':FX-60-hx}
+report={'revision':'Prototype V1.8','all_feature_checks_passed':all(x['passed'] for x in features),'feature_checks':features,'grille':{'slot_count':SPOKES,'open_area_mm2':round(open_area,3),'open_area_percent_of_112mm_disc':round(100*open_area/(math.pi*R1*R1),3),'nominal_spoke_arc_width_mm':SW,'sampled_min_normal_spoke_width_mm':round(normal_web,4),'minimum_top_rim_mm':round(z(L)-(FZ+R1),4)},'fan_clearance':fan_clearance,'assumptions':['MX-style switch: 14.1 mm aperture, 1.5 mm mounting plate; actual switch clips and body must be tested with supplied coupons.','Flipper: assumed27.8 mm barrel,40 mm nut x5 mm beyond8 mm panel,40x40 mm rear body/wiring allowance ending49.2 mm from exterior; actual threaded length and nut shape unmeasured.','Fan:120x120x25 mm case and optional27 mm padded installed envelope;105 mm pitch and4.5 mm mounting bores. Reference only, not a fabricated part.','Fan blade-to-grille gap, physical cable routing, hardware fit, cooling, and print strength have not been physically validated.'],'interferences':issues,'reserved_space_interferences':keepout_issues}
+(OUT/'v1_8_feature_checks.json').write_text(json.dumps(report,indent=2))
+assert not issues and not keepout_issues,(issues,keepout_issues)
+print('V1.8 exact CAD feature checks passed; grille open area '+str(round(open_area,1))+' mm2',flush=True)
+print(json.dumps({'parts':len(parts),'tests':len(tests),'interferences':issues,'reserved_space_interferences':keepout_issues},indent=2),flush=True)

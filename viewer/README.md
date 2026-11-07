@@ -132,3 +132,25 @@ Both right saddle bearing planes rise 5 mm for user-measured 7 mm right-side hou
 
 ## Portable pinball CAD V1.5 — captive nuts in corner brackets
 All eight corner brackets use 8 mm arms, two top-loading M3 nut slots each (2.8 mm deep, 5.85 mm wide, 6.7 mm hex corner diameter), 3.2 mm bearing walls and 2 mm back walls. Original wall faces and screw axes unchanged; M3 x12 reach nominally retained. Load nuts before mounting. Other 37 printable solids unchanged from V1.4. Original part IDs and note history retained. Versioned GLB, STEP, ZIP and 45 STLs served; physical fit/strength pending. Source and exact nut-path checks: viewer/cad/portable-pinball-v1_5/. Browser checks: viewer/tests/pinball-v1_5.cjs.
+
+## Portable pinball CAD V1.8 — inline nudge holes and rear fan grille
+
+Canonical execution host: **Skynet**, repository `/home/justin/projects/hunyuan3d-2.1-intel/`. The retired Mini is not used for this release.
+
+Separate model: `#portable-pinball-v1_8`. V1.7 and V1.6 remain separately available with their original downloads. Source is `viewer/cad/portable-pinball-v1_8/`; served assets are `assets/portable-pinball-v1_8/`.
+
+Only `left_front_wall`, `right_front_wall`, and `rear_vent_panel` change. Both nudge holes have 33 mm center spacing from the flipper and share Z=30 mm. The flat exterior has a simple 14.1 mm square switch hole. A 16.6 mm inside recess leaves a 1.5 mm clip plate for an assumed MX-style switch. There is no external switch holder. Flipper bores retain their axes and 28 mm diameter; the inside tapered collar is 46 mm at its root, 44 mm at the flat nut seat, and 8 mm thick overall. Both new front-wall STLs print with the exterior on the bed.
+
+The rear panel incorporates eight curved grille spokes, a 120 mm fan frame allowance, 105 mm mounting-hole spacing, and the relocated original 60 x 25 mm cable opening. The 25 mm and 27 mm fan-depth envelopes are checked against the printed assembly. Actual switch clips, button thread engagement, fan hardware, cable routing, and cooling remain physical fit checks.
+
+Build and render from the new CAD directory:
+
+```sh
+../.venv/bin/python build_cabinet.py
+../.venv/bin/python validate_meshes.py
+../.venv/bin/python render_v1_8_details.py
+```
+
+The print pack includes all 45 enclosure STLs, 16 fit samples, editable STEP, source, and geometric checks. Start with `flipper_nudge_wall_sample.stl`; the three `nudge_mx_14p*` samples test printed switch fit. The other 42 enclosure STLs match V1.7 byte-for-byte. The exact CAD previews supersede the illustrative concept images for fabrication.
+
+`viewer/tests/pinball-v1_8.cjs` verifies the model, every enclosure STL hash, version-specific downloads, three changed-part UI exports, preserved V1.7/V1.6 models, and mobile loading. It accepts `VIEWER_URL`, `PINBALL_ASSET_DIR`, `PINBALL_EVIDENCE_DIR`, `PLAYWRIGHT_MODULE`, and `PINBALL_BROWSER_EXECUTABLE` so the existing browser runtime can be reused.

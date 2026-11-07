@@ -1,0 +1,392 @@
+{
+  "revision": "Prototype V1.8",
+  "all_feature_checks_passed": true,
+  "feature_checks": [
+    {
+      "check": "left collar total thickness at radius20",
+      "measured": 8.0,
+      "expected": 8,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left adjacent original wall thickness",
+      "measured": 4.0,
+      "expected": 4,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left switch snap plate thickness",
+      "measured": 1.5,
+      "expected": 1.5,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left switch through opening clear",
+      "measured": 0.0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left flipper D27.999 passage clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left internal switch relief empty",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left no added material outside original exterior",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right collar total thickness at radius20",
+      "measured": 8.0,
+      "expected": 8,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right adjacent original wall thickness",
+      "measured": 4.0,
+      "expected": 4,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right switch snap plate thickness",
+      "measured": 1.5,
+      "expected": 1.5,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right switch through opening clear",
+      "measured": 0.0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right flipper D27.999 passage clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right internal switch relief empty",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right no added material outside original exterior",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "fan mounting bore at 83.5,35.5 is clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "fan mounting bore at 83.5,140.5 is clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "fan mounting bore at 188.5,35.5 is clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "fan mounting bore at 188.5,140.5 is clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "rear hub actual wall thickness",
+      "measured": 4.0,
+      "expected": 4,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "rear no material behind exterior plane",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "rear no material ahead of original inner plane",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "rear actual mesh inner plane",
+      "measured": 466.0,
+      "expected": 466,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "rear actual mesh exterior plane",
+      "measured": 470.0,
+      "expected": 470,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "cable pass-through full 60x25 remains clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "all45 expected printed parts",
+      "measured": 45,
+      "expected": 45,
+      "tolerance": 0,
+      "units": "parts",
+      "passed": true
+    },
+    {
+      "check": "actual openings center spacing",
+      "measured": 33,
+      "expected": 33,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "collar to relief nominal planar web",
+      "measured": 1.7,
+      "expected": 1.7,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "collar to floor nominal clearance",
+      "measured": 3.0,
+      "expected": 3,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "actual opening to opening solid wall",
+      "measured": 11.95,
+      "expected": 11.95,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "grille spoke 1 material present",
+      "measured": 0.00995,
+      "expected": 0.00995,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille slot 1 is open",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille spoke 2 material present",
+      "measured": 0.00995,
+      "expected": 0.00995,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille slot 2 is open",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille spoke 3 material present",
+      "measured": 0.00995,
+      "expected": 0.00995,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille slot 3 is open",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille spoke 4 material present",
+      "measured": 0.00995,
+      "expected": 0.00995,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille slot 4 is open",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille spoke 5 material present",
+      "measured": 0.00995,
+      "expected": 0.00995,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille slot 5 is open",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille spoke 6 material present",
+      "measured": 0.00995,
+      "expected": 0.00995,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille slot 6 is open",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille spoke 7 material present",
+      "measured": 0.00995,
+      "expected": 0.00995,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille slot 7 is open",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille spoke 8 material present",
+      "measured": 0.00995,
+      "expected": 0.00995,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille slot 8 is open",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    }
+  ],
+  "grille": {
+    "slot_count": 8,
+    "open_area_mm2": 7556.283,
+    "open_area_percent_of_112mm_disc": 76.698,
+    "nominal_spoke_arc_width_mm": 5,
+    "sampled_min_normal_spoke_width_mm": 4.0415,
+    "minimum_top_rim_mm": 13.8737
+  },
+  "fan_clearance": {
+    "bare_case_depth_mm": 25,
+    "padded_case_depth_mm": 27,
+    "bare_pc_y_gap_mm": 11,
+    "padded_pc_y_gap_mm": 9,
+    "bare_min_deck_vertical_gap_mm": 5.760198492433062,
+    "padded_min_deck_vertical_gap_mm": 5.4075445310161285,
+    "case_to_cable_x_gap_mm": 6,
+    "hatch_opening_x_strip_left_of_case_mm": 58
+  },
+  "assumptions": [
+    "MX-style switch: 14.1 mm aperture, 1.5 mm mounting plate; actual switch clips and body must be tested with supplied coupons.",
+    "Flipper: assumed27.8 mm barrel,40 mm nut x5 mm beyond8 mm panel,40x40 mm rear body/wiring allowance ending49.2 mm from exterior; actual threaded length and nut shape unmeasured.",
+    "Fan:120x120x25 mm case and optional27 mm padded installed envelope;105 mm pitch and4.5 mm mounting bores. Reference only, not a fabricated part.",
+    "Fan blade-to-grille gap, physical cable routing, hardware fit, cooling, and print strength have not been physically validated."
+  ],
+  "interferences": [],
+  "reserved_space_interferences": []
+}

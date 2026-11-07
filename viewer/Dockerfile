@@ -24,6 +24,9 @@ COPY assets/trellis-woman /usr/share/nginx/html/models/trellis-woman
 
 COPY assets/pinball-nut-slot-test /usr/share/nginx/html/models/pinball-nut-slot-test
 COPY assets/portable-pinball /usr/share/nginx/html/models/portable-pinball
+COPY assets/portable-pinball-v1_6 /usr/share/nginx/html/models/portable-pinball-v1_6
+COPY assets/portable-pinball-v1_7 /usr/share/nginx/html/models/portable-pinball-v1_7
+COPY assets/portable-pinball-v1_8 /usr/share/nginx/html/models/portable-pinball-v1_8
 COPY assets/portable-pinball/stl-v1_2 /usr/share/nginx/html/models/portable-pinball/stl-v1_2
 COPY assets/portable-pinball/stl-v1_3 /usr/share/nginx/html/models/portable-pinball/stl-v1_3
 COPY assets/vx110-wood-dolly /usr/share/nginx/html/models/vx110-wood-dolly
@@ -32,6 +35,9 @@ COPY assets/trellis-pinball-plunger /usr/share/nginx/html/models/trellis-pinball
 COPY assets/trellis-pinball-slingshot /usr/share/nginx/html/models/trellis-pinball-slingshot
 COPY assets/trellis-pinball-target /usr/share/nginx/html/models/trellis-pinball-target
 COPY assets/trellis-pinball-pop-bumper /usr/share/nginx/html/models/trellis-pinball-pop-bumper
+
+# Migrated source files include mode 0600; nginx workers need read permission.
+RUN chmod -R a+rX /usr/share/nginx/html
 
 # Content-based URLs keep model-list updates fresh even behind CDN browser TTL rules.
 RUN cd /usr/share/nginx/html && \

@@ -54,3 +54,16 @@ viewer/node_modules
 
 !assets/trellis-pinball-pop-bumper/
 !assets/trellis-pinball-pop-bumper/**
+
+!assets/portable-pinball-v1_6/
+!assets/portable-pinball-v1_6/**
+
+!assets/portable-pinball-v1_7/
+!assets/portable-pinball-v1_7/**
+
+!assets/portable-pinball-v1_8/
+!assets/portable-pinball-v1_8/**
+
+# CAD runtime is not part of the static viewer image.
+viewer/cad/.venv
+viewer/cad/**/__pycache__
