@@ -31,6 +31,7 @@ COPY assets/portable-pinball-v1_9 /usr/share/nginx/html/models/portable-pinball-
 COPY assets/portable-pinball-v1_10 /usr/share/nginx/html/models/portable-pinball-v1_10
 COPY assets/portable-pinball-v1_11 /usr/share/nginx/html/models/portable-pinball-v1_11
 COPY assets/portable-pinball-v1_12 /usr/share/nginx/html/models/portable-pinball-v1_12
+COPY assets/portable-pinball-v1_13 /usr/share/nginx/html/models/portable-pinball-v1_13
 COPY assets/portable-pinball/stl-v1_2 /usr/share/nginx/html/models/portable-pinball/stl-v1_2
 COPY assets/portable-pinball/stl-v1_3 /usr/share/nginx/html/models/portable-pinball/stl-v1_3
 COPY assets/vx110-wood-dolly /usr/share/nginx/html/models/vx110-wood-dolly
