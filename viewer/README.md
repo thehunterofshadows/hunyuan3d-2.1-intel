@@ -225,3 +225,7 @@ Separate model `#portable-pinball-v1_12`. CAD source: `viewer/cad/portable-pinba
 ## Portable pinball CAD V1.13 — screw-down flipper reinforcement
 
 Separate selectable model `#portable-pinball-v1_13`. Source in `viewer/cad/portable-pinball-v1_13/`; assets in `assets/portable-pinball-v1_13/`. Both front walls have a floor-seated lug with side-entry captive metal M3 nut, secured by a screw up through a 3.4 mm hole in the 4 mm intact front floor. This replaces the relief cuts from V1.9–V1.12; the wall and floor remain separately printed and serviceable. All other printable parts and the V1.12 adjustable feet are preserved. Automated CAD and STL mesh checks passed. Fit-test actual nut, screw length and strength; printed hardware remains unverified.
+
+## Portable Pinball V1.14 — Direct flipper-rib fasteners, no extra rectangular block
+
+Model: `#portable-pinball-v1_14`. Sources: `viewer/cad/portable-pinball-v1_14/`; exports: `assets/portable-pinball-v1_14/`. Removes the conspicuous V1.13 rectangular heel/offset lug on both flipper walls. The original reinforcement is retained and locally tapered at its base to accept a metal M3 hex nut from the inside; screws still rise from below through the separate intact floor. V1.13 and all prior versions remain independently selectable. Real-world fastener fit and button stiffness remain unverified.

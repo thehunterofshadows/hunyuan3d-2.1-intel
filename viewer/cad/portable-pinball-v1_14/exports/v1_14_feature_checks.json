@@ -1,0 +1,1654 @@
+{
+  "revision": "Prototype V1.14",
+  "all_feature_checks_passed": true,
+  "feature_checks": [
+    {
+      "check": "left collar total thickness at radius20",
+      "measured": 8.0,
+      "expected": 8,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left adjacent original wall thickness",
+      "measured": 4.0,
+      "expected": 4,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left switch snap plate thickness",
+      "measured": 1.5,
+      "expected": 1.5,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left switch through opening clear",
+      "measured": 0.0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left flipper D27.999 passage clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left internal switch relief empty",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left one recessed switch mounting face",
+      "measured": 1,
+      "expected": 1,
+      "tolerance": 0,
+      "units": "faces",
+      "passed": true
+    },
+    {
+      "check": "left actual switch mounting-face setback",
+      "measured": 2.5,
+      "expected": 2.5,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left actual well floor width",
+      "measured": 18.0,
+      "expected": 18.0,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left actual well floor height",
+      "measured": 18.0,
+      "expected": 18.0,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left actual mounting-face area",
+      "measured": 125.19,
+      "expected": 125.19,
+      "tolerance": 1e-05,
+      "units": "mm2",
+      "passed": true
+    },
+    {
+      "check": "left switch seat Y center unchanged",
+      "measured": 136.0,
+      "expected": 136,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left switch seat Z center unchanged",
+      "measured": 30.0,
+      "expected": 30,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left actual well width at depth0.02",
+      "measured": 22.96,
+      "expected": 22.96,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left actual well width at depth1.25",
+      "measured": 20.5,
+      "expected": 20.5,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left actual well width at depth2.48",
+      "measured": 18.04,
+      "expected": 18.04,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left actual well taper angle",
+      "measured": 45.0,
+      "expected": 45,
+      "tolerance": 1e-05,
+      "units": "degrees",
+      "passed": true
+    },
+    {
+      "check": "left actual exterior mouth width",
+      "measured": 23.0,
+      "expected": 23.0,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left snap aperture Y width",
+      "measured": 14.1,
+      "expected": 14.1,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left snap aperture Z height",
+      "measured": 14.1,
+      "expected": 14.1,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left switch-only coupon matches wall region",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left flipper to nudge hardware minimum clearance",
+      "measured": 4.8,
+      "expected": 4.8,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left full D40 flipper nut bearing annulus retained",
+      "measured": 32.044245,
+      "expected": 32.044245066615886,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left no added material outside original exterior",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left pedestal full thickness at Y103/Z4.1",
+      "measured": 8.0,
+      "expected": 8,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left pedestal full thickness at Y103/Z8",
+      "measured": 8.0,
+      "expected": 8,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left pedestal full thickness at Y103/Z15",
+      "measured": 8.0,
+      "expected": 8,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left pedestal full thickness at Y83/Z4.1",
+      "measured": 11.5,
+      "expected": 11.5,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left pedestal full thickness at Y83/Z20",
+      "measured": 8.0,
+      "expected": 8,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left wall below original floor top remains 4 mm thick",
+      "measured": 4.0,
+      "expected": 4,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left no material below cabinet Z0",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left anchor clearance bore open",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left nut pocket opens around screw",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left original rib flared base bearing material remains",
+      "measured": 4.0,
+      "expected": 4.0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left actual floor-to-rib contact distance",
+      "measured": 0.0,
+      "expected": 0,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "left original screw passage Y215/Z25 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left original screw passage Y215/Z50 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left original screw passage Y215/Z85 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left original screw passage Y24/Z8 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left original screw passage Y214/Z8 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left original screw passage Y31/Z71.408 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left original screw passage Y56/Z75.816 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left original screw passage Y146/Z91.686 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left original screw passage Y180/Z86.739 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left original screw passage Y14/Z24 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left original screw passage Y14/Z56 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left upper collar symmetric difference unchanged",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right collar total thickness at radius20",
+      "measured": 8.0,
+      "expected": 8,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right adjacent original wall thickness",
+      "measured": 4.0,
+      "expected": 4,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right switch snap plate thickness",
+      "measured": 1.5,
+      "expected": 1.5,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right switch through opening clear",
+      "measured": 0.0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right flipper D27.999 passage clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right internal switch relief empty",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right one recessed switch mounting face",
+      "measured": 1,
+      "expected": 1,
+      "tolerance": 0,
+      "units": "faces",
+      "passed": true
+    },
+    {
+      "check": "right actual switch mounting-face setback",
+      "measured": 2.5,
+      "expected": 2.5,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right actual well floor width",
+      "measured": 18.0,
+      "expected": 18.0,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right actual well floor height",
+      "measured": 18.0,
+      "expected": 18.0,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right actual mounting-face area",
+      "measured": 125.19,
+      "expected": 125.19,
+      "tolerance": 1e-05,
+      "units": "mm2",
+      "passed": true
+    },
+    {
+      "check": "right switch seat Y center unchanged",
+      "measured": 136.0,
+      "expected": 136,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right switch seat Z center unchanged",
+      "measured": 30.0,
+      "expected": 30,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right actual well width at depth0.02",
+      "measured": 22.96,
+      "expected": 22.96,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right actual well width at depth1.25",
+      "measured": 20.5,
+      "expected": 20.5,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right actual well width at depth2.48",
+      "measured": 18.04,
+      "expected": 18.04,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right actual well taper angle",
+      "measured": 45.0,
+      "expected": 45,
+      "tolerance": 1e-05,
+      "units": "degrees",
+      "passed": true
+    },
+    {
+      "check": "right actual exterior mouth width",
+      "measured": 23.0,
+      "expected": 23.0,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right snap aperture Y width",
+      "measured": 14.1,
+      "expected": 14.1,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right snap aperture Z height",
+      "measured": 14.1,
+      "expected": 14.1,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right switch-only coupon matches wall region",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right flipper to nudge hardware minimum clearance",
+      "measured": 4.8,
+      "expected": 4.8,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right full D40 flipper nut bearing annulus retained",
+      "measured": 32.044245,
+      "expected": 32.044245066615886,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right no added material outside original exterior",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right pedestal full thickness at Y103/Z4.1",
+      "measured": 8.0,
+      "expected": 8,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right pedestal full thickness at Y103/Z8",
+      "measured": 8.0,
+      "expected": 8,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right pedestal full thickness at Y103/Z15",
+      "measured": 8.0,
+      "expected": 8,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right pedestal full thickness at Y83/Z4.1",
+      "measured": 11.5,
+      "expected": 11.5,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right pedestal full thickness at Y83/Z20",
+      "measured": 8.0,
+      "expected": 8,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right wall below original floor top remains 4 mm thick",
+      "measured": 4.0,
+      "expected": 4,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right no material below cabinet Z0",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right anchor clearance bore open",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right nut pocket opens around screw",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right original rib flared base bearing material remains",
+      "measured": 4.0,
+      "expected": 4.0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right actual floor-to-rib contact distance",
+      "measured": 0.0,
+      "expected": 0,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "right original screw passage Y215/Z25 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right original screw passage Y215/Z50 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right original screw passage Y215/Z85 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right original screw passage Y24/Z8 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right original screw passage Y214/Z8 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right original screw passage Y31/Z71.408 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right original screw passage Y56/Z75.816 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right original screw passage Y146/Z91.686 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right original screw passage Y180/Z86.739 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right original screw passage Y14/Z24 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right original screw passage Y14/Z56 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right upper collar symmetric difference unchanged",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left through-floor M3 passage clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left continuous floor below flipper",
+      "measured": 0.05,
+      "expected": 0.05,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right through-floor M3 passage clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right continuous floor below flipper",
+      "measured": 0.05,
+      "expected": 0.05,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "front floor intact width at flipper station",
+      "measured": 251.4,
+      "expected": 251.4,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "original front-floor screw passage X12/Y28 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "original front-floor screw passage X12/Y218 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "original front-floor screw passage X248/Y28 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "original front-floor screw passage X248/Y218 clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "fan mounting bore at 83.5,35.5 is clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "fan mounting bore at 83.5,140.5 is clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "fan mounting bore at 188.5,35.5 is clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "fan mounting bore at 188.5,140.5 is clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "rear hub actual wall thickness",
+      "measured": 4.0,
+      "expected": 4,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "rear no material behind exterior plane",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "rear no material ahead of original inner plane",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "rear actual mesh inner plane",
+      "measured": 466.0,
+      "expected": 466,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "rear actual mesh exterior plane",
+      "measured": 470.0,
+      "expected": 470,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "cable pass-through full 60x25 remains clear",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "all63 expected printed parts",
+      "measured": 63,
+      "expected": 63,
+      "tolerance": 0,
+      "units": "parts",
+      "passed": true
+    },
+    {
+      "check": "actual openings center spacing",
+      "measured": 33,
+      "expected": 33,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "collar to relief nominal planar web",
+      "measured": 1.7,
+      "expected": 1.7,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "pedestal bottom now rests on upper floor",
+      "measured": 4,
+      "expected": 4,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "actual opening to opening solid wall",
+      "measured": 11.95,
+      "expected": 11.95,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "recess mouth to flipper bore planar web",
+      "measured": 7.5,
+      "expected": 7.5,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "recessed plate ends at original inside face",
+      "measured": 4.0,
+      "expected": 4,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "all20 expected fit samples",
+      "measured": 20,
+      "expected": 20,
+      "tolerance": 0,
+      "units": "samples",
+      "passed": true
+    },
+    {
+      "check": "small switch sample x bound",
+      "measured": 30.0,
+      "expected": 30,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "small switch sample y bound",
+      "measured": 30.0,
+      "expected": 30,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "small switch sample z bound",
+      "measured": 4.0,
+      "expected": 4,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "small switch sample print bed minimum Z",
+      "measured": -0.0,
+      "expected": 0,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "actual small switch sample volume",
+      "measured": 2245.951667,
+      "expected": 2245.951666666667,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "mounting ledge each side",
+      "measured": 1.95,
+      "expected": 1.95,
+      "tolerance": 0.001,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "modeled switch stem setback from V1.9",
+      "measured": 2.5,
+      "expected": 2.5,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "modeled switch body setback from V1.9",
+      "measured": 2.5,
+      "expected": 2.5,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "modeled switch body inward limit",
+      "measured": 22.5,
+      "expected": 22.5,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "grille spoke 1 material present",
+      "measured": 0.00995,
+      "expected": 0.00995,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille slot 1 is open",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille spoke 2 material present",
+      "measured": 0.00995,
+      "expected": 0.00995,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille slot 2 is open",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille spoke 3 material present",
+      "measured": 0.00995,
+      "expected": 0.00995,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille slot 3 is open",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille spoke 4 material present",
+      "measured": 0.00995,
+      "expected": 0.00995,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille slot 4 is open",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille spoke 5 material present",
+      "measured": 0.00995,
+      "expected": 0.00995,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille slot 5 is open",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille spoke 6 material present",
+      "measured": 0.00995,
+      "expected": 0.00995,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille slot 6 is open",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille spoke 7 material present",
+      "measured": 0.00995,
+      "expected": 0.00995,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille slot 7 is open",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille spoke 8 material present",
+      "measured": 0.00995,
+      "expected": 0.00995,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "grille slot 8 is open",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left_front_wall no added material outside V1.10",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right_front_wall no added material outside V1.10",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "front_button_panel no added material outside V1.10",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "front_cable_lid no added material outside V1.10",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left front-top profile continuous across butt seam",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right front-top profile continuous across butt seam",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "left_front_wall inner front mating material retained",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "right_front_wall inner front mating material retained",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "front_button_panel inner front mating material retained",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "lid mounting bearing and bore unchanged 10,25",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "lid original screw bore open 10,25",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "lid mounting bearing and bore unchanged 10,50",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "lid original screw bore open 10,50",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "lid mounting bearing and bore unchanged 250,25",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "lid original screw bore open 250,25",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "lid mounting bearing and bore unchanged 250,50",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "lid original screw bore open 250,50",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "lid monitor stop retained",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "lid rear bezel-seam region retained",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "lid underside matches wall front plan at X0.02",
+      "measured": 1.065686,
+      "expected": 1.0656864376269048,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "lid underside matches wall front plan at X0.5",
+      "measured": 0.585686,
+      "expected": 0.5856864376269049,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "lid underside matches wall front plan at X1.0",
+      "measured": 0.133917,
+      "expected": 0.13391676888613163,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "lid underside matches wall front plan at X1.49",
+      "measured": 4.9e-05,
+      "expected": 4.8906200803836106e-05,
+      "tolerance": 1e-05,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "front lip real maximum printing slope",
+      "measured": 1.0,
+      "expected": 1.0,
+      "tolerance": 1e-05,
+      "units": "horizontal/vertical",
+      "passed": true
+    },
+    {
+      "check": "corner treatment maximum inward depth",
+      "measured": 1.5,
+      "expected": 1.5,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "lid upper rim inward depth",
+      "measured": 1.0,
+      "expected": 1.0,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "corner curved blend radius",
+      "measured": 1.0,
+      "expected": 1.0,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "lid curved blend radius",
+      "measured": 1.0,
+      "expected": 1.0,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    },
+    {
+      "check": "all three new corner sample shapes",
+      "measured": 3,
+      "expected": 3,
+      "tolerance": 0,
+      "units": "samples",
+      "passed": true
+    },
+    {
+      "check": "front_corner_wall_fit exact source-part crop",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "front_corner_panel_fit exact source-part crop",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "front_corner_lid_fit exact source-part crop",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 1e-05,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "front_corner_wall_fit no overlap with corner_left_front_56",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "front_corner_panel_fit no overlap with corner_left_front_56",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "front_corner_lid_fit no overlap with corner_left_front_56",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "front_corner_wall_fit no overlap with top_block_left_25",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "front_corner_panel_fit no overlap with top_block_left_25",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "front_corner_lid_fit no overlap with top_block_left_25",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": 0.0001,
+      "units": "mm3",
+      "passed": true
+    },
+    {
+      "check": "lid-to-wall vertical design clearance",
+      "measured": 1.0,
+      "expected": 1.0,
+      "tolerance": 1e-06,
+      "units": "mm",
+      "passed": true
+    }
+  ],
+  "flipper_pedestal": {
+    "bottom_z_mm": 4,
+    "root_width_mm": 46.0,
+    "flat_inner_width_mm": 44,
+    "total_local_thickness_mm": 8,
+    "floor_top_mm": 4,
+    "anchor_screw_count": 2,
+    "anchor_m3_through_holes_mm": 3.4,
+    "anchor_m3_nut_side_slots": true,
+    "removed_v1_13_offset_block": true,
+    "floor_notches": false,
+    "retained_upper_collar_from": "V1.12",
+    "new_hardware_required": true,
+    "physical_stiffness_tested": false
+  },
+  "grille": {
+    "slot_count": 8,
+    "open_area_mm2": 7556.283,
+    "open_area_percent_of_112mm_disc": 76.698,
+    "nominal_spoke_arc_width_mm": 5,
+    "sampled_min_normal_spoke_width_mm": 4.0415,
+    "minimum_top_rim_mm": 13.8737
+  },
+  "fan_clearance": {
+    "bare_case_depth_mm": 25,
+    "padded_case_depth_mm": 27,
+    "bare_pc_y_gap_mm": 11,
+    "padded_pc_y_gap_mm": 9,
+    "bare_min_deck_vertical_gap_mm": 5.760198492433062,
+    "padded_min_deck_vertical_gap_mm": 5.4075445310161285,
+    "case_to_cable_x_gap_mm": 6,
+    "hatch_opening_x_strip_left_of_case_mm": 58
+  },
+  "nudge_recess": {
+    "mounting_face_setback_mm": 2.5,
+    "snap_plate_mm": 1.5,
+    "aperture_mm": 14.1,
+    "well_floor_mm": 18.0,
+    "outer_mouth_mm": 23.0,
+    "well_angle_degrees": 45,
+    "mounting_ledge_each_side_mm": 1.9500000000000002,
+    "switch_only_coupon": "nudge_switch_fit.stl",
+    "coupon_bounds_mm": [
+      30.0,
+      30.0,
+      4.0
+    ],
+    "modeled_stem_body_shift_mm": 2.5,
+    "body_inward_limit_mm": 22.5,
+    "assumed_upper_housing_mm": 16.4,
+    "flipper_nudge_hardware_min_clearance_mm": {
+      "left": 4.799999999999997,
+      "right": 4.799999999999997
+    },
+    "keycap_fit_or_travel_measured": false,
+    "physical_projection_measured": false,
+    "changed_enclosure_parts_this_release": [],
+    "retained_from": "V1.10"
+  },
+  "control_hardware_interferences": [],
+  "assumptions": [
+    "MX-style switch assumption: 14.1 mm aperture, 1.5 mm plate recessed 2.5 mm; 16.4 mm upper-housing clearance envelope. Actual switch, keycap, clips and full travel must be tested with the small coupon. Moving the same fitted hardware inward would reduce its projection by 2.5 mm; no absolute finished height is claimed.",
+    "Flipper: assumed27.8 mm barrel,40 mm nut x5 mm beyond8 mm panel,40x40 mm rear body/wiring allowance ending49.2 mm from exterior; actual threaded length and nut shape unmeasured.",
+    "Fan:120x120x25 mm case and optional27 mm padded installed envelope;105 mm pitch and4.5 mm mounting bores. Reference only, not a fabricated part.",
+    "Fan blade-to-grille gap, physical cable routing, hardware fit, cooling, and print strength have not been physically validated."
+  ],
+  "interferences": [],
+  "reserved_space_interferences": [],
+  "front_corner": {
+    "revision": "Prototype V1.14",
+    "units": "mm",
+    "new_sample_count": 3,
+    "kit_stl_count_including_reused_mounts": 5,
+    "samples": [
+      {
+        "file": "front_corner_wall_fit.stl",
+        "source_part": "left_front_wall",
+        "print_mode": "side_outer_left",
+        "crop_min_mm": [
+          0,
+          -1,
+          40
+        ],
+        "crop_max_mm": [
+          40,
+          40,
+          100
+        ]
+      },
+      {
+        "file": "front_corner_panel_fit.stl",
+        "source_part": "front_button_panel",
+        "print_mode": "end",
+        "crop_min_mm": [
+          0,
+          -1,
+          40
+        ],
+        "crop_max_mm": [
+          40,
+          40,
+          100
+        ]
+      },
+      {
+        "file": "front_corner_lid_fit.stl",
+        "source_part": "front_cable_lid",
+        "print_mode": "top",
+        "crop_min_mm": [
+          0,
+          -1,
+          40
+        ],
+        "crop_max_mm": [
+          40,
+          40,
+          100
+        ]
+      }
+    ],
+    "reused_mounts": [
+      "corner_left_front_56.stl",
+      "top_block_left_25.stl"
+    ],
+    "lid_vertical_clearance_mm": 1.0,
+    "print_orientation": "All three skin samples outside/show face down, as exported. Reused mounting parts retain their original print orientations.",
+    "assembly": [
+      "Stand the wall and front-panel crops with their Z40 crop bottoms on the same flat surface. The front-panel crop goes inside the wall at X = 4; the front faces meet flush.",
+      "Install corner_left_front_56 at the inside corner with the two original M3 holes at Y14/Z56 in the wall and X14/Z56 in the front panel. Use the same captive nuts and suitable original M3 fasteners.",
+      "Attach top_block_left_25 to the side-wall sample through its Y31/Z71.408 hole. Its sloping top establishes the original lid height.",
+      "Lay the lid on the top block and fasten through the X10/Y25 hole. Hold it aligned to the original outside outline while tightening gently. Do not force the lid down onto the wall/panel tops; the design has 1 mm vertical clearance.",
+      "Feel the real exterior front corner and check the printed bevel/curve and alignment. The sample cut boundaries are artificial and remain square. Physical fit and comfort are not yet verified."
+    ],
+    "edge_treatment": {
+      "maximum_treatment_depth_mm": 1.5,
+      "blend_radius_mm": 1.0,
+      "wall_front_corner": {
+        "inward_depth_mm": 1.5,
+        "outer_face_offset_mm": 1.0857864376269049,
+        "blend_radius_mm": 1.0,
+        "first_segment_degrees_from_print_vertical": 45
+      },
+      "front_panel_upper_edge": {
+        "inward_y_depth_mm": 1.5,
+        "front_face_vertical_offset_mm": 0.9797518972433323,
+        "blend_radius_mm": 1.0,
+        "initial_dZ_dY": 1,
+        "final_dZ_dY": 0.17632698070846498
+      },
+      "lid_upper_rim": {
+        "inward_normal_depth_mm": 1.0,
+        "top_face_offset_mm": 0.5857864376269049,
+        "blend_radius_mm": 1.0,
+        "side_fade_start_y_mm": 48,
+        "side_fade_end_y_mm": 60
+      },
+      "changed_parts": [
+        "left_front_wall",
+        "right_front_wall",
+        "front_button_panel",
+        "front_cable_lid"
+      ],
+      "flat_joint_planes_and_mounting_axes_retained": true,
+      "new_edge_treatment_support_free_printing_physically_verified": false
+    },
+    "preview_meshes_assembly_coordinates": "front_corner_preview_meshes.json",
+    "before_preview_meshes_assembly_coordinates": "front_corner_before_meshes.json"
+  }
+}
