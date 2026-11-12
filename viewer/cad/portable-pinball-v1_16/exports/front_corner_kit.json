@@ -1,0 +1,100 @@
+{
+  "revision": "Prototype V1.16",
+  "units": "mm",
+  "new_sample_count": 3,
+  "kit_stl_count_including_reused_mounts": 5,
+  "samples": [
+    {
+      "file": "front_corner_wall_fit.stl",
+      "source_part": "left_front_wall",
+      "print_mode": "side_outer_left",
+      "crop_min_mm": [
+        0,
+        -1,
+        40
+      ],
+      "crop_max_mm": [
+        40,
+        40,
+        100
+      ]
+    },
+    {
+      "file": "front_corner_panel_fit.stl",
+      "source_part": "front_button_panel",
+      "print_mode": "end",
+      "crop_min_mm": [
+        0,
+        -1,
+        40
+      ],
+      "crop_max_mm": [
+        40,
+        40,
+        100
+      ]
+    },
+    {
+      "file": "front_corner_lid_fit.stl",
+      "source_part": "front_cable_lid",
+      "print_mode": "top",
+      "crop_min_mm": [
+        0,
+        -1,
+        40
+      ],
+      "crop_max_mm": [
+        40,
+        40,
+        100
+      ]
+    }
+  ],
+  "reused_mounts": [
+    "corner_left_front_56.stl",
+    "top_block_left_25.stl"
+  ],
+  "lid_vertical_clearance_mm": 1.0,
+  "print_orientation": "All three skin samples outside/show face down, as exported. Reused mounting parts retain their original print orientations.",
+  "assembly": [
+    "Stand the wall and front-panel crops with their Z40 crop bottoms on the same flat surface. The front-panel crop goes inside the wall at X = 4; the front faces meet flush.",
+    "Install corner_left_front_56 at the inside corner with the two original M3 holes at Y14/Z56 in the wall and X14/Z56 in the front panel. Use the same captive nuts and suitable original M3 fasteners.",
+    "Attach top_block_left_25 to the side-wall sample through its Y31/Z71.408 hole. Its sloping top establishes the original lid height.",
+    "Lay the lid on the top block and fasten through the X10/Y25 hole. Hold it aligned to the original outside outline while tightening gently. Do not force the lid down onto the wall/panel tops; the design has 1 mm vertical clearance.",
+    "Feel the real exterior front corner and check the printed bevel/curve and alignment. The sample cut boundaries are artificial and remain square. Physical fit and comfort are not yet verified."
+  ],
+  "edge_treatment": {
+    "maximum_treatment_depth_mm": 1.5,
+    "blend_radius_mm": 1.0,
+    "wall_front_corner": {
+      "inward_depth_mm": 1.5,
+      "outer_face_offset_mm": 1.0857864376269049,
+      "blend_radius_mm": 1.0,
+      "first_segment_degrees_from_print_vertical": 45
+    },
+    "front_panel_upper_edge": {
+      "inward_y_depth_mm": 1.5,
+      "front_face_vertical_offset_mm": 0.9797518972433323,
+      "blend_radius_mm": 1.0,
+      "initial_dZ_dY": 1,
+      "final_dZ_dY": 0.17632698070846498
+    },
+    "lid_upper_rim": {
+      "inward_normal_depth_mm": 1.0,
+      "top_face_offset_mm": 0.5857864376269049,
+      "blend_radius_mm": 1.0,
+      "side_fade_start_y_mm": 48,
+      "side_fade_end_y_mm": 60
+    },
+    "changed_parts": [
+      "left_front_wall",
+      "right_front_wall",
+      "front_button_panel",
+      "front_cable_lid"
+    ],
+    "flat_joint_planes_and_mounting_axes_retained": true,
+    "new_edge_treatment_support_free_printing_physically_verified": false
+  },
+  "preview_meshes_assembly_coordinates": "front_corner_preview_meshes.json",
+  "before_preview_meshes_assembly_coordinates": "front_corner_before_meshes.json"
+}

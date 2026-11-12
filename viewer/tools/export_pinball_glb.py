@@ -26,6 +26,8 @@ for p in m:
   if name.startswith('right'):off[0]=55
   if name=='front_button_panel':off[1]=-65
   if name=='rear_vent_panel':off[1]=65
+ if p['name'].startswith('foot_lock_sleeve_'):off[0]+=22
+ if p['name'].startswith('foot_bolt_key_'):off[0]+=42
  if p['kind']=='floor':off[2]=-60
  if p['kind']=='bezel':off[2]=65
  if p['kind']=='lid':off[2]=110 if name!='control_hatch' else 165
