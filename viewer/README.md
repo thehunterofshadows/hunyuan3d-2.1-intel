@@ -229,3 +229,8 @@ Separate selectable model `#portable-pinball-v1_13`. Source in `viewer/cad/porta
 ## Portable Pinball V1.14 — Direct flipper-rib fasteners, no extra rectangular block
 
 Model: `#portable-pinball-v1_14`. Sources: `viewer/cad/portable-pinball-v1_14/`; exports: `assets/portable-pinball-v1_14/`. Removes the conspicuous V1.13 rectangular heel/offset lug on both flipper walls. The original reinforcement is retained and locally tapered at its base to accept a metal M3 hex nut from the inside; screws still rise from below through the separate intact floor. V1.13 and all prior versions remain independently selectable. Real-world fastener fit and button stiffness remain unverified.
+
+
+## Portable Pinball V1.15 — M6 nut-slide modular feet
+
+Separate version `#portable-pinball-v1_15`. Source in `viewer/cad/portable-pinball-v1_15/`, assets in `assets/portable-pinball-v1_15/`. Four modular feet rebuilt with side-loaded captive M6 hex nuts and alternating off-axis bolt connections. The M6×30 bolts join 20 mm pieces; M6×50 bolts join 40 mm pieces. Receiver bosses have additional access bores so the unchanged M4 floor fasteners remain installable. Separate center M6 nuts accept purchased swivel pads (display reference only). Print-first instructions, hardware quantities and validation limitations are in `README-v1_15.md` in the asset directory. **All earlier versions retained.** CAD and mesh validations passed; physical hardware fit and loaded stability have not been tested.
