@@ -1,0 +1,2022 @@
+[
+  {
+    "file": "enclosure_stl/bezel_left_one_piece.stl",
+    "triangles": 860,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 27184.585809,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      -1.4210854715202004e-14
+    ],
+    "vertex_max_mm": [
+      265.7796325683594,
+      265.7796325683594,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/bezel_right_a1_a2.stl",
+    "triangles": 860,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 27184.585769,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      -1.4210854715202004e-14
+    ],
+    "vertex_max_mm": [
+      265.7796325683594,
+      265.7796325683594,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/bottom_front.stl",
+    "triangles": 5948,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 231114.672491,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      251.39999389648438,
+      230.5500030517578,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/bottom_rear.stl",
+    "triangles": 5180,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 229267.262906,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      251.39999389648438,
+      230.5500030517578,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/control_hatch.stl",
+    "triangles": 1396,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 14960.738614,
+    "vertex_min_mm": [
+      2.8279600883251987e-12,
+      0.0,
+      1.2495752045940667e-12
+    ],
+    "vertex_max_mm": [
+      100.0,
+      49.75590515136719,
+      7.406034469604492
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/corner_left_front_24.stl",
+    "triangles": 1804,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3653.660771,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      20.0,
+      20.0,
+      16.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/corner_left_front_56.stl",
+    "triangles": 1804,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3653.660771,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      20.0,
+      20.0,
+      16.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/corner_left_rear_128.stl",
+    "triangles": 1804,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3653.660808,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      20.0,
+      20.0,
+      16.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/corner_left_rear_24.stl",
+    "triangles": 1804,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3653.660808,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      20.0,
+      20.0,
+      16.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/corner_right_front_24.stl",
+    "triangles": 1804,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3653.660808,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      20.0,
+      20.0,
+      16.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/corner_right_front_56.stl",
+    "triangles": 1804,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3653.660808,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      20.0,
+      20.0,
+      16.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/corner_right_rear_128.stl",
+    "triangles": 1804,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3653.660846,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      20.0,
+      20.0,
+      16.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/corner_right_rear_24.stl",
+    "triangles": 1804,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3653.660846,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      20.0,
+      20.0,
+      16.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/floor_block_left_218.stl",
+    "triangles": 912,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1770.850017,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      16.0,
+      16.0,
+      8.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/floor_block_left_252.stl",
+    "triangles": 912,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1770.850017,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      16.0,
+      16.0,
+      8.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/floor_block_left_28.stl",
+    "triangles": 912,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1770.850017,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      16.0,
+      16.0,
+      8.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/floor_block_left_442.stl",
+    "triangles": 912,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1770.850017,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      16.0,
+      16.0,
+      8.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/floor_block_right_218.stl",
+    "triangles": 912,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1770.850017,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      16.0,
+      16.0,
+      8.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/floor_block_right_252.stl",
+    "triangles": 912,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1770.850017,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      16.0,
+      16.0,
+      8.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/floor_block_right_28.stl",
+    "triangles": 912,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1770.850017,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      16.0,
+      16.0,
+      8.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/floor_block_right_442.stl",
+    "triangles": 912,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1770.850017,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      16.0,
+      16.0,
+      8.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_backing_left_front.stl",
+    "triangles": 2208,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 9092.590314,
+    "vertex_min_mm": [
+      0.011189192533493042,
+      0.0027974548283964396,
+      0.0
+    ],
+    "vertex_max_mm": [
+      50.0,
+      49.9972038269043,
+      5.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_backing_left_rear.stl",
+    "triangles": 2208,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 9092.590314,
+    "vertex_min_mm": [
+      0.011189192533493042,
+      0.0027974548283964396,
+      0.0
+    ],
+    "vertex_max_mm": [
+      50.0,
+      49.9972038269043,
+      5.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_backing_right_front.stl",
+    "triangles": 2208,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 9092.590314,
+    "vertex_min_mm": [
+      0.011189192533493042,
+      0.0027974548283964396,
+      0.0
+    ],
+    "vertex_max_mm": [
+      50.0,
+      49.9972038269043,
+      5.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_backing_right_rear.stl",
+    "triangles": 2208,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 9092.590314,
+    "vertex_min_mm": [
+      0.011189192533493042,
+      0.0027974548283964396,
+      0.0
+    ],
+    "vertex_max_mm": [
+      50.0,
+      49.9972038269043,
+      5.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_bolt_key_left_rear_1_45mm.stl",
+    "triangles": 42,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3323.033993,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      26.5,
+      12.199999809265137,
+      18.200000762939453
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_bolt_key_right_rear_1_45mm.stl",
+    "triangles": 42,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3323.033993,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      26.5,
+      12.199999809265137,
+      18.200000762939453
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_lock_sleeve_left_rear_1_45mm.stl",
+    "triangles": 548,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 33222.159306,
+    "vertex_min_mm": [
+      0.011987678706645966,
+      0.0030212511774152517,
+      0.0
+    ],
+    "vertex_max_mm": [
+      54.0,
+      53.996978759765625,
+      34.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_lock_sleeve_right_rear_1_45mm.stl",
+    "triangles": 548,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 33222.159306,
+    "vertex_min_mm": [
+      0.011987678706645966,
+      0.0030212511774152517,
+      0.0
+    ],
+    "vertex_max_mm": [
+      54.0,
+      53.996978759765625,
+      34.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m6_nut_clip_receiver_left_front.stl",
+    "triangles": 92,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1010.856908,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      12.25,
+      19.799999237060547,
+      5.5
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m6_nut_clip_receiver_left_rear.stl",
+    "triangles": 92,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1010.856908,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      12.25,
+      19.799999237060547,
+      5.5
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m6_nut_clip_receiver_right_front.stl",
+    "triangles": 92,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1010.856908,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      12.25,
+      19.799999237060547,
+      5.5
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m6_nut_clip_receiver_right_rear.stl",
+    "triangles": 92,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1010.856908,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      12.25,
+      19.799999237060547,
+      5.5
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m6_nut_clip_upper_left_rear_1_45mm.stl",
+    "triangles": 92,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1010.856908,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      12.25,
+      19.799999237060547,
+      5.5
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m6_nut_clip_upper_right_rear_1_45mm.stl",
+    "triangles": 92,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1010.856908,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      12.25,
+      19.799999237060547,
+      5.5
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m8_nut_clip_terminal_left_front.stl",
+    "triangles": 92,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1640.991945,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      15.300000190734863,
+      17.899999618530273,
+      7.5
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m8_nut_clip_terminal_left_rear.stl",
+    "triangles": 92,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1640.991945,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      15.300000190734863,
+      17.899999618530273,
+      7.5
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m8_nut_clip_terminal_right_front.stl",
+    "triangles": 92,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1640.991945,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      15.300000190734863,
+      17.899999618530273,
+      7.5
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m8_nut_clip_terminal_right_rear.stl",
+    "triangles": 92,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1640.991945,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      15.300000190734863,
+      17.899999618530273,
+      7.5
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m8_terminal_bolt_key_left_front_55mm.stl",
+    "triangles": 42,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3323.033993,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      26.5,
+      12.199999809265137,
+      18.200000762939453
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m8_terminal_bolt_key_left_rear_55mm.stl",
+    "triangles": 42,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3323.033993,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      26.5,
+      12.199999809265137,
+      18.200000762939453
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m8_terminal_bolt_key_right_front_55mm.stl",
+    "triangles": 42,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3323.033993,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      26.5,
+      12.199999809265137,
+      18.200000762939453
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m8_terminal_bolt_key_right_rear_55mm.stl",
+    "triangles": 42,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3323.033993,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      26.5,
+      12.199999809265137,
+      18.200000762939453
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m8_terminal_core_left_front_55mm.stl",
+    "triangles": 2074,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 70880.10662,
+    "vertex_min_mm": [
+      0.00013553854660131037,
+      0.0030212511774152517,
+      0.0
+    ],
+    "vertex_max_mm": [
+      54.0,
+      53.996978759765625,
+      55.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m8_terminal_core_left_rear_55mm.stl",
+    "triangles": 2074,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 70880.10662,
+    "vertex_min_mm": [
+      0.00013553854660131037,
+      0.0030212511774152517,
+      0.0
+    ],
+    "vertex_max_mm": [
+      54.0,
+      53.996978759765625,
+      55.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m8_terminal_core_right_front_55mm.stl",
+    "triangles": 2074,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 70880.10662,
+    "vertex_min_mm": [
+      0.00013553854660131037,
+      0.0030212511774152517,
+      0.0
+    ],
+    "vertex_max_mm": [
+      54.0,
+      53.996978759765625,
+      55.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m8_terminal_core_right_rear_55mm.stl",
+    "triangles": 2074,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 70880.10662,
+    "vertex_min_mm": [
+      0.00013553854660131037,
+      0.0030212511774152517,
+      0.0
+    ],
+    "vertex_max_mm": [
+      54.0,
+      53.996978759765625,
+      55.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m8_terminal_sleeve_left_front_55mm.stl",
+    "triangles": 548,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 43076.551417,
+    "vertex_min_mm": [
+      0.011987678706645966,
+      0.0030212511774152517,
+      0.0
+    ],
+    "vertex_max_mm": [
+      54.0,
+      53.996978759765625,
+      44.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m8_terminal_sleeve_left_rear_55mm.stl",
+    "triangles": 548,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 43076.551417,
+    "vertex_min_mm": [
+      0.011987678706645966,
+      0.0030212511774152517,
+      0.0
+    ],
+    "vertex_max_mm": [
+      54.0,
+      53.996978759765625,
+      44.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m8_terminal_sleeve_right_front_55mm.stl",
+    "triangles": 548,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 43076.551417,
+    "vertex_min_mm": [
+      0.011987678706645966,
+      0.0030212511774152517,
+      0.0
+    ],
+    "vertex_max_mm": [
+      54.0,
+      53.996978759765625,
+      44.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_m8_terminal_sleeve_right_rear_55mm.stl",
+    "triangles": 548,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 43076.551417,
+    "vertex_min_mm": [
+      0.011987678706645966,
+      0.0030212511774152517,
+      0.0
+    ],
+    "vertex_max_mm": [
+      54.0,
+      53.996978759765625,
+      44.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_receiver_left_front.stl",
+    "triangles": 6828,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 35871.514686,
+    "vertex_min_mm": [
+      0.012084328569471836,
+      0.0030212511774152517,
+      3.425893876449954e-19
+    ],
+    "vertex_max_mm": [
+      54.0,
+      53.996978759765625,
+      20.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_receiver_left_rear.stl",
+    "triangles": 6828,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 35871.514686,
+    "vertex_min_mm": [
+      0.012084328569471836,
+      0.0030212511774152517,
+      3.425893876449954e-19
+    ],
+    "vertex_max_mm": [
+      54.0,
+      53.996978759765625,
+      20.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_receiver_right_front.stl",
+    "triangles": 6828,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 35871.514686,
+    "vertex_min_mm": [
+      0.012084328569471836,
+      0.0030212511774152517,
+      3.425893876449954e-19
+    ],
+    "vertex_max_mm": [
+      54.0,
+      53.996978759765625,
+      20.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_receiver_right_rear.stl",
+    "triangles": 6828,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 35871.514686,
+    "vertex_min_mm": [
+      0.012084328569471836,
+      0.0030212511774152517,
+      3.425893876449954e-19
+    ],
+    "vertex_max_mm": [
+      54.0,
+      53.996978759765625,
+      20.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_twist_core_left_rear_1_45mm.stl",
+    "triangles": 2096,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 60460.649758,
+    "vertex_min_mm": [
+      0.012084328569471836,
+      0.0030212511774152517,
+      0.0
+    ],
+    "vertex_max_mm": [
+      54.0,
+      53.996978759765625,
+      45.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/foot_twist_core_right_rear_1_45mm.stl",
+    "triangles": 2096,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 60460.649758,
+    "vertex_min_mm": [
+      0.012084328569471836,
+      0.0030212511774152517,
+      0.0
+    ],
+    "vertex_max_mm": [
+      54.0,
+      53.996978759765625,
+      45.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/front_button_panel.stl",
+    "triangles": 3028,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 68276.310334,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      252.0,
+      75.70530700683594,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/front_cable_lid.stl",
+    "triangles": 2378,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 69311.476841,
+    "vertex_min_mm": [
+      1.0000000116860974e-07,
+      9.999999406318238e-08,
+      9.999999406318238e-08
+    ],
+    "vertex_max_mm": [
+      260.0,
+      66.00273132324219,
+      22.624523162841797
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/left_front_wall.stl",
+    "triangles": 6906,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 91362.362086,
+    "vertex_min_mm": [
+      0.0,
+      1.0000004380117389e-07,
+      1.0000000116860974e-07
+    ],
+    "vertex_max_mm": [
+      116.41039276123047,
+      241.0,
+      11.5
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/left_rear_wall.stl",
+    "triangles": 4428,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 124249.569113,
+    "vertex_min_mm": [
+      0.0,
+      2.842170943040401e-14,
+      0.0
+    ],
+    "vertex_max_mm": [
+      157.87368774414062,
+      234.85000610351562,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/monitor_saddle_left_180.stl",
+    "triangles": 456,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 8642.357512,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      19.100000381469727,
+      34.26327133178711,
+      20.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/monitor_saddle_left_360.stl",
+    "triangles": 456,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 8642.357512,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      19.100000381469727,
+      34.26327133178711,
+      20.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/monitor_saddle_right_180.stl",
+    "triangles": 456,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 9765.451804,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      19.100000381469727,
+      34.26327133178711,
+      20.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/monitor_saddle_right_360.stl",
+    "triangles": 456,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 9765.451804,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      19.100000381469727,
+      34.26327133178711,
+      20.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/rear_control_deck.stl",
+    "triangles": 1744,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 45888.360859,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      260.0,
+      56.27011489868164,
+      23.49276351928711
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/rear_vent_panel.stl",
+    "triangles": 6560,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 122172.763656,
+    "vertex_min_mm": [
+      1.0000000116860974e-07,
+      9.999999406318238e-08,
+      1.0000001537946446e-07
+    ],
+    "vertex_max_mm": [
+      252.0,
+      157.87368774414062,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/right_front_wall.stl",
+    "triangles": 6906,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 91362.359911,
+    "vertex_min_mm": [
+      1.0000000116860974e-07,
+      1.0000004380117389e-07,
+      1.0000002248489182e-07
+    ],
+    "vertex_max_mm": [
+      116.41039276123047,
+      241.0,
+      11.5
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/right_rear_wall.stl",
+    "triangles": 4428,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 124249.569113,
+    "vertex_min_mm": [
+      0.0,
+      2.842170943040401e-14,
+      -1.8865344117863372e-16
+    ],
+    "vertex_max_mm": [
+      157.87368774414062,
+      234.85000610351562,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/splice_left.stl",
+    "triangles": 2556,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 31545.343689,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      83.0,
+      64.0,
+      6.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/splice_right.stl",
+    "triangles": 2556,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 31545.343689,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      -1.8865344117863372e-16
+    ],
+    "vertex_max_mm": [
+      83.0,
+      64.0,
+      6.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/top_block_left_140.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3064.451632,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      12.0,
+      20.0,
+      15.763269424438477
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/top_block_left_25.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3064.451632,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      12.0,
+      20.0,
+      15.763269424438477
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/top_block_left_330.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3064.451632,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      12.0,
+      20.0,
+      15.763269424438477
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/top_block_left_450.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3064.451632,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      12.0,
+      20.0,
+      15.763269424438477
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/top_block_left_50.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3064.451632,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      12.0,
+      20.0,
+      15.763269424438477
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/top_block_right_140.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3064.451632,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      12.0,
+      20.0,
+      15.763269424438477
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/top_block_right_25.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3064.451632,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      12.0,
+      20.0,
+      15.763269424438477
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/top_block_right_330.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3064.451632,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      12.0,
+      20.0,
+      15.763269424438477
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/top_block_right_450.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3064.451632,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      12.0,
+      20.0,
+      15.763269424438477
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "enclosure_stl/top_block_right_50.stl",
+    "triangles": 894,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 3064.451632,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      12.0,
+      20.0,
+      15.763269424438477
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/button_hole_28.stl",
+    "triangles": 520,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 8354.011998,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      52.0,
+      52.0,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/button_hole_28p2.stl",
+    "triangles": 520,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 8318.715169,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      52.0,
+      52.0,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/button_hole_28p4.stl",
+    "triangles": 520,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 8283.167043,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      52.0,
+      52.0,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/flipper_floor_anchor_sample.stl",
+    "triangles": 520,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 6203.698237,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      20.0,
+      78.0,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/flipper_nudge_wall_sample.stl",
+    "triangles": 1946,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 19491.509964,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      8.881784197001252e-16
+    ],
+    "vertex_max_mm": [
+      57.0,
+      78.0,
+      11.5
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/front_corner_lid_fit.stl",
+    "triangles": 988,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 6500.853763,
+    "vertex_min_mm": [
+      1.0000000116860974e-07,
+      1.0000000116860974e-07,
+      9.999999406318238e-08
+    ],
+    "vertex_max_mm": [
+      40.0,
+      41.32237243652344,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/front_corner_panel_fit.stl",
+    "triangles": 576,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 5033.143734,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      36.0,
+      35.70530700683594,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/front_corner_wall_fit.stl",
+    "triangles": 1972,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 6068.234355,
+    "vertex_min_mm": [
+      0.0,
+      1.0000004380117389e-07,
+      1.0000000116860974e-07
+    ],
+    "vertex_max_mm": [
+      42.053077697753906,
+      40.0,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/hatch_hole_6p4mm.stl",
+    "triangles": 520,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1807.373693,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      22.0,
+      22.0,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/hatch_peg_6mm.stl",
+    "triangles": 516,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1576.355515,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      -3.6727983867656903e-16
+    ],
+    "vertex_max_mm": [
+      22.0,
+      22.0,
+      7.400000095367432
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/joint_front_wall.stl",
+    "triangles": 1552,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 11808.694853,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      92.0,
+      38.0,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/joint_rear_wall.stl",
+    "triangles": 1552,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 11400.334808,
+    "vertex_min_mm": [
+      0.0,
+      2.842170943040401e-14,
+      0.0
+    ],
+    "vertex_max_mm": [
+      92.0,
+      31.850000381469727,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/joint_splice_plate.stl",
+    "triangles": 3060,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 31545.284206,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      83.0,
+      64.0,
+      6.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/monitor_5mm_shim_for_7mm_housing.stl",
+    "triangles": 12,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 1500.0,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      6.0,
+      50.0,
+      5.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/monitor_edge_cradle_12mm.stl",
+    "triangles": 1044,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 28626.140354,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      30.0,
+      50.0,
+      52.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/monitor_retaining_bar.stl",
+    "triangles": 1036,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 4427.39648,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      14.0,
+      50.0,
+      15.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/nudge_mx_14p0.stl",
+    "triangles": 48,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 2250.166667,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      2.55351295663786e-15
+    ],
+    "vertex_max_mm": [
+      30.0,
+      30.0,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/nudge_mx_14p2.stl",
+    "triangles": 48,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 2241.706654,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      2.55351295663786e-15
+    ],
+    "vertex_max_mm": [
+      30.0,
+      30.0,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/nudge_switch_fit.stl",
+    "triangles": 48,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 2245.951691,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      2.55351295663786e-15
+    ],
+    "vertex_max_mm": [
+      30.0,
+      30.0,
+      4.0
+    ],
+    "print_bed_placement_passed": true
+  },
+  {
+    "file": "print_first_tests/optional_saddle_shim_5mm.stl",
+    "triangles": 12,
+    "nonmanifold_edges": 0,
+    "inconsistent_winding_edges": 0,
+    "degenerate_facets": 0,
+    "connected_shells": 1,
+    "signed_volume_mm3": 500.0,
+    "vertex_min_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "vertex_max_mm": [
+      5.0,
+      20.0,
+      5.0
+    ],
+    "print_bed_placement_passed": true
+  }
+]
