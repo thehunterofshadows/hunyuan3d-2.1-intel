@@ -40,6 +40,7 @@ COPY assets/portable-pinball-v1_18 /usr/share/nginx/html/models/portable-pinball
 COPY assets/portable-pinball/stl-v1_2 /usr/share/nginx/html/models/portable-pinball/stl-v1_2
 COPY assets/portable-pinball/stl-v1_3 /usr/share/nginx/html/models/portable-pinball/stl-v1_3
 COPY assets/vx110-wood-dolly /usr/share/nginx/html/models/vx110-wood-dolly
+COPY assets/m12-rgbw-v0_1 /usr/share/nginx/html/models/m12-rgbw-v0_1
 COPY assets/trellis-pinball-flipper /usr/share/nginx/html/models/trellis-pinball-flipper
 COPY assets/trellis-pinball-plunger /usr/share/nginx/html/models/trellis-pinball-plunger
 COPY assets/trellis-pinball-slingshot /usr/share/nginx/html/models/trellis-pinball-slingshot
