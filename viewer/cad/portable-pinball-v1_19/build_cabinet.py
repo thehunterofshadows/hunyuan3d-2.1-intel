@@ -458,13 +458,28 @@ for side,region,xx,yy in FOOT_STATIONS:
      .translate((0,0,4+backing_h-P['foot_m5_nut_pocket_depth_mm'])))
  add('foot_backing_'+label,backing,'mount','flat')
  boss_bottom=-20
- receiver=cyl((xx,yy,-8),50,8).union(cyl((xx,yy,boss_bottom),P['foot_mount_boss_diameter_mm'],12))
+ # M5 external-hex bolts need a socket, not merely an Allen key. Both the
+ # head counterbore AND the deeper driver-access passage must clear a socket.
+ # Only the four lower receiver shapes change, not the floor or backing plates.
+ # Grow the receiver flange/boss to 60 mm to retain >3 mm radial PETG around
+ # the four Ø17 mm passages at their ±13 mm offset hole centers.
+ receiver=cyl((xx,yy,-8),P['foot_receiver_flange_diameter_mm'],8).union(
+     cyl((xx,yy,boss_bottom),P['foot_receiver_boss_diameter_mm'],12))
  for hole in foot_bolts(xx,yy,-8.1,8.2):receiver=receiver.cut(hole)
  for dx in [-FOOT_OFF,FOOT_OFF]:
   for dy in [-FOOT_OFF,FOOT_OFF]:
    bx,by=xx+dx,yy+dy
-   receiver=receiver.cut(cyl((bx,by,-8.01),P['foot_m5_head_counterbore_mm'],P['foot_m5_head_counterbore_depth_mm']+.01))
-   receiver=receiver.cut(cyl((bx,by,boss_bottom-.1),P['foot_m5_boss_access_mm'],12.2))
+   receiver=receiver.cut(cyl((bx,by,-8.01),P['foot_m5_socket_clearance_mm'],P['foot_m5_head_counterbore_depth_mm']+.01))
+   receiver=receiver.cut(cyl((bx,by,boss_bottom-.1),P['foot_m5_socket_clearance_mm'],12.2))
+ # Verify one continuous socket envelope, from the underside of the boss to
+ # the M5 head seating plane. Keep enough outer radial wall for printability.
+ required_r=P['foot_fastener_offsets_mm']*math.sqrt(2)+P['foot_m5_socket_clearance_mm']/2
+ assert P['foot_receiver_flange_diameter_mm']/2-required_r>=3.0,('M5 socket bore too close to flange edge',label)
+ assert P['foot_receiver_boss_diameter_mm']/2-required_r>=3.0,('M5 socket bore too close to boss edge',label)
+ for dx in [-FOOT_OFF,FOOT_OFF]:
+  for dy in [-FOOT_OFF,FOOT_OFF]:
+   socket=cyl((xx+dx,yy+dy,boss_bottom-.05),P['foot_m5_socket_clearance_mm']-.2,18.25)
+   assert receiver.intersect(socket).val().Volume()<.001,('M5 socket cannot reach bolt head',label,dx,dy)
  receiver=m6_shaft(receiver,xx,yy,boss_bottom,12)
  receiver=capture_m6(receiver,xx,yy,boss_bottom,-1)
  receiver,nut_keeper=keeper_with_catches(receiver,xx,yy,boss_bottom,'m6')

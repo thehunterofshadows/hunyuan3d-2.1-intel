@@ -38,7 +38,7 @@ font='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf';bold='/usr/share/fonts/tr
 image=Image.new('RGB',(1570,920),tuple(BG));draw=ImageDraw.Draw(image)
 def txt(x,y,s,sz=22,b=False):draw.text((x,y),s,font=ImageFont.truetype(bold if b else font,sz),fill='#203445')
 txt(40,18,'PORTABLE PINBALL  /  CAD V1.19',38,True)
-txt(40,71,'M5 floor sandwiches  ·  captive M5 nuts  ·  M6/M8 tool-free feet',21)
+txt(40,71,'17 mm socket access  ·  M5 captive nuts  ·  unchanged M6/M8 feet',21)
 items=[]
 for p in P:
  if p['name'].startswith('REFERENCE_'):continue

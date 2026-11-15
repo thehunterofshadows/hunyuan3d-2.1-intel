@@ -15,7 +15,7 @@
   "button_inward_clearance": 45,
   "printer": "QIDI X-Max 3",
   "pc": "Dell OptiPlex 3050 Micro",
-  "status": "V1.19: Four corner floor mount sandwiches converted to captive metal M5 nuts and M5 socket-head bolts. 4x M5 per leg, floor bore \u00d85.5, larger head access, 7mm inside plate. M6 leg joints and M8 feet unchanged. Not physically load tested.",
+  "status": "V1.19 M5 socket access revision: widen both bottom bolt-head counterbore and long socket access passages to 17 mm at all four lower receivers. Enlarge only receiver disc and boss to 60 mm for >=3 mm outer wall around socket passages. M5 mount bore, captive M5 nuts, upper backing plates and floor panel, M6 leg joints, M8 feet unchanged. Fit against actual socket before load use.",
   "right_saddle_raise_mm": 5,
   "corner_arm_mm": 8,
   "corner_nut_depth_mm": 2.8,
@@ -76,7 +76,6 @@
   "foot_rear_y_mm": 438,
   "foot_mount_flange_diameter_mm": 50,
   "foot_mount_flange_thickness_mm": 8,
-  "foot_mount_boss_diameter_mm": 54,
   "foot_mount_boss_depth_mm": 12,
   "foot_fastener_offsets_mm": 13,
   "foot_front_extension_mm": [
@@ -135,10 +134,11 @@
   "foot_m6_key_head_face_offset_mm": 6.1,
   "foot_m6_key_head_reference_nominal_af_mm": 10.0,
   "foot_m5_clearance_mm": 5.5,
-  "foot_m5_head_counterbore_mm": 10.8,
-  "foot_m5_boss_access_mm": 11.3,
   "foot_m5_nut_hex_corners_mm": 9.7,
   "foot_m5_nut_pocket_depth_mm": 4.25,
   "foot_m5_backing_thickness_mm": 6.0,
-  "foot_m5_head_counterbore_depth_mm": 6.2
+  "foot_m5_head_counterbore_depth_mm": 6.2,
+  "foot_m5_socket_clearance_mm": 17.0,
+  "foot_receiver_flange_diameter_mm": 60.0,
+  "foot_receiver_boss_diameter_mm": 60.0
 }

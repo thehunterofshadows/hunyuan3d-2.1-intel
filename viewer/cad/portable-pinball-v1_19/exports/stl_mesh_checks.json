@@ -1021,80 +1021,80 @@
   },
   {
     "file": "enclosure_stl/foot_receiver_left_front.stl",
-    "triangles": 6828,
+    "triangles": 4884,
     "nonmanifold_edges": 0,
     "inconsistent_winding_edges": 0,
     "degenerate_facets": 0,
     "connected_shells": 1,
-    "signed_volume_mm3": 33626.18913,
+    "signed_volume_mm3": 37411.047782,
     "vertex_min_mm": [
-      0.012084328569471836,
-      0.0030212511774152517,
-      3.425893876449954e-19
+      0.013427031226456165,
+      0.00335694570094347,
+      4.1110729102338864e-19
     ],
     "vertex_max_mm": [
-      54.0,
-      53.996978759765625,
+      60.0,
+      59.99664306640625,
       20.0
     ],
     "print_bed_placement_passed": true
   },
   {
     "file": "enclosure_stl/foot_receiver_left_rear.stl",
-    "triangles": 6828,
+    "triangles": 4884,
     "nonmanifold_edges": 0,
     "inconsistent_winding_edges": 0,
     "degenerate_facets": 0,
     "connected_shells": 1,
-    "signed_volume_mm3": 33626.18913,
+    "signed_volume_mm3": 37411.047782,
     "vertex_min_mm": [
-      0.012084328569471836,
-      0.0030212511774152517,
-      3.425893876449954e-19
+      0.013427031226456165,
+      0.00335694570094347,
+      4.1110729102338864e-19
     ],
     "vertex_max_mm": [
-      54.0,
-      53.996978759765625,
+      60.0,
+      59.99664306640625,
       20.0
     ],
     "print_bed_placement_passed": true
   },
   {
     "file": "enclosure_stl/foot_receiver_right_front.stl",
-    "triangles": 6828,
+    "triangles": 4884,
     "nonmanifold_edges": 0,
     "inconsistent_winding_edges": 0,
     "degenerate_facets": 0,
     "connected_shells": 1,
-    "signed_volume_mm3": 33626.18913,
+    "signed_volume_mm3": 37411.047782,
     "vertex_min_mm": [
-      0.012084328569471836,
-      0.0030212511774152517,
-      3.425893876449954e-19
+      0.013427031226456165,
+      0.00335694570094347,
+      4.1110729102338864e-19
     ],
     "vertex_max_mm": [
-      54.0,
-      53.996978759765625,
+      60.0,
+      59.99664306640625,
       20.0
     ],
     "print_bed_placement_passed": true
   },
   {
     "file": "enclosure_stl/foot_receiver_right_rear.stl",
-    "triangles": 6828,
+    "triangles": 4884,
     "nonmanifold_edges": 0,
     "inconsistent_winding_edges": 0,
     "degenerate_facets": 0,
     "connected_shells": 1,
-    "signed_volume_mm3": 33626.18913,
+    "signed_volume_mm3": 37411.047782,
     "vertex_min_mm": [
-      0.012084328569471836,
-      0.0030212511774152517,
-      3.425893876449954e-19
+      0.013427031226456165,
+      0.00335694570094347,
+      4.1110729102338864e-19
     ],
     "vertex_max_mm": [
-      54.0,
-      53.996978759765625,
+      60.0,
+      59.99664306640625,
       20.0
     ],
     "print_bed_placement_passed": true
