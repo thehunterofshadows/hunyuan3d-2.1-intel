@@ -1,0 +1,12 @@
+{
+  "all_parts_valid": true,
+  "all_parts_single_solid": true,
+  "all_parts_fit_with_8mm_brim": true,
+  "interferences": [],
+  "reserved_space_interferences": [],
+  "control_hardware_interferences": [],
+  "flipper_nudge_hardware_min_clearance_mm": {
+    "left": 4.799999999999997,
+    "right": 4.799999999999997
+  }
+}

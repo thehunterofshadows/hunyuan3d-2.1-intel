@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "version": "V1.19",
+  "m5_mounting_bolts": 16,
+  "m5_mounting_nuts": 16,
+  "floor_bore_mm": 5.5,
+  "inside_plate_mm": 6.0,
+  "m5_nut_pocket_mm": 4.25,
+  "m5_head_bore_mm": 10.8,
+  "bolt_length_caveat": "M5x30 protrudes approximately 18mm above upper backing; use shorter M5 bolts after physical fit test",
+  "printable_parts": 81,
+  "fit_tests": 20,
+  "manifold_STLs": 101,
+  "geometry_interferences": 0
+}
