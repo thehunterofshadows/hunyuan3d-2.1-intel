@@ -66,3 +66,5 @@ RUN cd /usr/share/nginx/html && \
       cp "$asset" "$name"; \
       sed -i "s|/$asset[^\"]*|/$name|g" index.html; \
     done
+
+COPY assets/chico-mini-pc-mount /usr/share/nginx/html/models/chico-mini-pc-mount

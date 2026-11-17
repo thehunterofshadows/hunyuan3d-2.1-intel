@@ -77,3 +77,6 @@ viewer/cad/**/__pycache__
 
 !assets/portable-pinball-v1_11/
 !assets/portable-pinball-v1_11/**
+
+!assets/chico-mini-pc-mount/
+!assets/chico-mini-pc-mount/**
