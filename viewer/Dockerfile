@@ -42,6 +42,7 @@ COPY assets/portable-pinball/stl-v1_2 /usr/share/nginx/html/models/portable-pinb
 COPY assets/portable-pinball/stl-v1_3 /usr/share/nginx/html/models/portable-pinball/stl-v1_3
 COPY assets/vx110-wood-dolly /usr/share/nginx/html/models/vx110-wood-dolly
 COPY assets/encoder-cradle-v1 /usr/share/nginx/html/models/encoder-cradle-v1
+COPY assets/encoder-glue-mount-v4 /usr/share/nginx/html/models/encoder-glue-mount-v4
 COPY assets/encoder-glue-mount-v3 /usr/share/nginx/html/models/encoder-glue-mount-v3
 COPY assets/encoder-glue-mount-v2 /usr/share/nginx/html/models/encoder-glue-mount-v2
 COPY assets/m12-rgbw-v0_1 /usr/share/nginx/html/models/m12-rgbw-v0_1
