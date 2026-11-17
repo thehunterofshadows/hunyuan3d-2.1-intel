@@ -261,3 +261,12 @@ New selectable #portable-pinball-v1_19 converts 16 original M4 leg mounting fast
 ### V1.19 receiver socket-width update (2026-11-15)
 
 The same V1.19 card now serves revision-tagged `-socket` GLB, STEP, STL directory and full/test ZIP assets to avoid stale browser caches. The four underfloor `foot_receiver_*` parts alone are widened from the original Ø10.8 mm bolt recess + Ø11.3 mm driver bore to **Ø17 mm** end-to-end for sockets around M5 external hex bolt heads. Their lower disc and boss are now Ø60 mm for >3 mm edge material at all four M5 holes. Cabinet floors, top captive-nut plates, M6 nut clips and M6/M8 leg components remain as V1.19. CAD/mesh tests and browser checks cover the updated geometry; real socket OD and loading still require print fit tests.
+
+## USB encoder cradle V1 (2026-11-17)
+Separate #encoder-cradle-v1 model; cabinet assets unchanged. Four M3 heat-set inserts
+(user nominal OD5 x L6mm), 104 x 54mm mounting centers, matching 3D-printable marking
+jig, PCB fit gauge and three-size insert coupon. Flat print orientations, no required
+supports. Nominal 85 x 35mm PCB remains unmeasured: verify gauge, underside and plugs
+before drilling. Source viewer/cad/encoder-cradle-v1/build.py; assets include STLs,
+STEP, ZIP, paper SVG, README and validation JSON. CAD solid and manifold checks pass;
+physical fit pending. Test: viewer/tests/encoder-cradle.cjs in existing Playwright image.

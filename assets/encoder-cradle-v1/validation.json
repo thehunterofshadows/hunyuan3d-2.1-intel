@@ -1,0 +1,61 @@
+{
+  "encoder_cradle": {
+    "watertight": true,
+    "valid_solid": true,
+    "bounds_mm": [
+      118.0,
+      68.0,
+      10.0
+    ],
+    "volume_mm3": 28787.92765481673
+  },
+  "drill_jig_104x54": {
+    "watertight": true,
+    "valid_solid": true,
+    "bounds_mm": [
+      118.0,
+      68.0,
+      2.0
+    ],
+    "volume_mm3": 9783.385550608393
+  },
+  "pcb_fit_gauge_86x36": {
+    "watertight": true,
+    "valid_solid": true,
+    "bounds_mm": [
+      92.0,
+      44.0,
+      2.0
+    ],
+    "volume_mm3": 1904.0
+  },
+  "insert_test_4p3_4p5_4p7": {
+    "watertight": true,
+    "valid_solid": true,
+    "bounds_mm": [
+      48.0,
+      15.0,
+      10.0
+    ],
+    "volume_mm3": 6722.368218190129
+  },
+  "hole_pattern_mm": [
+    104,
+    54
+  ],
+  "insert_nominal_mm": [
+    3,
+    5,
+    6
+  ],
+  "insert_bore_mm": 4.5,
+  "pcb_nominal_mm": [
+    85,
+    35
+  ],
+  "pcb_gauge_opening_mm": [
+    86,
+    36
+  ],
+  "physical_fit_tested": false
+}
