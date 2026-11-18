@@ -37,6 +37,7 @@ COPY assets/portable-pinball-v1_15 /usr/share/nginx/html/models/portable-pinball
 COPY assets/portable-pinball-v1_16 /usr/share/nginx/html/models/portable-pinball-v1_16
 COPY assets/portable-pinball-v1_17 /usr/share/nginx/html/models/portable-pinball-v1_17
 COPY assets/portable-pinball-v1_18 /usr/share/nginx/html/models/portable-pinball-v1_18
+COPY assets/portable-pinball-v1_20 /usr/share/nginx/html/models/portable-pinball-v1_20
 COPY assets/portable-pinball-v1_19 /usr/share/nginx/html/models/portable-pinball-v1_19
 COPY assets/portable-pinball/stl-v1_2 /usr/share/nginx/html/models/portable-pinball/stl-v1_2
 COPY assets/portable-pinball/stl-v1_3 /usr/share/nginx/html/models/portable-pinball/stl-v1_3

@@ -270,3 +270,7 @@ supports. Nominal 85 x 35mm PCB remains unmeasured: verify gauge, underside and 
 before drilling. Source viewer/cad/encoder-cradle-v1/build.py; assets include STLs,
 STEP, ZIP, paper SVG, README and validation JSON. CAD solid and manifold checks pass;
 physical fit pending. Test: viewer/tests/encoder-cradle.cjs in existing Playwright image.
+
+## Portable Pinball CAD V1.20 — front M8 direct mount (2026-11-18)
+
+Selectable #portable-pinball-v1_20 (71 printable parts, 3 reference envelopes plus purchased-foot reference visuals) replaces ONLY the two front foot receivers with top-inserted metal M8 nut pockets and continuous 9 mm bores. The front 55 mm extension stacks and their M6 clips are no longer part of the model. The four M5 bolts per receiver, both top backing plates, both undrilled floor panels, original socket access and both rear modular extension stacks are unchanged. Existing backing + floor must be center-drilled 9 mm at each front foot station (48,80) and (212,80) for fully adjustable upward M8 stud travel; optional fit coupon and center pilot drill jig are independently provided. 93 STLs including optional 20 original and two M8 fit samples have manifold/print-plane checks; 71-part CAD had no modeled collisions. Previous versions retained. No real hardware/load testing yet. See assets/portable-pinball-v1_20/README-v1_20.md.
