@@ -69,3 +69,5 @@ RUN cd /usr/share/nginx/html && \
     done
 
 COPY assets/chico-mini-pc-mount /usr/share/nginx/html/models/chico-mini-pc-mount
+
+COPY assets/chico-volume-buttons-v1 /usr/share/nginx/html/models/chico-volume-buttons-v1

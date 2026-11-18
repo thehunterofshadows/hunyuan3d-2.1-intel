@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 520">
+<rect width="980" height="520" fill="#121b23"/>
+<text x="58" y="70" fill="#e5f0f5" font-size="34" font-family="sans-serif" font-weight="bold">CHICO · VOLUME BUTTONS</text>
+<text x="58" y="106" fill="#86a9b5" font-size="20" font-family="sans-serif">V1 · standalone captured-cap case / M3 inserts</text>
+<rect x="70" y="170" width="510" height="225" rx="44" fill="#56616d" stroke="#8393a0" stroke-width="9"/>
+<circle cx="240" cy="282" r="86" fill="#1c242b" stroke="#929da6" stroke-width="5"/>
+<circle cx="418" cy="282" r="86" fill="#1c242b" stroke="#929da6" stroke-width="5"/>
+<path d="M197 283 h85" stroke="#dce3e7" stroke-width="17" stroke-linecap="round"/>
+<path d="M377 283 h85 M420 240 v85" stroke="#dce3e7" stroke-width="17" stroke-linecap="round"/>
+<circle cx="112" cy="282" r="13" fill="#27303a" stroke="#a9b3bc" stroke-width="4"/>
+<circle cx="538" cy="282" r="13" fill="#27303a" stroke="#a9b3bc" stroke-width="4"/>
+<text x="625" y="220" fill="#e5f0f5" font-size="25" font-family="sans-serif">78 × 32 × 17.8 mm</text>
+<text x="625" y="268" fill="#9bafbc" font-size="19" font-family="sans-serif">2 retained caps Ø20.3 lip</text>
+<text x="625" y="305" fill="#9bafbc" font-size="19" font-family="sans-serif">2 × M3 heat-set inserts</text>
+<text x="625" y="342" fill="#9bafbc" font-size="19" font-family="sans-serif">Back cable notch</text>
+<text x="70" y="460" fill="#7c96a7" font-size="17" font-family="sans-serif">Actual CAD STL and STEP available. Physical switch-fit test required.</text>
+</svg>
