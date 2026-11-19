@@ -1,0 +1,136 @@
+{
+  "enclosure_back": {
+    "bounds_mm": [
+      78.0,
+      32.0,
+      15.0
+    ],
+    "watertight": true,
+    "solid": true
+  },
+  "front_faceplate": {
+    "bounds_mm": [
+      78.0,
+      32.0,
+      3.4
+    ],
+    "watertight": true,
+    "solid": true
+  },
+  "minus_cap_short": {
+    "bounds_mm": [
+      20.296,
+      20.298,
+      11.1
+    ],
+    "watertight": true,
+    "solid": true
+  },
+  "minus_cap_standard": {
+    "bounds_mm": [
+      20.296,
+      20.298,
+      12.5
+    ],
+    "watertight": true,
+    "solid": true
+  },
+  "minus_cap_long": {
+    "bounds_mm": [
+      20.296,
+      20.298,
+      14.1
+    ],
+    "watertight": true,
+    "solid": true
+  },
+  "plus_cap_short": {
+    "bounds_mm": [
+      20.296,
+      20.298,
+      11.1
+    ],
+    "watertight": true,
+    "solid": true
+  },
+  "plus_cap_standard": {
+    "bounds_mm": [
+      20.296,
+      20.298,
+      12.5
+    ],
+    "watertight": true,
+    "solid": true
+  },
+  "plus_cap_long": {
+    "bounds_mm": [
+      20.296,
+      20.298,
+      14.1
+    ],
+    "watertight": true,
+    "solid": true
+  },
+  "switch_12mm_fit_gauge": {
+    "bounds_mm": [
+      25.0,
+      25.0,
+      8.4
+    ],
+    "watertight": true,
+    "solid": true
+  },
+  "m3_insert_fit_coupon": {
+    "bounds_mm": [
+      49.0,
+      14.0,
+      9.0
+    ],
+    "watertight": true,
+    "solid": true
+  },
+  "outer_dimensions_mm": [
+    78.0,
+    32.0,
+    18.4
+  ],
+  "cap_hole_diameter_mm": 16.1,
+  "cap_flange_diameter_mm": 20.3,
+  "underside_full_width_mm": 20.3,
+  "narrow_plunger_removed": true,
+  "cap_print_orientation": "flat full-width back face on build plate; raised lettered head up",
+  "switch_illustration_contact_gap_standard_mm": 0,
+  "raised_accent_height_mm": 0.6,
+  "accent_base_cover_mm": 2.8,
+  "first_accent_print_z_cover_mm": 3.0,
+  "accent_base_cap_standard_mm": 11.9,
+  "first_accent_print_z_cap_standard_mm": 12.0,
+  "accent_base_cap_short_mm": 10.5,
+  "first_accent_print_z_cap_short_mm": 10.6,
+  "accent_base_cap_long_mm": 13.5,
+  "first_accent_print_z_cap_long_mm": 13.6,
+  "faceplate_accent_features": [
+    "VOLUME",
+    "left line",
+    "right line",
+    "rounded border"
+  ],
+  "button_cap_accents": [
+    "plus",
+    "minus"
+  ],
+  "cap_head_height_mm": 7.0,
+  "cap_total_head_and_accent_height_mm": 7.6,
+  "color_change_workflow": "Separate faceplate and cap print jobs; single manual color swap each.",
+  "m3_insert_nominal_mm": [
+    3,
+    5,
+    6
+  ],
+  "m3_insert_pocket_diameter_mm": 4.5,
+  "rear_cable_notch_mm": [
+    9,
+    6.8
+  ],
+  "physical_fit_tested": false
+}

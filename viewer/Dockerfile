@@ -75,3 +75,4 @@ COPY assets/chico-volume-buttons-v1 /usr/share/nginx/html/models/chico-volume-bu
 COPY assets/chico-volume-buttons-v2 /usr/share/nginx/html/models/chico-volume-buttons-v2
 
 COPY assets/chico-volume-buttons-v3 /usr/share/nginx/html/models/chico-volume-buttons-v3
+COPY assets/chico-volume-buttons-v4 /usr/share/nginx/html/models/chico-volume-buttons-v4
