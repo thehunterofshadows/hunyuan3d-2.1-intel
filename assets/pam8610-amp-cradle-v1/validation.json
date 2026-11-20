@@ -1,0 +1,58 @@
+{
+  "amp_cradle": {
+    "size_mm": [
+      39.0,
+      33.0,
+      11.1
+    ],
+    "watertight": true,
+    "solid": true,
+    "volume_mm3": 4627.5
+  },
+  "pcb_hole_pitch_gauge": {
+    "size_mm": [
+      36.0,
+      30.0,
+      1.5
+    ],
+    "watertight": true,
+    "solid": true,
+    "volume_mm3": 1567.0
+  },
+  "m3_insert_fit_coupon": {
+    "size_mm": [
+      42.0,
+      13.0,
+      9.0
+    ],
+    "watertight": true,
+    "solid": true,
+    "volume_mm3": 4611.0
+  },
+  "assumptions": {
+    "board_mm": [
+      31,
+      25,
+      2.5
+    ],
+    "user_measured_outer_hole_span_mm": [
+      27.48,
+      22.93
+    ],
+    "assumed_mount_hole_diameter_mm": 3.0,
+    "hole_pitch_mm": [
+      24.48,
+      19.93
+    ],
+    "pitch_verified": false,
+    "insert_od_mm": 5.0,
+    "insert_length_mm": 6.0,
+    "pilot_mm": 4.3,
+    "volume_pilot_mm": 4.5,
+    "base_mm": [
+      39,
+      33,
+      11.1
+    ]
+  }
+}
