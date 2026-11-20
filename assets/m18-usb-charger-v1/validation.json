@@ -1,0 +1,19 @@
+{
+  "revision": "V1",
+  "status": "Mechanical only, untested",
+  "mesh_watertight": true,
+  "faces": 4132,
+  "bounds_mm": [
+    [
+      -34.1,
+      -38.05,
+      -24.38
+    ],
+    [
+      34.1,
+      38.05,
+      24.38
+    ]
+  ],
+  "required_source_parts": "Wiseone M18 battery plate and EWJ socket (download separately)"
+}

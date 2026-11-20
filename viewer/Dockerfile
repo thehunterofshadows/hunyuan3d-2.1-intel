@@ -53,6 +53,8 @@ COPY assets/trellis-pinball-slingshot /usr/share/nginx/html/models/trellis-pinba
 COPY assets/trellis-pinball-target /usr/share/nginx/html/models/trellis-pinball-target
 COPY assets/trellis-pinball-pop-bumper /usr/share/nginx/html/models/trellis-pinball-pop-bumper
 
+COPY assets/m18-usb-charger-v1 /usr/share/nginx/html/models/m18-usb-charger-v1
+
 # Migrated source files include mode 0600; nginx workers need read permission.
 RUN chmod -R a+rX /usr/share/nginx/html
 
